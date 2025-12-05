@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    // Project paths
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // ES modules + modern Node
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2024",
+
+    // Node types
+    "lib": ["esnext"],
+    "types": ["node"],
+
+    // Output helpers
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Strong typing
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Module behavior
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noUncheckedSideEffectImports": true,
+
+    // Cleanups
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+
+  "include": ["src"]
+}

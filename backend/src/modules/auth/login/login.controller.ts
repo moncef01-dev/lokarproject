@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { tryCatch } from "../../../utils/try-catch.js";
 import { getUserFromDB } from "../../../dal/user.dal.js";
-import { comparePassToHash } from "../auth.service.js";
+import {
+  comparePassToHash,
+  generateAccessToken,
+  generateRefreshToken,
+} from "../auth.service.js";
 
 export async function loginHnadler(req: Request, res: Response) {
   let { email, password } = req.body;
@@ -19,6 +23,20 @@ export async function loginHnadler(req: Request, res: Response) {
     return;
   }
 
-  // console.log(user);
-  res.status(200).send("Welcome!");
+  const accessToken = generateAccessToken(user._id.toString());
+  const refreshToken = generateRefreshToken(user._id.toString());
+
+  // Send tokens in cookies (or in JSON body)
+  res
+    .cookie("access_token", accessToken, {
+      // maxAge: 15 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    })
+    .cookie("refresh_token", refreshToken, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    })
+    .status(200)
+    .send("Welcome!");
 }

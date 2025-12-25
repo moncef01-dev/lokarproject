@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { checkAccessToken } from "./auth.service.js";
+import { JwtPayload } from "jsonwebtoken";
+import { getUserById, getUserFromDB } from "../../dal/user.dal.js";
+
 export function checkAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies.access_token;
   const refresh = req.cookies.refresh_token;
-  console.log("testing if refresh is there", refresh);
   if (!token) {
     res.status(401).send("Unauthorized");
     return;
@@ -17,6 +19,11 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
     res.status(401).send({ message: "Invalid Token" });
     return;
   }
-  (req as any).user = payload;
+
+  const user = getUserById((payload as JwtPayload).id);
+  console.log(user);
+  req.user = {
+    id: (payload as JwtPayload).id,
+  };
   next();
 }

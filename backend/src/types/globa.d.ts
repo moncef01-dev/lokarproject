@@ -5,3 +5,16 @@ declare namespace NodeJS {
     JWT_PRIVATE_KEY: string;
   }
 }
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        role?: "customer" | "agency" | "superadmin";
+      };
+    }
+  }
+}
+
+export {};

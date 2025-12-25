@@ -19,7 +19,7 @@ export async function comparePassToHash(
 
 export function generateAccessToken(userId: string) {
   const accessToken = jwt.sign({ id: userId }, jwtPrivateKey(), {
-    expiresIn: 15 * 60,
+    expiresIn: 15 * 60 * 60,
   });
   return accessToken;
 }

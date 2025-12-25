@@ -19,7 +19,9 @@ export function refreshAccessTokenHandler(req: Request, res: Response) {
     (payload as JwtPayload).id.toString()
   );
   res.cookie("access_token", newAccessToken, {
-    maxAge: 15 * 60 * 1000,
+    // maxAge: 15 * 60 * 1000,
+    // it is set up to 7 days just for dev mode so that we don't keep refreshing it everytime
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: "lax",
   });
   res.status(200).send("new accessToken");

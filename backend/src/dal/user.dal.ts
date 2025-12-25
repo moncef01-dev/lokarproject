@@ -37,6 +37,10 @@ export async function getUserFromDB(email: string) {
   const { data: user, error } = await tryCatch(userModel.findOne({ email }));
   return user;
 }
+export async function getUserById(id: string) {
+  const { data: user, error } = await tryCatch(userModel.findOne({ id }));
+  return user;
+}
 
 export async function checkIfUserExists(email: string): Promise<boolean> {
   const { data: existsResult, error } = await tryCatch(

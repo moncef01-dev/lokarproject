@@ -26,7 +26,6 @@ export async function loginHnadler(req: Request, res: Response) {
   const accessToken = generateAccessToken(user._id.toString());
   const refreshToken = generateRefreshToken(user._id.toString());
 
-  // Send tokens in cookies (or in JSON body)
   res
     .cookie("access_token", accessToken, {
       // maxAge: 15 * 60 * 1000,
@@ -36,6 +35,7 @@ export async function loginHnadler(req: Request, res: Response) {
     .cookie("refresh_token", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
+      path: "/api/auth/refresh",
     })
     .status(200)
     .send("Welcome!");

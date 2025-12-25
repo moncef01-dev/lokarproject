@@ -5,6 +5,7 @@ export function authorize(allowedRoles: string[]) {
     const userRole = req.user?.role;
     if (!userRole || !allowedRoles.includes(userRole)) {
       res.status(403).send("Forbidden");
+      return;
     }
 
     next();

@@ -13,6 +13,14 @@ declare global {
         id: string;
         role?: "customer" | "agency" | "superadmin";
       };
+      agency?: {
+        user_id: mongoose.Schema.Types.ObjectId;
+        phone: string;
+        name: string;
+        email: string;
+        address: string;
+        img_path?: string | undefined;
+      };
     }
   }
 }

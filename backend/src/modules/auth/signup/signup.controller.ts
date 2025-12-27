@@ -26,5 +26,5 @@ export async function signupHnadler(req: Request, res: Response) {
       sameSite: "lax",
       path: "/api/auth/refresh",
     });
-  res.status(201).send(accessToken);
+  res.status(201).json({ accessToken, user_id: userData.id });
 }

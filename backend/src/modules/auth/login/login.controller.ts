@@ -38,5 +38,5 @@ export async function loginHnadler(req: Request, res: Response) {
       path: "/api/auth/refresh",
     })
     .status(200)
-    .send("Welcome!");
+    .json({ message: "Weclome!", user_id: user.id });
 }

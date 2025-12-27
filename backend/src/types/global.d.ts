@@ -29,6 +29,15 @@ declare global {
         img_path?: string | undefined;
         availability: string; // Required because of default value
       };
+      booking?: {
+        customer_id: string;
+        agency_id: string;
+        vehicle_id: string;
+        start_date: Date;
+        end_date: Date;
+        price: number;
+        status?: "pending" | "confirmed" | "cancelled" | undefined;
+      };
     }
   }
 }

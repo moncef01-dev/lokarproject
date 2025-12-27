@@ -14,6 +14,7 @@ export const bookingSchema = z
     status: z.enum(["pending", "confirmed", "cancelled"]).optional(),
   })
   .refine((data) => data.end_date > data.start_date, {
-    message: "end_date must be after start_date",
     path: ["end_date"],
   });
+
+export type BookingData = z.infer<typeof bookingSchema>;

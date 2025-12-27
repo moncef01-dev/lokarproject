@@ -11,6 +11,6 @@ export function validateBookingData(
     res.status(400).send("Invalid Booking Data");
     return;
   }
-  req.body = validationResult.data;
+  req.booking = validationResult.data;
   next();
 }

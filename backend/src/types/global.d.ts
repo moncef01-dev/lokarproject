@@ -21,6 +21,14 @@ declare global {
         address: string;
         img_path?: string | undefined;
       };
+      vehicle?: {
+        agency_id: string;
+        brand: string;
+        model: string;
+        year?: string | undefined;
+        img_path?: string | undefined;
+        availability: string; // Required because of default value
+      };
     }
   }
 }

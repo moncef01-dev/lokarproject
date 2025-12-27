@@ -13,7 +13,7 @@ app.use(cookieParser());
 app.get(
   "/",
   checkAuth,
-  authorize(["customer"]),
+  authorize(["customer", "agency", "superadmin"]),
   (req: Request, res: Response) => {
     res.send("hello world");
   }
@@ -21,3 +21,5 @@ app.get(
 
 app.use("/api/auth", authRouter);
 app.use("/api/agency", checkAuth, authorize(["agency"]), agencyRouter);
+import vehicleRouter from "./modules/vehicle/vehicle.route.js";
+app.use("/api/vehicle", checkAuth, authorize(["agency"]), vehicleRouter);

@@ -6,6 +6,7 @@ import { authorize } from "./modules/authZ/authZ.middleware.js";
 import agencyRouter from "./modules/agency/agency.route.js";
 import vehicleRouter from "./modules/vehicle/vehicle.route.js";
 import bookingRouter from "./modules/booking/booking.route.js";
+import adminPanelRouter from "./modules/admin_panel/admin_panel.routes.js";
 
 export const app = express();
 app.use(express.json());
@@ -30,3 +31,4 @@ app.use(
   authorize(["customer", "agency", "superadmin"]),
   bookingRouter
 );
+app.use("/api/admin", adminPanelRouter);

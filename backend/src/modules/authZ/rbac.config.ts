@@ -1,5 +1,5 @@
 // rbacConfig.js
-const roles = {
+export const roles = {
   superAdmin: {
     can: [
       "create:agency",
@@ -29,6 +29,7 @@ const roles = {
       "update:reservation",
       "read:profile",
       "update:profile",
+      "read:report", // Added read:report for agency panel stats
     ],
   },
   customer: {
@@ -40,5 +41,3 @@ const roles = {
     ],
   },
 };
-
-module.exports = roles;

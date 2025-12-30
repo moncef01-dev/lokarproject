@@ -19,3 +19,34 @@ export async function saveVehicleToDB(vehicleData: VehicleData) {
   }
   return data;
 }
+
+export async function getVehiclesByAgencyDAL(agencyId: string) {
+  const { data, error } = await tryCatch(
+    vehicleModel.find({ agency_id: agencyId })
+  );
+  if (error) {
+    throw new Error("Error fetching vehicles for agency");
+  }
+  return data;
+}
+
+export async function updateVehicleDAL(
+  vehicleId: string,
+  vehicleData: Partial<VehicleData>
+) {
+  const { data, error } = await tryCatch(
+    vehicleModel.findByIdAndUpdate(vehicleId, vehicleData, { new: true })
+  );
+  if (error) {
+    throw new Error("Error updating vehicle");
+  }
+  return data;
+}
+
+export async function deleteVehicleDAL(vehicleId: string) {
+  const { error } = await tryCatch(vehicleModel.findByIdAndDelete(vehicleId));
+  if (error) {
+    throw new Error("Error deleting vehicle");
+  }
+  return true;
+}

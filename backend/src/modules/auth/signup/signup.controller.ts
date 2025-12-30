@@ -27,5 +27,13 @@ export async function signupHnadler(req: Request, res: Response) {
       sameSite: "lax",
       httpOnly: true,
     });
-  res.status(201).json({ accessToken, user_id: userData.id });
+  res.status(201).json({
+    message: "User created successfully",
+    user: {
+      id: userData._id,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+    },
+  });
 }

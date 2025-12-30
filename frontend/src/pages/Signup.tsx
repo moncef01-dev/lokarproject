@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { User, Lock, Mail, AlertCircle, Award } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +20,7 @@ const Signup: React.FC = () => {
 
     try {
       await authService.signup({ name, email, password });
+      await authLogin();
       navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

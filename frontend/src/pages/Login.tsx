@@ -24,8 +24,8 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      const response = await authService.login({ email, password });
-      authLogin("", response); // Update context state
+      await authService.login({ email, password });
+      await authLogin(); // Fetch user data from /api/user/me
       navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

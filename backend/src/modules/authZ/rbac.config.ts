@@ -1,6 +1,6 @@
 // rbacConfig.js
 export const roles = {
-  superAdmin: {
+  superadmin: {
     can: [
       "create:agency",
       "read:agency",

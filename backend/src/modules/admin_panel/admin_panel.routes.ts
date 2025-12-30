@@ -19,7 +19,7 @@ adminPanelRouter.get(
 adminPanelRouter.get(
   "/super/stats",
   checkAuth,
-  authorize(["superAdmin"]),
+  authorize(["superadmin"]),
   checkPermission("read:report"),
   getSuperAdminStatsController
 );

@@ -1,9 +1,9 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Cars from "./pages/Cars";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import AdminPanel from "./pages/AdminPanel";
 import { AuthProvider } from "./context/AuthContext";
 
 const App = () => {
@@ -15,6 +15,7 @@ const App = () => {
           <Route path="/cars" element={<Cars />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

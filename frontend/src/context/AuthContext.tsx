@@ -6,8 +6,7 @@ interface AuthContextType {
   user: any | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  login: (token: string, userData: any) => void;
+  login: () => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -24,11 +23,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const checkAuth = async () => {
     try {
-      // Trying to reach the protected root route to check if cookies are valid
-      await api.get("/");
+      const response = await api.get("/user/me");
       setIsAuthenticated(true);
-      // You might want to fetch user details here if needed,
-      // but for now 200 OK means we are logged in.
+      setUser(response.data);
     } catch {
       console.log("Not authenticated");
       setIsAuthenticated(false);
@@ -42,12 +39,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkAuth();
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const login = (_token: string, userData: any) => {
-    // Since we use httpOnly cookies, the token argument might be redundant or used for other storage if needed.
-    // Ideally, we just refresh auth state.
-    setIsAuthenticated(true);
-    setUser(userData);
+  const login = async () => {
+    // Since we use httpOnly cookies, we just refresh auth state from the server.
+    await checkAuth();
   };
 
   const logout = () => {

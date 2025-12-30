@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -73,6 +73,19 @@ const Navbar = () => {
             >
               Contact
             </a>
+            {isAuthenticated &&
+              (user?.role === "superadmin" || user?.role === "agency") && (
+                <a
+                  href="#"
+                  className="font-bold text-[#C8102E] transition hover:text-red-400"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/admin");
+                  }}
+                >
+                  Admin Panel
+                </a>
+              )}
           </div>
 
           <div className="flex items-center space-x-4">

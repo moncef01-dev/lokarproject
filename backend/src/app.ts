@@ -7,6 +7,7 @@ import agencyRouter from "./modules/agency/agency.route.js";
 import vehicleRouter from "./modules/vehicle/vehicle.route.js";
 import bookingRouter from "./modules/booking/booking.route.js";
 import adminPanelRouter from "./modules/admin_panel/admin_panel.routes.js";
+import userRouter from "./modules/user/user.route.js";
 import cors from "cors";
 import { corsOptoins } from "./config/cors.config.js";
 import { getNodeENV } from "./config/index.js";
@@ -37,3 +38,4 @@ app.use(
   bookingRouter
 );
 app.use("/api/admin", adminPanelRouter);
+app.use("/api/user", userRouter);

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Star, ShieldCheck } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();

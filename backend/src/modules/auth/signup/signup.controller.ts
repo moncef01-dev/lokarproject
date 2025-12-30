@@ -19,12 +19,13 @@ export async function signupHnadler(req: Request, res: Response) {
     .cookie("access_token", accessToken, {
       // maxAge: 15 * 30 * 30 * 30 * 1000,
       maxAge: 30 * 1000,
+      httpOnly: true,
       sameSite: "lax",
     })
     .cookie("refresh_token", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: "lax",
-      path: "/api/auth/refresh",
+      httpOnly: true,
     });
   res.status(201).json({ accessToken, user_id: userData.id });
 }

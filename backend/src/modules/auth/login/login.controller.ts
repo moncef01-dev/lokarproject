@@ -35,7 +35,7 @@ export async function loginHnadler(req: Request, res: Response) {
     .cookie("refresh_token", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      path: "/api/auth/refresh",
+      // path: "/api/auth/refresh",
     })
     .status(200)
     .json({ message: "Weclome!", user_id: user.id });

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -12,6 +14,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <nav
@@ -69,9 +76,22 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="hidden rounded-lg border-2 border-white px-6 py-2 text-white transition hover:bg-white hover:text-[#0A1633] md:block">
-              Login/Register
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="rounded-lg border-2 border-white px-6 py-2 text-white transition hover:bg-white hover:text-[#0A1633] md:block"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="hidden rounded-lg border-2 border-white px-6 py-2 text-white transition hover:bg-white hover:text-[#0A1633] md:block"
+              >
+                Login/Register
+              </button>
+            )}
+
             <button className="rounded-lg bg-[#C8102E] px-6 py-2 text-white transition hover:bg-red-700">
               List Your Agency
             </button>

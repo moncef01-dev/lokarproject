@@ -7,18 +7,23 @@ import agencyRouter from "./modules/agency/agency.route.js";
 import vehicleRouter from "./modules/vehicle/vehicle.route.js";
 import bookingRouter from "./modules/booking/booking.route.js";
 import adminPanelRouter from "./modules/admin_panel/admin_panel.routes.js";
+import cors from "cors";
+import { corsOptoins } from "./config/cors.config.js";
+import { getNodeENV } from "./config/index.js";
+import dotenv from "dotenv";
+dotenv.config({ debug: false });
 
 export const app = express();
 app.use(express.json());
 app.use(cookieParser());
-// app.use(cors());
-
+app.use(cors(corsOptoins));
+console.log("node env " + getNodeENV());
 app.get(
-  "/",
+  "/api",
   checkAuth,
   authorize(["customer", "agency", "superadmin"]),
   (req: Request, res: Response) => {
-    res.send("hello world");
+    res.status(200).send("hello world");
   }
 );
 

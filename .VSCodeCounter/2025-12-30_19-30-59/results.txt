@@ -1,0 +1,158 @@
+Date : 2025-12-30 19:30:59
+Directory : c:\Users\Abdessamed\Desktop\lokar
+Total : 89 files,  62828 codes, 13681 comments, 2079 blanks, all 78588 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JavaScript     |          8 |     60,436 |     13,640 |      1,703 |     75,779 |
+| TypeScript     |         57 |      1,208 |         26 |        208 |      1,442 |
+| TypeScript JSX |         16 |        973 |         15 |        112 |      1,100 |
+| Markdown       |          2 |        121 |          0 |         48 |        169 |
+| JSON           |          2 |         51 |          0 |          1 |         52 |
+| PostCSS        |          1 |         24 |          0 |          6 |         30 |
+| HTML           |          1 |         13 |          0 |          1 |         14 |
+| XML            |          2 |          2 |          0 |          0 |          2 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                     | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                        |         89 |     62,828 |     13,681 |      2,079 |     78,588 |
+| backend                                                                                                  |         52 |        982 |         16 |        188 |      1,186 |
+| backend\src                                                                                              |         52 |        982 |         16 |        188 |      1,186 |
+| backend\src (Files)                                                                                      |          2 |         45 |          0 |          5 |         50 |
+| backend\src\api                                                                                          |          1 |          0 |          0 |          1 |          1 |
+| backend\src\config                                                                                       |          3 |         23 |          0 |          5 |         28 |
+| backend\src\dal                                                                                          |          5 |        224 |          3 |         25 |        252 |
+| backend\src\modules                                                                                      |         37 |        622 |         11 |        142 |        775 |
+| backend\src\modules\admin_panel                                                                          |          5 |         69 |          2 |         20 |         91 |
+| backend\src\modules\admin_panel (Files)                                                                  |          1 |         21 |          2 |          5 |         28 |
+| backend\src\modules\admin_panel\controllers                                                              |          2 |         40 |          0 |         11 |         51 |
+| backend\src\modules\admin_panel\services                                                                 |          2 |          8 |          0 |          4 |         12 |
+| backend\src\modules\agency                                                                               |          7 |         80 |          2 |         26 |        108 |
+| backend\src\modules\auth                                                                                 |          9 |        217 |          6 |         38 |        261 |
+| backend\src\modules\auth (Files)                                                                         |          3 |        115 |          0 |         14 |        129 |
+| backend\src\modules\authZ                                                                                |          3 |         70 |          1 |          8 |         79 |
+| backend\src\modules\auth\login                                                                           |          2 |         39 |          2 |         11 |         52 |
+| backend\src\modules\auth\refresh                                                                         |          2 |         29 |          2 |          7 |         38 |
+| backend\src\modules\auth\signup                                                                          |          2 |         34 |          2 |          6 |         42 |
+| backend\src\modules\booking                                                                              |          6 |         92 |          0 |         22 |        114 |
+| backend\src\modules\user                                                                                 |          1 |         15 |          0 |          3 |         18 |
+| backend\src\modules\vehicle                                                                              |          6 |         79 |          0 |         25 |        104 |
+| backend\src\types                                                                                        |          2 |         49 |          0 |          5 |         54 |
+| backend\src\types (Files)                                                                                |          1 |         43 |          0 |          3 |         46 |
+| backend\src\types\shared                                                                                 |          1 |          6 |          0 |          2 |          8 |
+| backend\src\utils                                                                                        |          2 |         19 |          2 |          5 |         26 |
+| frontend                                                                                                 |         37 |     61,846 |     13,665 |      1,891 |     77,402 |
+| frontend (Files)                                                                                         |          6 |        165 |          1 |         54 |        220 |
+| frontend\.vite                                                                                           |          8 |     60,462 |     13,640 |      1,701 |     75,803 |
+| frontend\.vite\deps                                                                                      |          8 |     60,462 |     13,640 |      1,701 |     75,803 |
+| frontend\public                                                                                          |          1 |          1 |          0 |          0 |          1 |
+| frontend\src                                                                                             |         22 |      1,218 |         24 |        136 |      1,378 |
+| frontend\src (Files)                                                                                     |          3 |         52 |          0 |         11 |         63 |
+| frontend\src\assets                                                                                      |          1 |          1 |          0 |          0 |          1 |
+| frontend\src\components                                                                                  |         10 |        596 |          9 |         67 |        672 |
+| frontend\src\data                                                                                        |          1 |        154 |          0 |          2 |        156 |
+| frontend\src\pages                                                                                       |          4 |        349 |          6 |         40 |        395 |
+| frontend\src\services                                                                                    |          2 |         52 |          9 |         13 |         74 |
+| frontend\src\types                                                                                       |          1 |         14 |          0 |          3 |         17 |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                                 | language       | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\api\index.ts                                               | TypeScript     |          0 |          0 |          1 |          1 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\app.ts                                                     | TypeScript     |         37 |          0 |          3 |         40 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\config\cors.config.ts                                      | TypeScript     |          9 |          0 |          2 |         11 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\config\db.config.ts                                        | TypeScript     |         11 |          0 |          2 |         13 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\config\index.ts                                            | TypeScript     |          3 |          0 |          1 |          4 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\dal\admin.dal.ts                                           | TypeScript     |         95 |          1 |          9 |        105 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\dal\agency.dal.ts                                          | TypeScript     |         28 |          0 |          3 |         31 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\dal\booking.dal.ts                                         | TypeScript     |         29 |          0 |          3 |         32 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\dal\user.dal.ts                                            | TypeScript     |         52 |          2 |          8 |         62 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\dal\vehicle.dal.ts                                         | TypeScript     |         20 |          0 |          2 |         22 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\admin_panel\admin_panel.routes.ts                  | TypeScript     |         21 |          2 |          5 |         28 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\admin_panel\controllers\agency_admin.controller.ts | TypeScript     |         26 |          0 |          7 |         33 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\admin_panel\controllers\super_admin.controller.ts  | TypeScript     |         14 |          0 |          4 |         18 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\admin_panel\services\agency_admin.service.ts       | TypeScript     |          4 |          0 |          2 |          6 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\admin_panel\services\super_admin.service.ts        | TypeScript     |          4 |          0 |          2 |          6 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.controller.ts                        | TypeScript     |         17 |          0 |          2 |         19 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.middleware.ts                        | TypeScript     |         17 |          0 |          4 |         21 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.model.ts                             | TypeScript     |         17 |          1 |          3 |         21 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.route.ts                             | TypeScript     |          6 |          0 |          4 |         10 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.schema.ts                            | TypeScript     |         13 |          1 |          9 |         23 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.service.ts                           | TypeScript     |         10 |          0 |          3 |         13 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\agency\agency.types.ts                             | TypeScript     |          0 |          0 |          1 |          1 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\authZ\authZ.middleware.ts                          | TypeScript     |         27 |          0 |          6 |         33 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\authZ\authZ.service.ts                             | TypeScript     |          1 |          0 |          1 |          2 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\authZ\rbac.config.ts                               | TypeScript     |         42 |          1 |          1 |         44 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\auth.middleware.ts                            | TypeScript     |         42 |          0 |          4 |         46 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\auth.route.ts                                 | TypeScript     |          9 |          0 |          4 |         13 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\auth.service.ts                               | TypeScript     |         64 |          0 |          6 |         70 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\login\login.controller.ts                     | TypeScript     |         34 |          2 |          7 |         43 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\login\login.route.ts                          | TypeScript     |          5 |          0 |          4 |          9 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\refresh\refresh.controller.ts                 | TypeScript     |         24 |          2 |          3 |         29 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\refresh\refresh.route.ts                      | TypeScript     |          5 |          0 |          4 |          9 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\signup\signup.controller.ts                   | TypeScript     |         29 |          2 |          2 |         33 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\auth\signup\signup.route.ts                        | TypeScript     |          5 |          0 |          4 |          9 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\booking\booking.controller.ts                      | TypeScript     |         16 |          0 |          4 |         20 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\booking\booking.middleware.ts                      | TypeScript     |         15 |          0 |          2 |         17 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\booking\booking.model.ts                           | TypeScript     |         30 |          0 |          3 |         33 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\booking\booking.route.ts                           | TypeScript     |          6 |          0 |          4 |         10 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\booking\booking.schema.ts                          | TypeScript     |         15 |          0 |          6 |         21 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\booking\booking.service.ts                         | TypeScript     |         10 |          0 |          3 |         13 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\user\user.model.ts                                 | TypeScript     |         15 |          0 |          3 |         18 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\vehicle\vehicle.controller.ts                      | TypeScript     |         17 |          0 |          2 |         19 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\vehicle\vehicle.middleware.ts                      | TypeScript     |         17 |          0 |          5 |         22 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\vehicle\vehicle.model.ts                           | TypeScript     |         17 |          0 |          3 |         20 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\vehicle\vehicle.route.ts                           | TypeScript     |          6 |          0 |          4 |         10 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\vehicle\vehicle.schema.ts                          | TypeScript     |         12 |          0 |          8 |         20 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\vehicle\vehicle.service.ts                         | TypeScript     |         10 |          0 |          3 |         13 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\server.ts                                                  | TypeScript     |          8 |          0 |          2 |         10 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\types\global.d.ts                                          | TypeScript     |         43 |          0 |          3 |         46 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\types\shared\user.types.ts                                 | TypeScript     |          6 |          0 |          2 |          8 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\utils\try-catch.ts                                         | TypeScript     |         19 |          2 |          4 |         25 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\utils\utils.ts                                             | TypeScript     |          0 |          0 |          1 |          1 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.prettierrc                                                   | JSON           |          3 |          0 |          1 |          4 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\_metadata.json                                     | JSON           |         48 |          0 |          0 |         48 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\lucide-react.js                                    | JavaScript     |     35,394 |     13,371 |      1,673 |     50,438 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-BhPhf8gb.js                                  | JavaScript     |        783 |         16 |          3 |        802 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-dom-DBrcVFdG.js                              | JavaScript     |        169 |         14 |          3 |        186 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-dom_client.js                                | JavaScript     |     14,356 |         27 |          6 |     14,389 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-router-dom.js                                | JavaScript     |      9,521 |        198 |         10 |      9,729 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react.js                                           | JavaScript     |          2 |          0 |          2 |          4 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react_jsx-dev-runtime.js                           | JavaScript     |        189 |         14 |          4 |        207 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\README.md                                                     | Markdown       |         60 |          0 |         14 |         74 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\design.md                                                     | Markdown       |         61 |          0 |         34 |         95 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\eslint.config.js                                              | JavaScript     |         22 |          0 |          2 |         24 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\index.html                                                    | HTML           |         13 |          0 |          1 |         14 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\public\vite.svg                                               | XML            |          1 |          0 |          0 |          1 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\App.tsx                                                   | TypeScript JSX |         19 |          0 |          3 |         22 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\assets\react.svg                                          | XML            |          1 |          0 |          0 |          1 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\BrandSection.tsx                               | TypeScript JSX |         48 |          0 |          6 |         54 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\CTASection.tsx                                 | TypeScript JSX |         23 |          0 |          3 |         26 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\CarCard.tsx                                    | TypeScript JSX |         74 |          0 |          7 |         81 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\CarFilters.tsx                                 | TypeScript JSX |         54 |          0 |          6 |         60 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\FeaturedCarsSection.tsx                        | TypeScript JSX |         43 |          0 |          6 |         49 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\FeaturesSection.tsx                            | TypeScript JSX |         44 |          0 |          4 |         48 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\Footer.tsx                                     | TypeScript JSX |         91 |          0 |          7 |         98 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\Hero.tsx                                       | TypeScript JSX |         71 |          9 |         14 |         94 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\Navbar.tsx                                     | TypeScript JSX |         79 |          0 |          7 |         86 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\components\WhyChooseSection.tsx                           | TypeScript JSX |         69 |          0 |          7 |         76 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\data\mockData.ts                                          | TypeScript     |        154 |          0 |          2 |        156 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\index.css                                                 | PostCSS        |         24 |          0 |          6 |         30 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\main.tsx                                                  | TypeScript JSX |          9 |          0 |          2 |         11 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\pages\Cars.tsx                                            | TypeScript JSX |         49 |          2 |         10 |         61 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\pages\Home.tsx                                            | TypeScript JSX |         24 |          0 |          3 |         27 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\pages\Login.tsx                                           | TypeScript JSX |        132 |          2 |         13 |        147 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\pages\Signup.tsx                                          | TypeScript JSX |        144 |          2 |         14 |        160 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\services\api.ts                                           | TypeScript     |         34 |          6 |          9 |         49 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\services\auth.service.ts                                  | TypeScript     |         18 |          3 |          4 |         25 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\src\types\auth.ts                                             | TypeScript     |         14 |          0 |          3 |         17 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\vite.config.ts                                                | TypeScript     |          6 |          1 |          2 |          9 |
+| Total                                                                                                    |                |     62,828 |     13,681 |      2,079 |     78,588 |
++----------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

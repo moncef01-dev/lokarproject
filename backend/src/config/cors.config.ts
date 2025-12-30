@@ -1,5 +1,10 @@
 import { CorsOptions } from "cors";
+import { getNodeENV } from "./index.js";
 
 export const corsOptoins: CorsOptions = {
-  origin: process.env.NODE_ENV === "dev" ? "http://localhost:3000" : "prod url",
+  origin:
+    getNodeENV() === "DEV"
+      ? ["http://localhost:3000", "http://localhost:5173"]
+      : "http://localhost:5173",
+  credentials: true,
 };

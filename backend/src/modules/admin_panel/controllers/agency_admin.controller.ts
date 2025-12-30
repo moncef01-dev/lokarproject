@@ -15,7 +15,12 @@ export async function getAgencyStatsController(req: Request, res: Response) {
   );
 
   if (agencyError || !agency) {
-    res.status(404).send("Agency not found for this user");
+    console.warn("Agency document not found in DB for user:", userId);
+    res.status(200).send({
+      vehicleCount: 0,
+      bookingCount: 0,
+      totalProfit: 0,
+    });
     return;
   }
 

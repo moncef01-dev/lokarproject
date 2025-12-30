@@ -6,6 +6,8 @@ import { getSuperAdminStatsController } from "./controllers/super_admin.controll
 
 const adminPanelRouter = Router();
 
+adminPanelRouter.get("/test", (req, res) => res.send("admin panel is working"));
+
 // Agency Stats Route
 adminPanelRouter.get(
   "/agency/stats",

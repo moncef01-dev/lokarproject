@@ -1,0 +1,45 @@
+Date : 2025-12-30 21:21:53
+Directory : c:\Users\Abdessamed\Desktop\lokar
+Total : 10 files,  -60441 codes, -13640 comments, -1700 blanks, all -75781 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |          2 |         21 |          0 |          1 |         22 |
+| JSON       |          1 |        -48 |          0 |          0 |        -48 |
+| JavaScript |          7 |    -60,414 |    -13,640 |     -1,701 |    -75,755 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                     | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                        |         10 |    -60,441 |    -13,640 |     -1,700 |    -75,781 |
+| backend                                                                                                  |          2 |         21 |          0 |          1 |         22 |
+| backend\src                                                                                              |          2 |         21 |          0 |          1 |         22 |
+| backend\src (Files)                                                                                      |          1 |         16 |          0 |          1 |         17 |
+| backend\src\modules                                                                                      |          1 |          5 |          0 |          0 |          5 |
+| backend\src\modules\admin_panel                                                                          |          1 |          5 |          0 |          0 |          5 |
+| backend\src\modules\admin_panel\controllers                                                              |          1 |          5 |          0 |          0 |          5 |
+| frontend                                                                                                 |          8 |    -60,462 |    -13,640 |     -1,701 |    -75,803 |
+| frontend\.vite                                                                                           |          8 |    -60,462 |    -13,640 |     -1,701 |    -75,803 |
+| frontend\.vite\deps                                                                                      |          8 |    -60,462 |    -13,640 |     -1,701 |    -75,803 |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                 | language   | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\app.ts                                                     | TypeScript |         16 |          0 |          1 |         17 |
+| c:\Users\Abdessamed\Desktop\lokar\backend\src\modules\admin_panel\controllers\agency_admin.controller.ts | TypeScript |          5 |          0 |          0 |          5 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\_metadata.json                                     | JSON       |        -48 |          0 |          0 |        -48 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\lucide-react.js                                    | JavaScript |    -35,394 |    -13,371 |     -1,673 |    -50,438 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-BhPhf8gb.js                                  | JavaScript |       -783 |        -16 |         -3 |       -802 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-dom-DBrcVFdG.js                              | JavaScript |       -169 |        -14 |         -3 |       -186 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-dom_client.js                                | JavaScript |    -14,356 |        -27 |         -6 |    -14,389 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react-router-dom.js                                | JavaScript |     -9,521 |       -198 |        -10 |     -9,729 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react.js                                           | JavaScript |         -2 |          0 |         -2 |         -4 |
+| c:\Users\Abdessamed\Desktop\lokar\frontend\.vite\deps\react_jsx-dev-runtime.js                           | JavaScript |       -189 |        -14 |         -4 |       -207 |
+| Total                                                                                                    |            |    -60,441 |    -13,640 |     -1,700 |    -75,781 |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

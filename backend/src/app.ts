@@ -6,8 +6,10 @@ import { authorize } from "./modules/authZ/authZ.middleware.js";
 import agencyRouter from "./modules/agency/agency.route.js";
 import vehicleRouter from "./modules/vehicle/vehicle.route.js";
 import bookingRouter from "./modules/booking/booking.route.js";
-import adminPanelRouter from "./modules/admin_panel/admin_panel.routes.js";
 import userRouter from "./modules/user/user.route.js";
+import { getAgencyStatsController } from "./modules/admin_panel/controllers/agency_admin.controller.js";
+import { getSuperAdminStatsController } from "./modules/admin_panel/controllers/super_admin.controller.js";
+import { checkPermission } from "./modules/authZ/authZ.middleware.js";
 import cors from "cors";
 import { corsOptoins } from "./config/cors.config.js";
 import { getNodeENV } from "./config/index.js";
@@ -37,5 +39,18 @@ app.use(
   authorize(["customer", "agency", "superadmin"]),
   bookingRouter
 );
-app.use("/api/admin", adminPanelRouter);
+app.get(
+  "/api/admin/agency/stats",
+  checkAuth,
+  authorize(["agency"]),
+  checkPermission("read:report"),
+  getAgencyStatsController
+);
+app.get(
+  "/api/admin/super/stats",
+  checkAuth,
+  authorize(["superadmin"]),
+  checkPermission("read:report"),
+  getSuperAdminStatsController
+);
 app.use("/api/user", userRouter);

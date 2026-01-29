@@ -1,9 +1,12 @@
 import { z } from "zod";
 
 export const vehicleSchema = z.object({
-  agency_id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
-    message: "Invalid MongoDB ObjectId",
-  }),
+  agency_id: z
+    .string()
+    .regex(/^[0-9a-fA-F]{24}$/, {
+      message: "Invalid MongoDB ObjectId",
+    })
+    .optional(),
 
   brand: z.string().min(1, { message: "Brand is required" }),
 

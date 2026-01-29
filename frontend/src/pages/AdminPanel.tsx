@@ -62,7 +62,6 @@ const AdminPanel: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(user);
     if (!authLoading && !isAuthenticated) {
       navigate("/login");
     } else if (!authLoading && user && user.role === "customer") {
@@ -73,7 +72,6 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
-      console.log("no user");
       setIsLoading(true);
       try {
         if (user.role === "superadmin") {
@@ -162,6 +160,7 @@ const AdminPanel: React.FC = () => {
         img_path: "",
       });
       alert("Agency created successfully!");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       setError(err.response?.data || "Failed to create agency.");

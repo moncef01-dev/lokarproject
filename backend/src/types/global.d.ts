@@ -14,7 +14,7 @@ declare global {
         role?: "customer" | "agency" | "superadmin";
       };
       agency?: {
-        user_id: mongoose.Schema.Types.ObjectId;
+        user_id?: string | undefined;
         phone: string;
         name: string;
         email: string;

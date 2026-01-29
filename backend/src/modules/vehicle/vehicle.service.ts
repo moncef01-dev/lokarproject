@@ -3,7 +3,9 @@ import {
   getVehiclesByAgencyDAL,
   updateVehicleDAL,
   deleteVehicleDAL,
+  getAllVehiclesDAL,
 } from "../../dal/vehicle.dal.js";
+
 import { tryCatch } from "../../utils/try-catch.js";
 import { VehicleData } from "./vehicle.schema.js";
 
@@ -20,9 +22,13 @@ export async function getAgencyVehicles(agencyId: string) {
   return await getVehiclesByAgencyDAL(agencyId);
 }
 
+export async function getAllVehicles() {
+  return await getAllVehiclesDAL();
+}
+
 export async function updateVehicle(
   vehicleId: string,
-  vehicleData: Partial<VehicleData>
+  vehicleData: Partial<VehicleData>,
 ) {
   return await updateVehicleDAL(vehicleId, vehicleData);
 }

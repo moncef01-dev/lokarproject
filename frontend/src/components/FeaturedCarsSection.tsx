@@ -1,12 +1,28 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CarCard from "./CarCard";
-import { allCars } from "../data/mockData";
+import { publicService } from "../services/public.service";
 
 const FeaturedCarsSection = () => {
   const navigate = useNavigate();
-  const featuredCars = allCars.slice(0, 6);
+  const [featuredCars, setFeaturedCars] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const data = await publicService.getAllVehicles();
+        setFeaturedCars(data.slice(0, 6));
+      } catch (error) {
+        console.error("Failed to fetch featured cars:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCars();
+  }, []);
 
   return (
     <div id="browse" className="bg-white py-16">
@@ -25,11 +41,21 @@ const FeaturedCarsSection = () => {
           </p>
         </div>
 
-        <div className="mb-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {featuredCars.map((car) => (
-            <CarCard key={car.id} car={car} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-red-600"></div>
+          </div>
+        ) : (
+          <div className="mb-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {featuredCars.length > 0 ? (
+              featuredCars.map((car) => <CarCard key={car._id} car={car} />)
+            ) : (
+              <div className="col-span-full text-center text-gray-500">
+                No cars available at the moment.
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="text-center">
           <button

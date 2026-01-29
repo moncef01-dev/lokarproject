@@ -5,6 +5,7 @@ import {
   deleteVehicle,
   getAgencyVehicles,
   updateVehicle,
+  getAllVehicles,
 } from "./vehicle.service.js";
 import { findAgencyByUserId } from "../../dal/agency.dal.js";
 
@@ -72,6 +73,17 @@ export async function getAgencyVehiclesHandler(req: Request, res: Response) {
     res.status(500).send("Error fetching vehicles");
     return;
   }
+  res.send(vehicles);
+}
+
+export async function getAllVehiclesHandler(req: Request, res: Response) {
+  const { data: vehicles, error } = await tryCatch(getAllVehicles());
+
+  if (error) {
+    res.status(500).send("Error fetching all vehicles");
+    return;
+  }
+
   res.send(vehicles);
 }
 

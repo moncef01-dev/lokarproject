@@ -37,3 +37,13 @@ export async function promoteUserToAgency(
 
   return await createAgency(fullAgencyData);
 }
+
+import { getAllAgenciesDAL } from "../../dal/agency.dal.js";
+
+export async function getAllAgencies() {
+  const { data, error } = await tryCatch(getAllAgenciesDAL());
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}

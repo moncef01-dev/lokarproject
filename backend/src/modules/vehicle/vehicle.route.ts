@@ -4,6 +4,7 @@ import {
   getAgencyVehiclesHandler,
   updateVehicleHandler,
   vehicleHandler,
+  getAllVehiclesHandler,
 } from "./vehicle.controller.js";
 import { validateVehicleData } from "./vehicle.middleware.js";
 import { checkAuth } from "../auth/auth.middleware.js";
@@ -11,33 +12,35 @@ import { authorize } from "../authZ/authZ.middleware.js";
 
 const vehicleRouter = express.Router();
 
+vehicleRouter.get("/", getAllVehiclesHandler);
+
 vehicleRouter.post(
   "/create",
   checkAuth,
   authorize(["agency"]),
   validateVehicleData,
-  vehicleHandler
+  vehicleHandler,
 );
 
 vehicleRouter.get(
   "/agency",
   checkAuth,
   authorize(["agency"]),
-  getAgencyVehiclesHandler
+  getAgencyVehiclesHandler,
 );
 
 vehicleRouter.put(
   "/:id",
   checkAuth,
   authorize(["agency"]),
-  updateVehicleHandler
+  updateVehicleHandler,
 );
 
 vehicleRouter.delete(
   "/:id",
   checkAuth,
   authorize(["agency"]),
-  deleteVehicleHandler
+  deleteVehicleHandler,
 );
 
 export default vehicleRouter;

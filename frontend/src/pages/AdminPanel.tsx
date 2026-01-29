@@ -402,23 +402,92 @@ const AdminPanel: React.FC = () => {
 
               {/* Recent Activity or Quick Charts Placeholder */}
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div className="bg-brand-navy rounded-3xl p-8 text-white shadow-2xl lg:col-span-2">
+                <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm lg:col-span-2">
                   <div className="mb-6 flex items-center justify-between">
-                    <h3 className="font-heading text-xl font-bold">
-                      Performance Analytics
+                    <h3 className="font-heading text-brand-navy text-xl font-bold">
+                      {user?.role === "superadmin"
+                        ? "Recent Agencies"
+                        : "Your Fleet"}
                     </h3>
-                    <div className="flex gap-2">
-                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
-                        Weekly
-                      </span>
-                      <span className="bg-brand-red rounded-full px-3 py-1 text-xs">
-                        Monthly
-                      </span>
-                    </div>
+                    <button
+                      onClick={() =>
+                        setActiveTab(
+                          user?.role === "superadmin" ? "agencies" : "fleet",
+                        )
+                      }
+                      className="text-brand-red text-sm font-semibold hover:text-red-700"
+                    >
+                      View All
+                    </button>
                   </div>
-                  <div className="flex h-64 items-center justify-center border-t border-white/10 text-white/40 italic">
-                    Interactive chart visualization will appear here based on
-                    real booking data...
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                        <tr>
+                          {user?.role === "superadmin" ? (
+                            <>
+                              <th className="pb-3">Name</th>
+                              <th className="pb-3">Contact</th>
+                              <th className="pb-3 text-right">Revenue</th>
+                            </>
+                          ) : (
+                            <>
+                              <th className="pb-3">Vehicle</th>
+                              <th className="pb-3">Status</th>
+                              <th className="pb-3 text-right">Year</th>
+                            </>
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 text-sm">
+                        {user?.role === "superadmin" && adminStats ? (
+                          adminStats.agencies.slice(0, 5).map((agency) => (
+                            <tr key={agency._id}>
+                              <td className="text-brand-navy py-3 font-medium">
+                                {agency.name}
+                              </td>
+                              <td className="py-3 text-gray-500">
+                                {agency.email}
+                              </td>
+                              <td className="text-brand-green py-3 text-right font-medium">
+                                ${agency.totalProfit.toLocaleString()}
+                              </td>
+                            </tr>
+                          ))
+                        ) : user?.role === "agency" && vehicles ? (
+                          vehicles.slice(0, 5).map((vehicle) => (
+                            <tr key={vehicle._id}>
+                              <td className="text-brand-navy py-3 font-medium">
+                                {vehicle.brand} {vehicle.model}
+                              </td>
+                              <td className="py-3">
+                                <span
+                                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                                    vehicle.availability === "available"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-red-100 text-red-700"
+                                  }`}
+                                >
+                                  {vehicle.availability}
+                                </span>
+                              </td>
+                              <td className="py-3 text-right text-gray-500">
+                                {vehicle.year}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={3}
+                              className="py-8 text-center text-gray-500 italic"
+                            >
+                              No data available yet.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 

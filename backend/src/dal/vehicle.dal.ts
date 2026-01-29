@@ -12,7 +12,7 @@ export async function saveVehicleToDB(vehicleData: VehicleData) {
       year,
       img_path,
       availability,
-    } as any)
+    } as any),
   );
   if (error) {
     throw new Error("Something went wrong when creating vehicle");
@@ -22,7 +22,7 @@ export async function saveVehicleToDB(vehicleData: VehicleData) {
 
 export async function getVehiclesByAgencyDAL(agencyId: string) {
   const { data, error } = await tryCatch(
-    vehicleModel.find({ agency_id: agencyId })
+    vehicleModel.find({ agency_id: agencyId }),
   );
   if (error) {
     throw new Error("Error fetching vehicles for agency");
@@ -32,10 +32,10 @@ export async function getVehiclesByAgencyDAL(agencyId: string) {
 
 export async function updateVehicleDAL(
   vehicleId: string,
-  vehicleData: Partial<VehicleData>
+  vehicleData: Partial<VehicleData>,
 ) {
   const { data, error } = await tryCatch(
-    vehicleModel.findByIdAndUpdate(vehicleId, vehicleData, { new: true })
+    vehicleModel.findByIdAndUpdate(vehicleId, vehicleData, { new: true }),
   );
   if (error) {
     throw new Error("Error updating vehicle");
@@ -49,4 +49,13 @@ export async function deleteVehicleDAL(vehicleId: string) {
     throw new Error("Error deleting vehicle");
   }
   return true;
+}
+export async function getAllVehiclesDAL() {
+  const { data, error } = await tryCatch(
+    vehicleModel.find({}).populate("agency_id"),
+  );
+  if (error) {
+    throw new Error("Error fetching all vehicles");
+  }
+  return data;
 }

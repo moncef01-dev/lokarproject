@@ -29,8 +29,8 @@ app.get(
 );
 
 app.use("/api/auth", authRouter);
-app.use("/api/agency", checkAuth, authorize(["agency"]), agencyRouter);
-app.use("/api/vehicle", checkAuth, authorize(["agency"]), vehicleRouter);
+app.use("/api/agency", agencyRouter);
+app.use("/api/vehicle", vehicleRouter);
 app.use(
   "/api/booking",
   checkAuth,

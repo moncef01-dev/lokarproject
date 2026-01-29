@@ -11,7 +11,8 @@ export async function saveAgencyToDB(agencyData: AgencyData) {
       email,
       phone,
       address,
-    })
+      img_path: agencyData.img_path,
+    } as any),
   );
   if (error) {
     throw new Error("Something went wrong when creating agency");
@@ -21,10 +22,18 @@ export async function saveAgencyToDB(agencyData: AgencyData) {
 
 export async function findAgencyByUserId(userId: string) {
   const { data, error } = await tryCatch(
-    agencyModel.findOne({ user_id: userId })
+    agencyModel.findOne({ user_id: userId }),
   );
   if (error) {
     throw new Error("Error finding agency");
+  }
+  return data;
+}
+
+export async function getAllAgenciesDAL() {
+  const { data, error } = await tryCatch(agencyModel.find({}));
+  if (error) {
+    throw new Error("Error fetching all agencies");
   }
   return data;
 }

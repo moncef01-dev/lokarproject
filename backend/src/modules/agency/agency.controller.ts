@@ -22,10 +22,10 @@ export async function agencyHandler(req: Request, res: Response) {
     res.status(500).send("Something went wrong");
     return;
   }
-  res.status(201).send("Agency created successfully " + data?.user_id);
+  res.status(201).send("Agency created successfully " + (data as any)?.user_id);
 }
 
-import { promoteUserToAgency } from "./agency.service.js";
+import { promoteUserToAgency, getAllAgencies } from "./agency.service.js";
 
 export async function createAgencyBySuperAdminHandler(
   req: Request,
@@ -53,4 +53,15 @@ export async function createAgencyBySuperAdminHandler(
     message: "Agency created and user promoted successfully",
     agency: data,
   });
+}
+
+export async function getAllAgenciesHandler(req: Request, res: Response) {
+  const { data: agencies, error } = await tryCatch(getAllAgencies());
+
+  if (error) {
+    res.status(500).send("Error fetching all agencies");
+    return;
+  }
+
+  res.send(agencies);
 }

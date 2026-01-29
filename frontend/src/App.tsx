@@ -5,10 +5,12 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import AdminPanel from "./pages/AdminPanel";
 import { AuthProvider } from "./context/AuthContext";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />

@@ -105,9 +105,11 @@ const Navbar = () => {
               </button>
             )}
 
-            <button className="rounded-lg bg-[#C8102E] px-6 py-2 text-white transition hover:bg-red-700">
-              List Your Agency
-            </button>
+            {(!isAuthenticated || user?.role === "customer") && (
+              <button className="rounded-lg bg-[#C8102E] px-6 py-2 text-white transition hover:bg-red-700">
+                List Your Agency
+              </button>
+            )}
           </div>
         </div>
       </div>

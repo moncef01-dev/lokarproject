@@ -7,8 +7,6 @@ import agencyRouter from "./modules/agency/agency.route.js";
 import vehicleRouter from "./modules/vehicle/vehicle.route.js";
 import bookingRouter from "./modules/booking/booking.route.js";
 import userRouter from "./modules/user/user.route.js";
-import { getAgencyStatsController } from "./modules/admin_panel/controllers/agency_admin.controller.js";
-import { getSuperAdminStatsController } from "./modules/admin_panel/controllers/super_admin.controller.js";
 import { checkPermission } from "./modules/authZ/authZ.middleware.js";
 import cors from "cors";
 import { corsOptoins } from "./config/cors.config.js";
@@ -27,7 +25,7 @@ app.get(
   authorize(["customer", "agency", "superadmin"]),
   (req: Request, res: Response) => {
     res.status(200).send("hello world");
-  }
+  },
 );
 
 app.use("/api/auth", authRouter);
@@ -37,20 +35,9 @@ app.use(
   "/api/booking",
   checkAuth,
   authorize(["customer", "agency", "superadmin"]),
-  bookingRouter
+  bookingRouter,
 );
-app.get(
-  "/api/admin/agency/stats",
-  checkAuth,
-  authorize(["agency"]),
-  checkPermission("read:report"),
-  getAgencyStatsController
-);
-app.get(
-  "/api/admin/super/stats",
-  checkAuth,
-  authorize(["superadmin"]),
-  checkPermission("read:report"),
-  getSuperAdminStatsController
-);
+import adminPanelRouter from "./modules/admin_panel/admin_panel.routes.js";
+
+app.use("/api/admin", adminPanelRouter);
 app.use("/api/user", userRouter);

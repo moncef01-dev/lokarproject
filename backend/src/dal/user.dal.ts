@@ -10,7 +10,7 @@ export async function saveUserToDB(userData: UserData) {
 
   // checking if a user with this email already exists
   const { data: userExists, error: alreadyExistsError } = await tryCatch(
-    checkIfUserExists(email)
+    checkIfUserExists(email),
   );
   if (alreadyExistsError) {
     throw new Error("something went wrong!");
@@ -25,7 +25,7 @@ export async function saveUserToDB(userData: UserData) {
       name,
       email,
       password: hashedPassword,
-    })
+    }),
   );
   if (error) {
     throw new Error("something went wrong!");
@@ -49,7 +49,7 @@ export async function checkIfUserExists(email: string): Promise<boolean> {
   const { data: existsResult, error } = await tryCatch(
     userModel.exists({ email: email }) as Promise<{
       _id: Types.ObjectId;
-    } | null>
+    } | null>,
   );
 
   if (error) {
@@ -58,4 +58,14 @@ export async function checkIfUserExists(email: string): Promise<boolean> {
   }
 
   return !!existsResult;
+}
+
+export async function updateUserRole(id: string, role: string) {
+  const { data, error } = await tryCatch(
+    userModel.findByIdAndUpdate(id, { role }, { new: true }),
+  );
+  if (error) {
+    throw new Error("Error updating user role");
+  }
+  return data;
 }

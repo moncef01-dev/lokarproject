@@ -2,9 +2,12 @@ import { z } from "zod";
 import { Types } from "mongoose";
 
 export const agencySchema = z.object({
-  user_id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
-    message: "Invalid MongoDB ObjectId",
-  }),
+  user_id: z
+    .string()
+    .regex(/^[0-9a-fA-F]{24}$/, {
+      message: "Invalid MongoDB ObjectId",
+    })
+    .optional(),
 
   name: z.string().min(1, { message: "Name is required" }),
 

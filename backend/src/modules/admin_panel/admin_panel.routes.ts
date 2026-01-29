@@ -14,7 +14,7 @@ adminPanelRouter.get(
   checkAuth,
   authorize(["agency"]),
   checkPermission("read:report"),
-  getAgencyStatsController
+  getAgencyStatsController,
 );
 
 // SuperAdmin Stats Route
@@ -23,7 +23,16 @@ adminPanelRouter.get(
   checkAuth,
   authorize(["superadmin"]),
   checkPermission("read:report"),
-  getSuperAdminStatsController
+  getSuperAdminStatsController,
+);
+
+import { createAgencyBySuperAdminHandler } from "../agency/agency.controller.js";
+
+adminPanelRouter.post(
+  "/agency/create",
+  checkAuth,
+  authorize(["superadmin"]),
+  createAgencyBySuperAdminHandler,
 );
 
 export default adminPanelRouter;

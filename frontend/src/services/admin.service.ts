@@ -65,4 +65,14 @@ export const adminService = {
   deleteVehicle: async (id: string): Promise<void> => {
     await api.delete(`/vehicle/${id}`);
   },
+
+  createAgency: async (agencyData: {
+    email: string;
+    name: string;
+    address: string;
+    phone: string;
+    img_path?: string;
+  }): Promise<void> => {
+    await api.post("/admin/agency/create", agencyData);
+  },
 };

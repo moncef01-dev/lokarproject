@@ -17,6 +17,8 @@ import {
   TrendingDown,
   DollarSign,
   Briefcase,
+  Settings,
+  Calendar,
 } from "lucide-react";
 import { adminService } from "../services/admin.service";
 import type {
@@ -30,7 +32,7 @@ const AdminPanel: React.FC = () => {
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
-    "dashboard" | "fleet" | "agencies"
+    "dashboard" | "fleet" | "agencies" | "bookings" | "settings"
   >("dashboard");
   const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
   const [agencyStats, setAgencyStats] = useState<AgencyStats | null>(null);
@@ -47,6 +49,16 @@ const AdminPanel: React.FC = () => {
     year: "",
     img_path: "",
     availability: "available",
+  });
+
+  // Agency Form Modal State
+  const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
+  const [currentAgency, setCurrentAgency] = useState({
+    email: "",
+    name: "",
+    phone: "",
+    address: "",
+    img_path: "",
   });
 
   useEffect(() => {
@@ -133,6 +145,29 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleCreateAgency = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await adminService.createAgency(currentAgency);
+      setIsAgencyModalOpen(false);
+      // Refresh stats
+      const stats = await adminService.getSuperAdminStats();
+      setAdminStats(stats);
+      // Reset form
+      setCurrentAgency({
+        email: "",
+        name: "",
+        phone: "",
+        address: "",
+        img_path: "",
+      });
+      alert("Agency created successfully!");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.response?.data || "Failed to create agency.");
+    }
+  };
+
   const openEditModal = (vehicle: Vehicle) => {
     setCurrentCar(vehicle);
     setIsEditing(true);
@@ -184,17 +219,41 @@ const AdminPanel: React.FC = () => {
               </button>
 
               {user?.role === "agency" && (
-                <button
-                  onClick={() => setActiveTab("fleet")}
-                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                    activeTab === "fleet"
-                      ? "bg-brand-navy text-white shadow-lg"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
-                  <Car size={20} />
-                  <span className="font-medium">My Fleet</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => setActiveTab("fleet")}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
+                      activeTab === "fleet"
+                        ? "bg-brand-navy text-white shadow-lg"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Car size={20} />
+                    <span className="font-medium">My Fleet</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("bookings")}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
+                      activeTab === "bookings"
+                        ? "bg-brand-navy text-white shadow-lg"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Calendar size={20} />
+                    <span className="font-medium">Bookings</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("settings")}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
+                      activeTab === "settings"
+                        ? "bg-brand-navy text-white shadow-lg"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Settings size={20} />
+                    <span className="font-medium">Settings</span>
+                  </button>
+                </>
               )}
 
               {user?.role === "superadmin" && (
@@ -225,6 +284,7 @@ const AdminPanel: React.FC = () => {
                 size={20}
                 className="transition-transform group-hover:-translate-x-1"
               />
+
               <span className="font-medium">Logout</span>
             </button>
           </div>
@@ -239,7 +299,11 @@ const AdminPanel: React.FC = () => {
                   ? "Dashboard Overview"
                   : activeTab === "fleet"
                     ? "Fleet Management"
-                    : "Network Agencies"}
+                    : activeTab === "bookings"
+                      ? "Booking Requests"
+                      : activeTab === "settings"
+                        ? "Agency Settings"
+                        : "Network Agencies"}
               </h1>
               <p className="mt-1 text-gray-500">
                 {user?.role === "superadmin"
@@ -255,6 +319,16 @@ const AdminPanel: React.FC = () => {
               >
                 <Plus size={20} />
                 Add New Car
+              </button>
+            )}
+
+            {activeTab === "agencies" && user?.role === "superadmin" && (
+              <button
+                onClick={() => setIsAgencyModalOpen(true)}
+                className="bg-brand-red shadow-brand-red/20 hover:shadow-brand-red/40 flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all hover:bg-red-700"
+              >
+                <Plus size={20} />
+                Add Agency
               </button>
             )}
           </div>
@@ -354,19 +428,49 @@ const AdminPanel: React.FC = () => {
                     Quick Actions
                   </h3>
                   <div className="space-y-4">
-                    <ActionItem
-                      title="Generate Sales Report"
-                      icon={<TrendingUp size={18} />}
-                    />
-                    <ActionItem
-                      title="Manage Verification"
-                      icon={<AlertCircle size={18} />}
-                    />
-                    <ActionItem
-                      title="Support Tickets"
-                      icon={<Users size={18} />}
-                      color="bg-orange-50 text-orange-600"
-                    />
+                    {user?.role === "agency" ? (
+                      <>
+                        <ActionItem
+                          title="Add New Vehicle"
+                          icon={<Plus size={18} />}
+                          onClick={() => {
+                            setActiveTab("fleet");
+                            openCreateModal();
+                          }}
+                        />
+                        <ActionItem
+                          title="View All Bookings"
+                          icon={<Calendar size={18} />}
+                          onClick={() => setActiveTab("bookings")}
+                        />
+                        <ActionItem
+                          title="Agency Settings"
+                          icon={<Settings size={18} />}
+                          color="bg-orange-50 text-orange-600"
+                          onClick={() => setActiveTab("settings")}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ActionItem
+                          title="Add New Agency"
+                          icon={<Plus size={18} />}
+                          onClick={() => {
+                            setActiveTab("agencies");
+                            setIsAgencyModalOpen(true);
+                          }}
+                        />
+                        <ActionItem
+                          title="System Revenue Report"
+                          icon={<TrendingUp size={18} />}
+                        />
+                        <ActionItem
+                          title="Platform Settings"
+                          icon={<Settings size={18} />}
+                          color="bg-orange-50 text-orange-600"
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -453,6 +557,78 @@ const AdminPanel: React.FC = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+          )}
+          {activeTab === "bookings" && (
+            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-gray-300 bg-white py-20 text-center">
+              <div className="bg-brand-navy/5 mb-4 rounded-full p-6">
+                <Calendar size={48} className="text-brand-navy opacity-20" />
+              </div>
+              <h3 className="text-brand-navy text-xl font-bold">
+                Bookings Management
+              </h3>
+              <p className="mt-2 max-w-sm text-gray-500">
+                This feature is currently being integrated with the real-time
+                booking system. You will soon be able to manage all incoming
+                rental requests here.
+              </p>
+            </div>
+          )}
+          {activeTab === "settings" && (
+            <div className="max-w-4xl space-y-8">
+              <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+                <h3 className="text-brand-navy mb-6 text-xl font-bold">
+                  Agency Information
+                </h3>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-500">
+                      Agency Name
+                    </label>
+                    <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-gray-700">
+                      {user?.name || "N/A"}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-500">
+                      Primary Email
+                    </label>
+                    <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-gray-700">
+                      {user?.email || "N/A"}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-500">
+                      Account Status
+                    </label>
+                    <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-green-600">
+                      <div className="h-2 w-2 rounded-full bg-green-600"></div>
+                      Verified Agency
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-500">
+                      Member Since
+                    </label>
+                    <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-gray-700">
+                      January 2024
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+                <h3 className="text-brand-navy mb-6 text-xl font-bold">
+                  Danger Zone
+                </h3>
+                <p className="mb-6 text-sm text-gray-500">
+                  Once you delete your agency account, there is no going back.
+                  Please be certain.
+                </p>
+                <button className="rounded-xl border border-red-200 px-6 py-3 font-semibold text-red-600 transition-colors hover:bg-red-50">
+                  Deactivate Agency Account
+                </button>
+              </div>
             </div>
           )}
 
@@ -612,6 +788,126 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Agency Form Modal */}
+      {isAgencyModalOpen && (
+        <div className="bg-brand-navy/60 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="font-heading text-brand-navy text-2xl font-bold">
+                Add New Agency
+              </h2>
+              <button
+                onClick={() => setIsAgencyModalOpen(false)}
+                className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateAgency} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  User Email (Must exist)
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={currentAgency.email}
+                  onChange={(e) =>
+                    setCurrentAgency({
+                      ...currentAgency,
+                      email: e.target.value,
+                    })
+                  }
+                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
+                  placeholder="user@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Agency Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={currentAgency.name}
+                  onChange={(e) =>
+                    setCurrentAgency({ ...currentAgency, name: e.target.value })
+                  }
+                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
+                  placeholder="Luxury Cars LLC"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={currentAgency.phone}
+                    onChange={(e) =>
+                      setCurrentAgency({
+                        ...currentAgency,
+                        phone: e.target.value,
+                      })
+                    }
+                    className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
+                    placeholder="+1 234 567 890"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={currentAgency.address}
+                    onChange={(e) =>
+                      setCurrentAgency({
+                        ...currentAgency,
+                        address: e.target.value,
+                      })
+                    }
+                    className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
+                    placeholder="City, Country"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Logo URL (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={currentAgency.img_path}
+                  onChange={(e) =>
+                    setCurrentAgency({
+                      ...currentAgency,
+                      img_path: e.target.value,
+                    })
+                  }
+                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="bg-brand-navy hover:bg-navy-800 w-full rounded-xl py-4 font-bold text-white transition-all"
+              >
+                Create Agency
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -649,14 +945,19 @@ interface ActionItemProps {
   title: string;
   icon: React.ReactNode;
   color?: string;
+  onClick?: () => void;
 }
 
 const ActionItem: React.FC<ActionItemProps> = ({
   title,
   icon,
   color = "bg-blue-50 text-blue-600",
+  onClick,
 }) => (
-  <button className="group flex w-full items-center justify-between rounded-2xl p-4 transition-all hover:bg-gray-50">
+  <button
+    onClick={onClick}
+    className="group flex w-full items-center justify-between rounded-2xl p-4 transition-all hover:bg-gray-50"
+  >
     <div className="flex items-center gap-4">
       <div className={`rounded-xl p-2 ${color}`}>{icon}</div>
       <span className="font-semibold text-gray-700">{title}</span>

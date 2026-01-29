@@ -6,13 +6,39 @@ import {
   getAgencyVehicles,
   updateVehicle,
 } from "./vehicle.service.js";
+import { findAgencyByUserId } from "../../dal/agency.dal.js";
 
 export async function vehicleHandler(req: Request, res: Response) {
   const vehicleData = req.vehicle;
+  const userId = req.user?.id;
+
   if (!vehicleData) {
     res.status(400).send("Invalid Vehicle Data!");
     return;
   }
+
+  if (!userId) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+
+  // Find the agency associated with the user
+  const { data: agency, error: agencyError } = await tryCatch(
+    findAgencyByUserId(userId),
+  );
+
+  if (agencyError || !agency) {
+    res
+      .status(404)
+      .send(
+        "Agency profile not found. Please complete your agency profile first.",
+      );
+    return;
+  }
+
+  // Assign the correct Agency ID
+  vehicleData.agency_id = agency._id.toString();
+
   const { data, error } = await tryCatch(createVehicle(vehicleData));
   if (error) {
     res.status(500).send("Something went wrong");
@@ -22,12 +48,26 @@ export async function vehicleHandler(req: Request, res: Response) {
 }
 
 export async function getAgencyVehiclesHandler(req: Request, res: Response) {
-  const agencyId = req.user?.id;
-  if (!agencyId) {
+  const userId = req.user?.id;
+  if (!userId) {
     res.status(401).send("Unauthorized");
     return;
   }
-  const { data: vehicles, error } = await tryCatch(getAgencyVehicles(agencyId));
+
+  // Resolve Agency ID from User ID
+  const { data: agency, error: agencyError } = await tryCatch(
+    findAgencyByUserId(userId),
+  );
+
+  if (agencyError || !agency) {
+    // If no agency profile found, return empty list (or could be 404, but empty list is safer for UI)
+    res.send([]);
+    return;
+  }
+
+  const { data: vehicles, error } = await tryCatch(
+    getAgencyVehicles(agency._id.toString()),
+  );
   if (error) {
     res.status(500).send("Error fetching vehicles");
     return;
@@ -39,7 +79,7 @@ export async function updateVehicleHandler(req: Request, res: Response) {
   const { id } = req.params;
   const vehicleData = req.body;
   const { data, error } = await tryCatch(
-    updateVehicle(id as string, vehicleData)
+    updateVehicle(id as string, vehicleData),
   );
   if (error) {
     res.status(500).send("Error updating vehicle");

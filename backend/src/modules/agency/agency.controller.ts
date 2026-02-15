@@ -17,6 +17,14 @@ export async function agencyHandler(req: Request, res: Response) {
 
   // Force associating the agency with the logged-in user
   agencyData.user_id = req.user.id;
+
+  // Handle image upload
+  if (req.file) {
+    // If file was uploaded, store the path
+    agencyData.img_path = `/uploads/${req.file.filename}`;
+  }
+  // If no file uploaded, img_path from body (URL) will be used (backward compatibility)
+
   const { data, error } = await tryCatch(createAgency(agencyData));
   if (error) {
     res.status(500).send("Something went wrong");
@@ -40,8 +48,14 @@ export async function createAgencyBySuperAdminHandler(
     return;
   }
 
+  // Handle image upload
+  let finalImgPath = img_path;
+  if (req.file) {
+    finalImgPath = `/uploads/${req.file.filename}`;
+  }
+
   const { data, error } = await tryCatch(
-    promoteUserToAgency(email, { email, name, address, phone, img_path }),
+    promoteUserToAgency(email, { email, name, address, phone, img_path: finalImgPath }),
   );
 
   if (error) {

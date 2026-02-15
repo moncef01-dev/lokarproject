@@ -54,6 +54,30 @@ export const adminService = {
     return response.data;
   },
 
+  createVehicleWithImage: async (
+    vehicleData: Partial<Vehicle>,
+    imageFile: File | null,
+  ): Promise<Vehicle> => {
+    const formData = new FormData();
+    formData.append("brand", vehicleData.brand || "");
+    formData.append("model", vehicleData.model || "");
+    formData.append("year", vehicleData.year || "");
+    formData.append("availability", vehicleData.availability || "available");
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    } else if (vehicleData.img_path) {
+      formData.append("img_path", vehicleData.img_path);
+    }
+
+    const response = await api.post("/vehicle/create", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
   updateVehicle: async (
     id: string,
     vehicleData: Partial<Vehicle>,
@@ -74,5 +98,34 @@ export const adminService = {
     img_path?: string;
   }): Promise<void> => {
     await api.post("/admin/agency/create", agencyData);
+  },
+
+  createAgencyWithImage: async (
+    agencyData: {
+      email: string;
+      name: string;
+      address: string;
+      phone: string;
+      img_path?: string;
+    },
+    imageFile: File | null,
+  ): Promise<void> => {
+    const formData = new FormData();
+    formData.append("email", agencyData.email);
+    formData.append("name", agencyData.name);
+    formData.append("address", agencyData.address);
+    formData.append("phone", agencyData.phone);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    } else if (agencyData.img_path) {
+      formData.append("img_path", agencyData.img_path);
+    }
+
+    await api.post("/admin/agency/create", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 };

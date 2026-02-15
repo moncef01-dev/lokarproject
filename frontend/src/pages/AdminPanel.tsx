@@ -19,6 +19,7 @@ import {
   Briefcase,
   Settings,
   Calendar,
+  BarChart3,
 } from "lucide-react";
 import { adminService } from "../services/admin.service";
 import type {
@@ -27,12 +28,13 @@ import type {
   Vehicle,
 } from "../services/admin.service";
 import Navbar from "../components/Navbar";
+import AnalyticsDashboard from "../components/analytics/AnalyticsDashboard";
 
 const AdminPanel: React.FC = () => {
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
-    "dashboard" | "fleet" | "agencies" | "bookings" | "settings"
+    "dashboard" | "fleet" | "agencies" | "bookings" | "settings" | "analytics"
   >("dashboard");
   const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
   const [agencyStats, setAgencyStats] = useState<AgencyStats | null>(null);
@@ -50,6 +52,8 @@ const AdminPanel: React.FC = () => {
     img_path: "",
     availability: "available",
   });
+  const [vehicleImageFile, setVehicleImageFile] = useState<File | null>(null);
+  const [vehicleImagePreview, setVehicleImagePreview] = useState<string | null>(null);
 
   // Agency Form Modal State
   const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
@@ -60,6 +64,8 @@ const AdminPanel: React.FC = () => {
     address: "",
     img_path: "",
   });
+  const [agencyImageFile, setAgencyImageFile] = useState<File | null>(null);
+  const [agencyImagePreview, setAgencyImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -111,7 +117,8 @@ const AdminPanel: React.FC = () => {
       if (isEditing && currentCar._id) {
         await adminService.updateVehicle(currentCar._id, currentCar);
       } else {
-        await adminService.createVehicle(currentCar);
+        // Use FormData for file upload
+        await adminService.createVehicleWithImage(currentCar, vehicleImageFile);
       }
       setIsModalOpen(false);
       // Refresh fleet
@@ -125,6 +132,8 @@ const AdminPanel: React.FC = () => {
         img_path: "",
         availability: "available",
       });
+      setVehicleImageFile(null);
+      setVehicleImagePreview(null);
     } catch (err) {
       console.error(err);
       setError("Failed to save vehicle.");
@@ -146,7 +155,8 @@ const AdminPanel: React.FC = () => {
   const handleCreateAgency = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await adminService.createAgency(currentAgency);
+      // Use FormData for file upload
+      await adminService.createAgencyWithImage(currentAgency, agencyImageFile);
       setIsAgencyModalOpen(false);
       // Refresh stats
       const stats = await adminService.getSuperAdminStats();
@@ -159,6 +169,8 @@ const AdminPanel: React.FC = () => {
         address: "",
         img_path: "",
       });
+      setAgencyImageFile(null);
+      setAgencyImagePreview(null);
       alert("Agency created successfully!");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -181,8 +193,34 @@ const AdminPanel: React.FC = () => {
       img_path: "",
       availability: "available",
     });
+    setVehicleImageFile(null);
+    setVehicleImagePreview(null);
     setIsEditing(false);
     setIsModalOpen(true);
+  };
+
+  const handleVehicleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setVehicleImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVehicleImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAgencyImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAgencyImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAgencyImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   if (authLoading || (isLoading && !error)) {
@@ -207,11 +245,10 @@ const AdminPanel: React.FC = () => {
             <nav className="mt-4 space-y-2">
               <button
                 onClick={() => setActiveTab("dashboard")}
-                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                  activeTab === "dashboard"
-                    ? "bg-brand-navy text-white shadow-lg"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
+                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "dashboard"
+                  ? "bg-brand-navy text-white shadow-lg"
+                  : "text-gray-600 hover:bg-gray-100"
+                  }`}
               >
                 <LayoutDashboard size={20} />
                 <span className="font-medium">Dashboard</span>
@@ -220,34 +257,41 @@ const AdminPanel: React.FC = () => {
               {user?.role === "agency" && (
                 <>
                   <button
-                    onClick={() => setActiveTab("fleet")}
-                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                      activeTab === "fleet"
+                    onClick={() => setActiveTab("analytics")}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "analytics"
                         ? "bg-brand-navy text-white shadow-lg"
                         : "text-gray-600 hover:bg-gray-100"
-                    }`}
+                      }`}
+                  >
+                    <BarChart3 size={20} />
+                    <span className="font-medium">Analytics</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("fleet")}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "fleet"
+                      ? "bg-brand-navy text-white shadow-lg"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     <Car size={20} />
                     <span className="font-medium">My Fleet</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("bookings")}
-                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                      activeTab === "bookings"
-                        ? "bg-brand-navy text-white shadow-lg"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "bookings"
+                      ? "bg-brand-navy text-white shadow-lg"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     <Calendar size={20} />
                     <span className="font-medium">Bookings</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("settings")}
-                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                      activeTab === "settings"
-                        ? "bg-brand-navy text-white shadow-lg"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "settings"
+                      ? "bg-brand-navy text-white shadow-lg"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     <Settings size={20} />
                     <span className="font-medium">Settings</span>
@@ -258,11 +302,10 @@ const AdminPanel: React.FC = () => {
               {user?.role === "superadmin" && (
                 <button
                   onClick={() => setActiveTab("agencies")}
-                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                    activeTab === "agencies"
-                      ? "bg-brand-navy text-white shadow-lg"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "agencies"
+                    ? "bg-brand-navy text-white shadow-lg"
+                    : "text-gray-600 hover:bg-gray-100"
+                    }`}
                 >
                   <Users size={20} />
                   <span className="font-medium">Agencies</span>
@@ -296,13 +339,15 @@ const AdminPanel: React.FC = () => {
               <h1 className="font-heading text-brand-navy text-3xl font-bold">
                 {activeTab === "dashboard"
                   ? "Dashboard Overview"
-                  : activeTab === "fleet"
-                    ? "Fleet Management"
-                    : activeTab === "bookings"
-                      ? "Booking Requests"
-                      : activeTab === "settings"
-                        ? "Agency Settings"
-                        : "Network Agencies"}
+                  : activeTab === "analytics"
+                    ? "Analytics Dashboard"
+                    : activeTab === "fleet"
+                      ? "Fleet Management"
+                      : activeTab === "bookings"
+                        ? "Booking Requests"
+                        : activeTab === "settings"
+                          ? "Agency Settings"
+                          : "Network Agencies"}
               </h1>
               <p className="mt-1 text-gray-500">
                 {user?.role === "superadmin"
@@ -462,11 +507,10 @@ const AdminPanel: React.FC = () => {
                               </td>
                               <td className="py-3">
                                 <span
-                                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
-                                    vehicle.availability === "available"
-                                      ? "bg-green-100 text-green-700"
-                                      : "bg-red-100 text-red-700"
-                                  }`}
+                                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${vehicle.availability === "available"
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
+                                    }`}
                                 >
                                   {vehicle.availability}
                                 </span>
@@ -545,6 +589,8 @@ const AdminPanel: React.FC = () => {
             </div>
           )}
 
+          {activeTab === "analytics" && <AnalyticsDashboard />}
+
           {activeTab === "fleet" && (
             <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
               <table className="w-full text-left">
@@ -585,11 +631,10 @@ const AdminPanel: React.FC = () => {
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                            vehicle.availability === "available"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
+                          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${vehicle.availability === "available"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                            }`}
                         >
                           {vehicle.availability.charAt(0).toUpperCase() +
                             vehicle.availability.slice(1)}
@@ -833,17 +878,32 @@ const AdminPanel: React.FC = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Image URL
+                  Vehicle Image
                 </label>
                 <input
-                  type="text"
-                  value={currentCar.img_path}
-                  onChange={(e) =>
-                    setCurrentCar({ ...currentCar, img_path: e.target.value })
-                  }
-                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                  placeholder="https://images.unsplash.com/..."
+                  type="file"
+                  accept="image/*"
+                  onChange={handleVehicleImageChange}
+                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-brand-navy file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-navy/90"
                 />
+                {vehicleImagePreview && (
+                  <div className="mt-2">
+                    <img
+                      src={vehicleImagePreview}
+                      alt="Preview"
+                      className="h-32 w-full rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+                {!vehicleImagePreview && currentCar.img_path && (
+                  <div className="mt-2">
+                    <img
+                      src={currentCar.img_path}
+                      alt="Current"
+                      className="h-32 w-full rounded-lg object-cover"
+                    />
+                  </div>
+                )}
               </div>
 
               <button
@@ -950,20 +1010,23 @@ const AdminPanel: React.FC = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Logo URL (Optional)
+                  Agency Logo
                 </label>
                 <input
-                  type="text"
-                  value={currentAgency.img_path}
-                  onChange={(e) =>
-                    setCurrentAgency({
-                      ...currentAgency,
-                      img_path: e.target.value,
-                    })
-                  }
-                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                  placeholder="https://..."
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAgencyImageChange}
+                  className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-brand-navy file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-navy/90"
                 />
+                {agencyImagePreview && (
+                  <div className="mt-2">
+                    <img
+                      src={agencyImagePreview}
+                      alt="Preview"
+                      className="h-32 w-full rounded-lg object-cover"
+                    />
+                  </div>
+                )}
               </div>
 
               <button

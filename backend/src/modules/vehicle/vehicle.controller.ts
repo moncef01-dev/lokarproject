@@ -40,6 +40,13 @@ export async function vehicleHandler(req: Request, res: Response) {
   // Assign the correct Agency ID
   vehicleData.agency_id = agency._id.toString();
 
+  // Handle image upload
+  if (req.file) {
+    // If file was uploaded, store the path
+    vehicleData.img_path = `/uploads/${req.file.filename}`;
+  }
+  // If no file uploaded, img_path from body (URL) will be used (backward compatibility)
+
   const { data, error } = await tryCatch(createVehicle(vehicleData));
   if (error) {
     res.status(500).send("Something went wrong");

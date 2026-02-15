@@ -3,6 +3,7 @@ import { checkAuth } from "../auth/auth.middleware.js";
 import { authorize, checkPermission } from "../authZ/authZ.middleware.js";
 import { getAgencyStatsController } from "./controllers/agency_admin.controller.js";
 import { getSuperAdminStatsController } from "./controllers/super_admin.controller.js";
+import { upload } from "../../config/multer.config.js";
 
 const adminPanelRouter = Router();
 
@@ -32,6 +33,7 @@ adminPanelRouter.post(
   "/agency/create",
   checkAuth,
   authorize(["superadmin"]),
+  upload.single("image"), // Add multer middleware for agency logo upload
   createAgencyBySuperAdminHandler,
 );
 

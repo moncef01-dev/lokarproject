@@ -1,5 +1,7 @@
-import React from "react";
-import { Star, Fuel, Settings, Users, Phone } from "lucide-react";
+import React, { useState } from "react";
+import { Star, Fuel, Settings, Users, ArrowRight } from "lucide-react";
+import PrebookingModal from "./prebooking/PrebookingModal";
+import { getImageUrl } from "../utils/imageUtils";
 
 interface CarProps {
   car: {
@@ -12,7 +14,7 @@ interface CarProps {
     price?: number;
     img_path?: string; // Real
     image?: string; // Mock
-    agency_id?: { name: string; phone?: string; email?: string }; // Real
+    agency_id?: { _id?: string; name: string; phone?: string; email?: string }; // Real
     agency?: string; // Mock
     rating?: number;
     specs?: {
@@ -24,11 +26,15 @@ interface CarProps {
   };
 }
 
+// CarProps definitions remain unchanged
+// But we need to make sure we don't break existing props.
+
 const CarCard: React.FC<CarProps> = ({ car }) => {
-  const image = car.img_path || car.image || "/placeholder-car.png";
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const image = getImageUrl(car.img_path || car.image);
   const name = car.model || car.name || "Unknown Model";
   const agencyName = car.agency_id?.name || car.agency || "Unknown Agency";
-  const agencyContact = car.agency_id?.phone; // For WhatsApp link if needed
+
 
   return (
     <div className="group overflow-hidden rounded-xl bg-white shadow-lg transition hover:shadow-2xl">
@@ -90,22 +96,23 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
             </span>
             {car.price && <span className="text-gray-500">/day</span>}
           </div>
-          <a
-            href={
-              agencyContact
-                ? `https://wa.me/${agencyContact.replace(/\D/g, "")}`
-                : "#"
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-lg bg-[#00C853] px-6 py-2 text-white transition hover:bg-green-600"
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-[#0A1633] px-6 py-2 text-white transition hover:bg-[#0A1633]/90"
           >
-            <Phone className="h-4 w-4" />
-            WhatsApp
-          </a>
+            More Details
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </div>
-    </div>
+
+      <PrebookingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        car={car}
+      />
+    </div >
   );
 };
 

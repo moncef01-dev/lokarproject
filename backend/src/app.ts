@@ -46,6 +46,8 @@ app.use(
   bookingRouter,
 );
 import adminPanelRouter from "./modules/admin_panel/admin_panel.routes.js";
+import prebookingRouter from "./modules/prebooking/prebooking.routes.js";
 
 app.use("/api/admin", adminPanelRouter);
+app.use("/api/prebookings", prebookingRouter);
 app.use("/api/user", userRouter);

@@ -21,6 +21,7 @@ const PrebookingSchema = new Schema<IPrebooking>(
             enum: ["pending", "confirmed", "completed", "expired", "cancelled"],
             default: "pending",
         },
+        expires_at: { type: Date, required: true },
     },
     {
         timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

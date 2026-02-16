@@ -92,7 +92,7 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
         <div className="flex items-center justify-between">
           <div>
             <span className="text-3xl font-bold text-[#0A1633]">
-              {car.price ? `$${car.price}` : "Contact"}
+              {car.price ? `DZD ${car.price}` : "Contact"}
             </span>
             {car.price && <span className="text-gray-500">/day</span>}
           </div>

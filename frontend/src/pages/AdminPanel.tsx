@@ -19,9 +19,15 @@ import {
   Briefcase,
   Settings,
   Calendar,
+  FileText,
   BarChart3,
+  Search,
+  Filter,
 } from "lucide-react";
 import { adminService } from "../services/admin.service";
+import { prebookingService, type Prebooking } from "../services/prebooking.service";
+import { contractService } from "../services/contract.service";
+import ContractGenerationModal from "../components/admin/ContractGenerationModal";
 import type {
   AdminStats,
   AgencyStats,
@@ -39,6 +45,8 @@ const AdminPanel: React.FC = () => {
   const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
   const [agencyStats, setAgencyStats] = useState<AgencyStats | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [prebookings, setPrebookings] = useState<Prebooking[]>([]);
+  const [loadingContracts, setLoadingContracts] = useState<{ [key: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,6 +75,12 @@ const AdminPanel: React.FC = () => {
   const [agencyImageFile, setAgencyImageFile] = useState<File | null>(null);
   const [agencyImagePreview, setAgencyImagePreview] = useState<string | null>(null);
 
+  // Booking Management search/sort state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("date_desc");
+  const [isContractModalOpen, setIsContractModalOpen] = useState(false);
+  const [selectedPrebooking, setSelectedPrebooking] = useState<Prebooking | null>(null);
+
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       navigate("/login");
@@ -85,12 +99,14 @@ const AdminPanel: React.FC = () => {
           const stats = await adminService.getSuperAdminStats();
           setAdminStats(stats);
         } else if (user.role === "agency") {
-          const [stats, fleet] = await Promise.all([
+          const [stats, fleet, prebookingsData] = await Promise.all([
             adminService.getAgencyStats(),
             adminService.getAgencyVehicles(),
+            prebookingService.getAgencyPrebookings({ search: searchTerm, sort: sortOrder }),
           ]);
           setAgencyStats(stats);
           setVehicles(fleet);
+          setPrebookings(prebookingsData);
         }
       } catch (err) {
         console.error(err);
@@ -109,7 +125,7 @@ const AdminPanel: React.FC = () => {
     } else if (!authLoading) {
       setIsLoading(false);
     }
-  }, [authLoading, user]);
+  }, [authLoading, user, searchTerm, sortOrder]);
 
   const handleCreateOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,8 +138,17 @@ const AdminPanel: React.FC = () => {
       }
       setIsModalOpen(false);
       // Refresh fleet
-      const fleet = await adminService.getAgencyVehicles();
-      setVehicles(fleet);
+      const fetchedVehicles = await adminService.getAgencyVehicles();
+      setVehicles(fetchedVehicles);
+
+      if (user?.role === "agency") {
+        try {
+          const fetchedPrebookings = await prebookingService.getAgencyPrebookings();
+          setPrebookings(fetchedPrebookings);
+        } catch (err) {
+          console.error("Failed to fetch prebookings", err);
+        }
+      }
       // Reset form
       setCurrentCar({
         brand: "",
@@ -223,6 +248,29 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const openContractModal = (booking: Prebooking) => {
+    setSelectedPrebooking(booking);
+    setIsContractModalOpen(true);
+  };
+
+  const handleGenerateContract = async (overrides: any) => {
+    if (!selectedPrebooking) return;
+
+    const prebookingId = selectedPrebooking._id;
+    setLoadingContracts(prev => ({ ...prev, [prebookingId]: true }));
+    setIsContractModalOpen(false); // Close immediately or after success? User choice. Let's close and show loader on row.
+
+    try {
+      const contract = await contractService.generateContract(prebookingId, overrides);
+      await contractService.downloadContract(contract._id);
+    } catch (err) {
+      console.error("Failed to generate contract", err);
+      setError("Failed to generate contract. Please try again.");
+    } finally {
+      setLoadingContracts(prev => ({ ...prev, [prebookingId]: false }));
+    }
+  };
+
   if (authLoading || (isLoading && !error)) {
     return (
       <div className="bg-brand-navy flex h-screen items-center justify-center">
@@ -259,8 +307,8 @@ const AdminPanel: React.FC = () => {
                   <button
                     onClick={() => setActiveTab("analytics")}
                     className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 transition-all ${activeTab === "analytics"
-                        ? "bg-brand-navy text-white shadow-lg"
-                        : "text-gray-600 hover:bg-gray-100"
+                      ? "bg-brand-navy text-white shadow-lg"
+                      : "text-gray-600 hover:bg-gray-100"
                       }`}
                   >
                     <BarChart3 size={20} />
@@ -392,7 +440,7 @@ const AdminPanel: React.FC = () => {
                   <>
                     <StatCard
                       title="Total Revenue"
-                      value={`$${adminStats.overall.totalRevenue.toLocaleString()}`}
+                      value={`DZD ${adminStats.overall.totalRevenue.toLocaleString()}`}
                       icon={<DollarSign className="text-green-600" />}
                       trend="+12.5%"
                     />
@@ -419,7 +467,7 @@ const AdminPanel: React.FC = () => {
                   <>
                     <StatCard
                       title="Agency Profit"
-                      value={`$${agencyStats.totalProfit.toLocaleString()}`}
+                      value={`DZD ${agencyStats.totalProfit.toLocaleString()}`}
                       icon={<DollarSign className="text-green-600" />}
                       trend="+5.2%"
                     />
@@ -495,7 +543,7 @@ const AdminPanel: React.FC = () => {
                                 {agency.email}
                               </td>
                               <td className="text-brand-green py-3 text-right font-medium">
-                                ${agency.totalProfit.toLocaleString()}
+                                DZD {agency.totalProfit.toLocaleString()}
                               </td>
                             </tr>
                           ))
@@ -673,18 +721,87 @@ const AdminPanel: React.FC = () => {
             </div>
           )}
           {activeTab === "bookings" && (
-            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-gray-300 bg-white py-20 text-center">
-              <div className="bg-brand-navy/5 mb-4 rounded-full p-6">
-                <Calendar size={48} className="text-brand-navy opacity-20" />
+            <div className="space-y-6">
+              {/* Search and Sort Controls */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search by name, email, or phone..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full rounded-2xl border border-gray-100 bg-white py-3 pl-12 pr-4 shadow-sm focus:border-brand-navy focus:outline-none focus:ring-4 focus:ring-brand-navy/5"
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <Filter className="text-gray-400" size={18} />
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="rounded-2xl border border-gray-100 bg-white py-3 pl-4 pr-10 shadow-sm focus:border-brand-navy focus:outline-none focus:ring-4 focus:ring-brand-navy/5"
+                  >
+                    <option value="date_desc">Newest First</option>
+                    <option value="date_asc">Oldest First</option>
+                    <option value="name_asc">Name (A-Z)</option>
+                  </select>
+                </div>
               </div>
-              <h3 className="text-brand-navy text-xl font-bold">
-                Bookings Management
-              </h3>
-              <p className="mt-2 max-w-sm text-gray-500">
-                This feature is currently being integrated with the real-time
-                booking system. You will soon be able to manage all incoming
-                rental requests here.
-              </p>
+
+              <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+                <table className="w-full text-left">
+                  <thead className="bg-gray-50 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                    <tr>
+                      <th className="px-6 py-4">Customer</th>
+                      <th className="px-6 py-4">Contact</th>
+                      <th className="px-6 py-4">Dates</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {prebookings.map((booking) => (
+                      <tr key={booking._id} className="transition-colors hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <div className="text-brand-navy font-bold">{booking.customer_name}</div>
+                          <div className="text-xs text-gray-500">Born: {new Date(booking.date_of_birth).toLocaleDateString()}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-600">{booking.phone}</div>
+                          <div className="text-xs text-gray-500">{booking.email}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-600">
+                            {new Date(booking.start_date).toLocaleDateString()} - {new Date(booking.end_date).toLocaleDateString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${booking.status === "pending" ? "bg-yellow-100 text-yellow-700" :
+                            booking.status === "confirmed" ? "bg-green-100 text-green-700" :
+                              "bg-gray-100 text-gray-700"
+                            }`}>
+                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            onClick={() => openContractModal(booking)}
+                            disabled={loadingContracts[booking._id]}
+                            className="bg-brand-navy hover:bg-navy-800 disabled:opacity-50 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all shadow-sm"
+                          >
+                            {loadingContracts[booking._id] ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <FileText size={16} />
+                            )}
+                            Generate PDF
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
           {activeTab === "settings" && (
@@ -778,7 +895,7 @@ const AdminPanel: React.FC = () => {
                         {agency.bookingCount} bookings
                       </td>
                       <td className="text-brand-green px-6 py-4 text-right font-bold">
-                        ${agency.totalProfit.toLocaleString()}
+                        DZD {agency.totalProfit.toLocaleString()}
                       </td>
                     </tr>
                   ))}
@@ -1039,6 +1156,13 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       )}
+      <ContractGenerationModal
+        isOpen={isContractModalOpen}
+        onClose={() => setIsContractModalOpen(false)}
+        onGenerate={handleGenerateContract}
+        isLoading={false}
+        prebooking={selectedPrebooking}
+      />
     </div>
   );
 };

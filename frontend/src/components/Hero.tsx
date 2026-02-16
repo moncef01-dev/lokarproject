@@ -79,7 +79,7 @@ const Hero = () => {
                   <p className="text-xs font-medium text-gray-300">
                     Daily Rate
                   </p>
-                  <p className="text-xl font-bold text-white">From $45</p>
+                  <p className="text-xl font-bold text-white">From DZD 4500</p>
                 </div>
               </div>
             </div>

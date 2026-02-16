@@ -15,6 +15,7 @@ export interface IPrebooking extends Document {
   car_id: Types.ObjectId; // Reference to the car
   agency_id: Types.ObjectId; // Reference to the agency
   status: "pending" | "confirmed" | "completed" | "expired" | "cancelled";
+  expires_at: Date;
   created_at: Date;
   updated_at: Date;
 }

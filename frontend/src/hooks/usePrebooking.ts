@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 export interface PrebookingFormData {
     customer_name: string;
@@ -27,8 +27,8 @@ export const usePrebooking = () => {
         setSuccess(false);
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/api/prebookings", // Adjust base URL if needed or use environment variable
+            const response = await api.post(
+                "/prebookings",
                 data
             );
             setSuccess(true);

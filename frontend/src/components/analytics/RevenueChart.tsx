@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-    LineChart,
-    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -41,7 +39,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
                     <YAxis
                         stroke="#9CA3AF"
                         style={{ fontSize: '12px' }}
-                        tickFormatter={(value) => `$${value}`}
+                        tickFormatter={(value) => `DZD ${value}`}
                     />
                     <Tooltip
                         contentStyle={{
@@ -50,7 +48,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
                             borderRadius: '8px',
                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
-                        formatter={(value: number) => [`$${value}`, 'Revenue']}
+                        formatter={(value: any) => [`DZD ${value}`, 'Revenue']}
                     />
                     <Area
                         type="monotone"

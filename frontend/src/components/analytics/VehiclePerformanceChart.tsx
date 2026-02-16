@@ -46,8 +46,8 @@ const VehiclePerformanceChart: React.FC<VehiclePerformanceChartProps> = ({
                             borderRadius: '8px',
                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
-                        formatter={(value: number, name: string) => [
-                            name === 'revenue' ? `$${value}` : value,
+                        formatter={(value: any, name: any) => [
+                            name === 'revenue' ? `DZD ${value}` : value,
                             name === 'revenue' ? 'Revenue' : 'Rentals',
                         ]}
                     />
@@ -56,7 +56,7 @@ const VehiclePerformanceChart: React.FC<VehiclePerformanceChartProps> = ({
                         height={36}
                         formatter={(value) => (
                             <span className="text-sm font-medium text-gray-700">
-                                {value === 'revenue' ? 'Revenue ($)' : 'Rentals'}
+                                {value === 'revenue' ? 'Revenue (DZD)' : 'Rentals'}
                             </span>
                         )}
                     />

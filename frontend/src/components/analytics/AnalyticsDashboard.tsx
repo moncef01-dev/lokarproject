@@ -40,8 +40,8 @@ const AnalyticsDashboard: React.FC = () => {
                     <button
                         onClick={() => setDateRange('7')}
                         className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${dateRange === '7'
-                                ? 'bg-brand-navy text-white shadow-sm'
-                                : 'text-gray-600 hover:bg-gray-100'
+                            ? 'bg-brand-navy text-white shadow-sm'
+                            : 'text-gray-600 hover:bg-gray-100'
                             }`}
                     >
                         Last 7 Days
@@ -49,8 +49,8 @@ const AnalyticsDashboard: React.FC = () => {
                     <button
                         onClick={() => setDateRange('30')}
                         className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${dateRange === '30'
-                                ? 'bg-brand-navy text-white shadow-sm'
-                                : 'text-gray-600 hover:bg-gray-100'
+                            ? 'bg-brand-navy text-white shadow-sm'
+                            : 'text-gray-600 hover:bg-gray-100'
                             }`}
                     >
                         Last 30 Days
@@ -58,8 +58,8 @@ const AnalyticsDashboard: React.FC = () => {
                     <button
                         onClick={() => setDateRange('90')}
                         className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${dateRange === '90'
-                                ? 'bg-brand-navy text-white shadow-sm'
-                                : 'text-gray-600 hover:bg-gray-100'
+                            ? 'bg-brand-navy text-white shadow-sm'
+                            : 'text-gray-600 hover:bg-gray-100'
                             }`}
                     >
                         Last 90 Days
@@ -71,7 +71,7 @@ const AnalyticsDashboard: React.FC = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <MetricCard
                     title="Total Revenue"
-                    value={`$${analyticsData.revenue.total.toLocaleString()}`}
+                    value={`DZD ${analyticsData.revenue.total.toLocaleString()}`}
                     trend={analyticsData.revenue.trend}
                     icon={<DollarSign className="h-6 w-6 text-green-600" />}
                     iconBgColor="bg-green-100"

@@ -11,6 +11,7 @@ const vehicleSchema = new mongoose.Schema(
     model: { type: String, required: true },
     img_path: { type: String },
     year: { type: String },
+    price: { type: Number },
     availability: { type: String, default: "available" },
   },
   { versionKey: false }

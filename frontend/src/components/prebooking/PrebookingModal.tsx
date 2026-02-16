@@ -153,7 +153,7 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({
                                 <div className="flex items-center justify-between border-b pb-2">
                                     <span className="text-gray-600">Price per day</span>
                                     <span className="text-xl font-bold text-[#0A1633]">
-                                        ${car.price}
+                                        DZD {car.price}
                                     </span>
                                 </div>
                                 {car.specs && (
@@ -183,7 +183,7 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({
                             {totalPrice !== null && (
                                 <div className="mt-auto rounded-xl bg-[#0A1633] p-6 text-white">
                                     <p className="text-sm opacity-80">Estimated Total</p>
-                                    <p className="text-3xl font-bold">${totalPrice.toFixed(0)}</p>
+                                    <p className="text-3xl font-bold">DZD {totalPrice.toFixed(0)}</p>
                                 </div>
                             )}
                         </div>
@@ -194,7 +194,7 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({
                                 <h2 className="text-2xl font-bold text-[#0A1633]">
                                     {car.brand} {car.model}
                                 </h2>
-                                <p className="font-bold text-[#0A1633]">${car.price}/day</p>
+                                <p className="font-bold text-[#0A1633]">DZD {car.price}/day</p>
                             </div>
 
                             <h3 className="mb-6 text-xl font-bold text-gray-900">

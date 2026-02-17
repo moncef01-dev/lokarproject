@@ -27,7 +27,11 @@ adminPanelRouter.get(
   getSuperAdminStatsController,
 );
 
-import { createAgencyBySuperAdminHandler } from "../agency/agency.controller.js";
+import {
+  createAgencyBySuperAdminHandler,
+  updateAgencyHandler,
+  deleteAgencyHandler,
+} from "../agency/agency.controller.js";
 
 adminPanelRouter.post(
   "/agency/create",
@@ -36,5 +40,24 @@ adminPanelRouter.post(
   upload.single("image"), // Add multer middleware for agency logo upload
   createAgencyBySuperAdminHandler,
 );
+
+adminPanelRouter.put(
+  "/agency/:id",
+  checkAuth,
+  authorize(["superadmin"]),
+  upload.single("image"),
+  updateAgencyHandler,
+);
+
+adminPanelRouter.delete(
+  "/agency/:id",
+  checkAuth,
+  authorize(["superadmin"]),
+  deleteAgencyHandler,
+);
+
+import partnershipRouter from "../partnership/partnership.routes.js";
+
+adminPanelRouter.use("/partnership", partnershipRouter);
 
 export default adminPanelRouter;

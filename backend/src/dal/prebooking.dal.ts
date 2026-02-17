@@ -1,4 +1,4 @@
-import { CreatePrebookingDTO } from "../modules/prebooking/prebooking.types.js";
+import { CreatePrebookingDTO, IPrebooking } from "../modules/prebooking/prebooking.types.js";
 import { PrebookingModel } from "../modules/prebooking/prebooking.model.js";
 
 export const createPrebookingDAL = async (data: any) => {
@@ -62,4 +62,12 @@ export const getPrebookingsByAgencyIdDAL = async (
     if (query.sort === "name_asc") sortOptions = { customer_name: 1 };
 
     return await PrebookingModel.find(filter).sort(sortOptions);
+};
+
+export const deletePrebookingDAL = async (id: string) => {
+    return await PrebookingModel.findByIdAndDelete(id);
+};
+
+export const updatePrebookingDAL = async (id: string, data: Partial<IPrebooking>) => {
+    return await PrebookingModel.findByIdAndUpdate(id, data, { new: true });
 };

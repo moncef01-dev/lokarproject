@@ -19,4 +19,11 @@ export const prebookingService = {
         const response = await api.get("/prebookings/agency", { params });
         return response.data;
     },
+    deletePrebooking: async (id: string): Promise<void> => {
+        await api.delete(`/prebookings/${id}`);
+    },
+    updatePrebookingStatus: async (id: string, status: string): Promise<Prebooking> => {
+        const response = await api.patch(`/prebookings/${id}/status`, { status });
+        return response.data.data;
+    }
 };

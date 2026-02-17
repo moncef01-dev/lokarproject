@@ -33,17 +33,15 @@ const Hero = () => {
                 className="text-4xl leading-tight font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl"
                 style={{ fontFamily: "Orbitron, sans-serif" }}
               >
-                DRIVE THE
+                REDEFINING
                 <br />
                 <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                  EXTRAORDINARY
+                  MOBILITY.
                 </span>
               </h1>
 
               <p className="max-w-xl text-base leading-relaxed text-gray-200 sm:text-lg md:text-xl">
-                Unlock your journey with our fleet of high-end vehicles. From
-                sports cars to luxury SUVs, we provide the ultimate driving
-                experience at unbeatable rates.
+                Discover a seamless way to rent. Lokar bridges the gap between premium car agencies and your next adventure, ensuring every mile is driven with confidence and style.
               </p>
             </div>
 
@@ -56,8 +54,11 @@ const Hero = () => {
                 <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
 
-              <button className="flex items-center justify-center gap-2 rounded-full border-2 border-white/20 bg-white/5 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all hover:bg-white/10">
-                How It Works
+              <button
+                onClick={() => navigate("/become-partner")}
+                className="flex items-center justify-center gap-2 rounded-full border-2 border-white/20 bg-white/5 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all hover:bg-white/10"
+              >
+                Become Partner
               </button>
             </div>
           </div>

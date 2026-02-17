@@ -34,13 +34,20 @@ export const generateContractService = async (
     overrides: ContractOverrideData = {}
 ): Promise<IContract> => {
     // 1. Fetch Data
-    const prebooking = await PrebookingModel.findById(prebookingId).populate("car_id");
-    if (!prebooking) throw new Error("Prebooking not found");
+    console.log(`[DEBUG] Attempting to find prebooking for contract generation with ID: '${prebookingId}' (length: ${prebookingId.length})`);
+    const prebooking = await PrebookingModel.findById(prebookingId.trim()).populate("car_id");
+    if (!prebooking) {
+        console.error(`[ERROR] Prebooking not found during contract generation for ID: '${prebookingId}'`);
+        throw new Error("Prebooking not found");
+    }
 
-    console.log(`[DEBUG] Generating contract for Prebooking: ${prebookingId}, Car ID: ${prebooking.car_id}`);
+    console.log(`[DEBUG] Found prebooking for contract generation. ID: ${prebooking._id}, Car ID: ${prebooking.car_id}`);
 
     const agency = await agencyModel.findById(prebooking.agency_id);
-    if (!agency) throw new Error("Agency not found");
+    if (!agency) {
+        console.error(`[ERROR] Agency not found for ID: ${prebooking.agency_id}`);
+        throw new Error("Agency not found");
+    }
 
     if (agency.user_id.toString() !== userId) {
         throw new Error("Unauthorized: Agency does not own this prebooking");

@@ -1,7 +1,10 @@
 import React from "react";
 import { Shield, Award } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const WhyChooseSection = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-linear-to-br from-[#0A1633] to-[#1a2847] py-16 text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -54,7 +57,10 @@ const WhyChooseSection = () => {
               </div>
             </div>
 
-            <button className="mt-8 rounded-lg bg-[#C8102E] px-8 py-3 text-white transition hover:bg-red-700">
+            <button
+              onClick={() => navigate("/become-partner")}
+              className="mt-8 rounded-lg bg-[#C8102E] px-8 py-3 text-white transition hover:bg-red-700"
+            >
               Get Started
             </button>
           </div>

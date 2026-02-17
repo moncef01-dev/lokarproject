@@ -53,15 +53,18 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
         <div className="absolute top-4 left-4 rounded-full bg-[#C8102E] px-3 py-1 text-xs font-semibold text-white shadow-md">
           {agencyName}
         </div>
-        <div className="absolute top-4 right-4 flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-800 shadow-md">
-          {car.availability === "available" ? (
-            <span className="text-green-600">Available</span>
-          ) : (
-            <>
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              {car.rating || "New"}
-            </>
-          )}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-800 shadow-md">
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            {car.rating || "New"}
+          </div>
+          <div className={`rounded-full px-3 py-1 text-xs font-bold text-white shadow-md ${car.availability === "available" ? "bg-green-500" : "bg-brand-red"
+            }`}>
+            {car.availability === "available" ? "Available" :
+              car.availability === "rented" ? "Rented" :
+                car.availability === "maintenance" ? "Maintenance" :
+                  (car.availability ? car.availability.charAt(0).toUpperCase() + car.availability.slice(1) : "Unknown")}
+          </div>
         </div>
       </div>
 

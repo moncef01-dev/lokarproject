@@ -35,6 +35,7 @@ vehicleRouter.put(
   "/:id",
   checkAuth,
   authorize(["agency"]),
+  upload.single("image"),
   updateVehicleHandler,
 );
 

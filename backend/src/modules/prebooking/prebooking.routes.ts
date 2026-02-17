@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createPrebookingController, getAgencyPrebookingsController } from "./prebooking.controller.js";
+import { createPrebookingController, getAgencyPrebookingsController, deletePrebookingController, updatePrebookingStatusController } from "./prebooking.controller.js";
 import { checkAuth } from "../auth/auth.middleware.js";
 import { authorize } from "../authZ/authZ.middleware.js";
 
@@ -23,6 +23,20 @@ router.get(
     checkAuth,
     authorize(["agency"]),
     getAgencyPrebookingsController
+);
+
+router.delete(
+    "/:id",
+    checkAuth,
+    authorize(["agency"]),
+    deletePrebookingController
+);
+
+router.patch(
+    "/:id/status",
+    checkAuth,
+    authorize(["agency"]),
+    updatePrebookingStatusController
 );
 
 export default router;

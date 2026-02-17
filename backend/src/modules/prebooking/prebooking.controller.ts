@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CreatePrebookingSchema } from "./prebooking.validation.js";
-import { createPrebookingService, getAgencyPrebookingsService } from "./prebooking.service.js";
+import { createPrebookingService, getAgencyPrebookingsService, deletePrebookingService, updatePrebookingStatusService } from "./prebooking.service.js";
 import { z } from "zod";
 
 export const createPrebookingController = async (
@@ -80,5 +80,43 @@ export const getAgencyPrebookingsController = async (req: Request, res: Response
         }
         console.error("Get Agency Prebookings Error:", error);
         res.status(500).json({ message: "Error fetching prebookings" });
+    }
+};
+
+export const deletePrebookingController = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const finalUserId: string = userId;
+
+        const { id } = req.params;
+        console.log(`[DEBUG] Received Delete request for Prebooking ID: '${id}'`);
+        await deletePrebookingService(finalUserId, id as string);
+        res.json({ success: true, message: "Prebooking deleted successfully" });
+    } catch (error: any) {
+        console.error("Delete Prebooking Error:", error);
+        res.status(error.message.includes("Unauthorized") ? 403 : 500).json({ message: error.message });
+    }
+};
+
+export const updatePrebookingStatusController = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const finalUserId: string = userId;
+
+        const { id } = req.params;
+        const { status } = req.body;
+        console.log(`[DEBUG] Received Update Status request for Prebooking ID: '${id}', New Status: '${status}'`);
+
+        if (!["pending", "confirmed", "completed", "expired", "cancelled"].includes(status)) {
+            return res.status(400).json({ message: "Invalid status" });
+        }
+
+        const result = await updatePrebookingStatusService(finalUserId, id as string, status);
+        res.json({ success: true, data: result });
+    } catch (error: any) {
+        console.error("Update Prebooking Status Error:", error);
+        res.status(error.message.includes("Unauthorized") ? 403 : 500).json({ message: error.message });
     }
 };

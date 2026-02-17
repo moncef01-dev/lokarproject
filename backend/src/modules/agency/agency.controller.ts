@@ -79,3 +79,47 @@ export async function getAllAgenciesHandler(req: Request, res: Response) {
 
   res.send(agencies);
 }
+
+import { updateAgency, deleteAgency } from "./agency.service.js";
+
+export async function updateAgencyHandler(req: Request, res: Response) {
+  const { id } = req.params;
+  const agencyData = req.body;
+
+  if (!id) {
+    res.status(400).send("Missing agency ID");
+    return;
+  }
+
+  // Handle image upload if a new file was provided
+  if (req.file) {
+    agencyData.img_path = `/uploads/${req.file.filename}`;
+  }
+
+  const { data, error } = await tryCatch(updateAgency(id, agencyData));
+
+  if (error) {
+    res.status(400).send(error.message || "Failed to update agency");
+    return;
+  }
+
+  res.status(200).send(data);
+}
+
+export async function deleteAgencyHandler(req: Request, res: Response) {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).send("Missing agency ID");
+    return;
+  }
+
+  const { data, error } = await tryCatch(deleteAgency(id));
+
+  if (error) {
+    res.status(400).send(error.message || "Failed to delete agency");
+    return;
+  }
+
+  res.status(200).send({ message: "Agency deleted successfully", id });
+}

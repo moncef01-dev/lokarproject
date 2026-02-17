@@ -37,3 +37,21 @@ export async function getAllAgenciesDAL() {
   }
   return data;
 }
+
+export async function updateAgencyDAL(id: string, data: any) {
+  const { data: updatedAgency, error } = await tryCatch(
+    agencyModel.findByIdAndUpdate(id, data, { new: true }),
+  );
+  if (error) {
+    throw new Error("Error updating agency");
+  }
+  return updatedAgency;
+}
+
+export async function deleteAgencyDAL(id: string) {
+  const { data, error } = await tryCatch(agencyModel.findByIdAndDelete(id));
+  if (error) {
+    throw new Error("Error deleting agency");
+  }
+  return data;
+}

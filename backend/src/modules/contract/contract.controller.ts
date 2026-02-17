@@ -12,6 +12,7 @@ const ROOT_DIR = path.join(__dirname, "../../../");
 export const generateContractController = async (req: Request, res: Response) => {
     try {
         const { prebookingId, overrides } = req.body;
+        console.log(`[DEBUG] Received Generate Contract request for Prebooking ID: '${prebookingId}'`);
         const userId = req.user?.id;
 
         if (!userId) return res.status(401).json({ message: "Unauthorized" });

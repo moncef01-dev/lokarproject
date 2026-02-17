@@ -38,10 +38,30 @@ export async function promoteUserToAgency(
   return await createAgency(fullAgencyData);
 }
 
-import { getAllAgenciesDAL } from "../../dal/agency.dal.js";
+import {
+  getAllAgenciesDAL,
+  updateAgencyDAL,
+  deleteAgencyDAL,
+} from "../../dal/agency.dal.js";
 
 export async function getAllAgencies() {
   const { data, error } = await tryCatch(getAllAgenciesDAL());
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+export async function updateAgency(id: string, agencyData: any) {
+  const { data, error } = await tryCatch(updateAgencyDAL(id, agencyData));
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+export async function deleteAgency(id: string) {
+  const { data, error } = await tryCatch(deleteAgencyDAL(id));
   if (error) {
     throw new Error(error.message);
   }

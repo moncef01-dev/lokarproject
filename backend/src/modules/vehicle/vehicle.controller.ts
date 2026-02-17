@@ -97,6 +97,12 @@ export async function getAllVehiclesHandler(req: Request, res: Response) {
 export async function updateVehicleHandler(req: Request, res: Response) {
   const { id } = req.params;
   const vehicleData = req.body;
+
+  // Handle image upload if a new file was provided
+  if (req.file) {
+    vehicleData.img_path = `/uploads/${req.file.filename}`;
+  }
+
   const { data, error } = await tryCatch(
     updateVehicle(id as string, vehicleData),
   );

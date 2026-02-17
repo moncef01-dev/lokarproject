@@ -55,11 +55,11 @@ const Footer = () => {
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                +213 555 666 777
+                +213 557 952 981
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                contact@lokar.com
+                zinafimoncef63@gmail.com
               </li>
             </ul>
           </div>
@@ -67,25 +67,36 @@ const Footer = () => {
           <div>
             <h4 className="mb-4 text-lg font-bold">Contact Options</h4>
             <div className="space-y-3">
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 transition hover:bg-blue-700">
+              <a
+                href="tel:+213557952981"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 transition hover:bg-blue-700"
+              >
                 <Phone className="h-4 w-4" />
                 Call
-              </button>
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 py-3 transition hover:bg-blue-600">
+              </a>
+              <a
+                href="mailto:zinafimoncef63@gmail.com"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 py-3 transition hover:bg-blue-600"
+              >
                 <Mail className="h-4 w-4" />
                 Email
-              </button>
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#00C853] py-3 transition hover:bg-green-600">
+              </a>
+              <a
+                href="https://wa.me/213557952981"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#00C853] py-3 transition hover:bg-green-600"
+              >
                 <Phone className="h-4 w-4" />
                 WhatsApp
-              </button>
+              </a>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
           <p>
-            &copy; 2024 Lokar. All rights reserved. Made with passion for car
+            &copy; 2026 Lokar. All rights reserved. Made with passion for car
             enthusiasts.
           </p>
         </div>

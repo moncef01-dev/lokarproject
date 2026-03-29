@@ -4,9 +4,33 @@ import { vehicleSchema } from "./vehicle.schema.js";
 export function validateVehicleData(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
-  const validationResult = vehicleSchema.safeParse(req.body);
+  const body = req.body as Record<string, unknown>;
+
+  const specsFromFlatFields = {
+    fuel: typeof body.fuel === "string" ? body.fuel : undefined,
+    transmission:
+      typeof body.transmission === "string" ? body.transmission : undefined,
+    seats: body.seats,
+  };
+
+  const hasFlatSpecs =
+    specsFromFlatFields.fuel !== undefined ||
+    specsFromFlatFields.transmission !== undefined ||
+    specsFromFlatFields.seats !== undefined;
+
+  const normalizedBody = {
+    ...body,
+    specs:
+      typeof body.specs === "object" && body.specs !== null
+        ? body.specs
+        : hasFlatSpecs
+          ? specsFromFlatFields
+          : undefined,
+  };
+
+  const validationResult = vehicleSchema.safeParse(normalizedBody);
 
   if (!validationResult.success) {
     res

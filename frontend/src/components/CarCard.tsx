@@ -34,7 +34,7 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
   const image = getImageUrl(car.img_path || car.image);
   const name = car.model || car.name || "Unknown Model";
   const agencyName = car.agency_id?.name || car.agency || "Unknown Agency";
-
+  const hasPrice = typeof car.price === "number" && !Number.isNaN(car.price);
 
   return (
     <div className="group overflow-hidden rounded-xl bg-white shadow-lg transition hover:shadow-2xl">
@@ -58,12 +58,21 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
             {car.rating || "New"}
           </div>
-          <div className={`rounded-full px-3 py-1 text-xs font-bold text-white shadow-md ${car.availability === "available" ? "bg-green-500" : "bg-brand-red"
-            }`}>
-            {car.availability === "available" ? "Available" :
-              car.availability === "rented" ? "Rented" :
-                car.availability === "maintenance" ? "Maintenance" :
-                  (car.availability ? car.availability.charAt(0).toUpperCase() + car.availability.slice(1) : "Unknown")}
+          <div
+            className={`rounded-full px-3 py-1 text-xs font-bold text-white shadow-md ${
+              car.availability === "available" ? "bg-green-500" : "bg-brand-red"
+            }`}
+          >
+            {car.availability === "available"
+              ? "Available"
+              : car.availability === "rented"
+                ? "Rented"
+                : car.availability === "maintenance"
+                  ? "Maintenance"
+                  : car.availability
+                    ? car.availability.charAt(0).toUpperCase() +
+                      car.availability.slice(1)
+                    : "Unknown"}
           </div>
         </div>
       </div>
@@ -95,9 +104,9 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
         <div className="flex items-center justify-between">
           <div>
             <span className="text-3xl font-bold text-[#0A1633]">
-              {car.price ? `DZD ${car.price}` : "Contact"}
+              {hasPrice ? `DZD ${car.price}` : "DZD --"}
             </span>
-            {car.price && <span className="text-gray-500">/day</span>}
+            <span className="text-gray-500">/day</span>
           </div>
 
           <button
@@ -115,7 +124,7 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
         onClose={() => setIsModalOpen(false)}
         car={car}
       />
-    </div >
+    </div>
   );
 };
 

@@ -3,13 +3,24 @@ import { VehicleData } from "../modules/vehicle/vehicle.schema.js";
 import { tryCatch } from "../utils/try-catch.js";
 
 export async function saveVehicleToDB(vehicleData: VehicleData) {
-  const { agency_id, brand, model, year, img_path, availability } = vehicleData;
+  const {
+    agency_id,
+    brand,
+    model,
+    year,
+    price,
+    specs,
+    img_path,
+    availability,
+  } = vehicleData;
   const { data, error } = await tryCatch(
     vehicleModel.create({
       agency_id,
       brand,
       model,
       year,
+      price,
+      specs,
       img_path,
       availability,
     } as any),

@@ -28,6 +28,12 @@ export interface Vehicle {
   brand: string;
   model: string;
   year: string;
+  price?: number;
+  specs?: {
+    fuel?: string;
+    transmission?: string;
+    seats?: number;
+  };
   img_path: string;
   availability: string;
   agency_id: string;
@@ -78,6 +84,18 @@ export const adminService = {
     formData.append("brand", vehicleData.brand || "");
     formData.append("model", vehicleData.model || "");
     formData.append("year", vehicleData.year || "");
+    if (vehicleData.price !== undefined) {
+      formData.append("price", String(vehicleData.price));
+    }
+    if (vehicleData.specs?.fuel) {
+      formData.append("fuel", vehicleData.specs.fuel);
+    }
+    if (vehicleData.specs?.transmission) {
+      formData.append("transmission", vehicleData.specs.transmission);
+    }
+    if (vehicleData.specs?.seats !== undefined) {
+      formData.append("seats", String(vehicleData.specs.seats));
+    }
     formData.append("availability", vehicleData.availability || "available");
 
     if (imageFile) {
@@ -154,6 +172,18 @@ export const adminService = {
     formData.append("brand", vehicleData.brand || "");
     formData.append("model", vehicleData.model || "");
     formData.append("year", vehicleData.year || "");
+    if (vehicleData.price !== undefined) {
+      formData.append("price", String(vehicleData.price));
+    }
+    if (vehicleData.specs?.fuel) {
+      formData.append("fuel", vehicleData.specs.fuel);
+    }
+    if (vehicleData.specs?.transmission) {
+      formData.append("transmission", vehicleData.specs.transmission);
+    }
+    if (vehicleData.specs?.seats !== undefined) {
+      formData.append("seats", String(vehicleData.specs.seats));
+    }
     formData.append("availability", vehicleData.availability || "available");
 
     if (imageFile) {
@@ -264,8 +294,12 @@ export const adminService = {
     return response.data;
   },
 
-  handlePartnershipAction: async (id: string, action: 'approve' | 'deny', password?: string): Promise<void> => {
-    if (action === 'approve') {
+  handlePartnershipAction: async (
+    id: string,
+    action: "approve" | "deny",
+    password?: string,
+  ): Promise<void> => {
+    if (action === "approve") {
       await api.post(`/admin/partnership/approve/${id}`, { password });
     } else {
       await api.post(`/admin/partnership/deny/${id}`);

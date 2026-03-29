@@ -12,9 +12,14 @@ const vehicleSchema = new mongoose.Schema(
     img_path: { type: String },
     year: { type: String },
     price: { type: Number },
+    specs: {
+      fuel: { type: String },
+      transmission: { type: String },
+      seats: { type: Number },
+    },
     availability: { type: String, default: "available" },
   },
-  { versionKey: false }
+  { versionKey: false },
 );
 
 export const vehicleModel = mongoose.model("Vehicle", vehicleSchema);

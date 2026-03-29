@@ -14,6 +14,16 @@ export const vehicleSchema = z.object({
 
   year: z.string().optional(),
 
+  price: z.coerce.number().nonnegative().optional(),
+
+  specs: z
+    .object({
+      fuel: z.string().optional(),
+      transmission: z.string().optional(),
+      seats: z.coerce.number().int().positive().optional(),
+    })
+    .optional(),
+
   img_path: z.string().optional(),
 
   availability: z.string().default("available"),

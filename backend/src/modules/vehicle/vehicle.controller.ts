@@ -96,7 +96,28 @@ export async function getAllVehiclesHandler(req: Request, res: Response) {
 
 export async function updateVehicleHandler(req: Request, res: Response) {
   const { id } = req.params;
-  const vehicleData = req.body;
+  const vehicleData = req.body as Record<string, any>;
+
+  const hasFlatSpecs =
+    vehicleData.fuel !== undefined ||
+    vehicleData.transmission !== undefined ||
+    vehicleData.seats !== undefined;
+
+  if (hasFlatSpecs && !vehicleData.specs) {
+    vehicleData.specs = {
+      fuel: vehicleData.fuel,
+      transmission: vehicleData.transmission,
+      seats: vehicleData.seats,
+    };
+  }
+
+  if (vehicleData.price !== undefined) {
+    vehicleData.price = Number(vehicleData.price);
+  }
+
+  if (vehicleData.specs?.seats !== undefined) {
+    vehicleData.specs.seats = Number(vehicleData.specs.seats);
+  }
 
   // Handle image upload if a new file was provided
   if (req.file) {

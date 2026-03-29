@@ -29,7 +29,7 @@ A high-performance, full-stack car rental management system designed for agencie
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/samadou-101/lokar.git
+git clone https://github.com/moncef01-dev/lokarproject.git
 cd lokar
 ```
 

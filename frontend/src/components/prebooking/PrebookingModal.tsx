@@ -44,19 +44,35 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
 
     useEffect(() => {
+        if (!isOpen) return;
+
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [isOpen, onClose]);
+
+    useEffect(() => {
         if (isOpen) {
-            document.body.style.overflow = "hidden";
             setStep(1);
         } else {
-            document.body.style.overflow = "unset";
             reset();
             resetState();
             setTotalPrice(null);
             setStep(1);
         }
-        return () => {
-            document.body.style.overflow = "unset";
-        };
     }, [isOpen]);
 
     useEffect(() => {
@@ -101,30 +117,25 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
     const agencyName = typeof car.agency_id === "object" ? car.agency_id?.name : "Partner Agency";
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 sm:p-4 font-sans backdrop-blur-sm">
-            {/* Slide-Fade Animation Keyframes */}
-            <style>{`
-                @keyframes stepFadeIn {
-                    from { opacity: 0; transform: translateY(8px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-step {
-                    animation: stepFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-                }
-            `}</style>
-
-            <div className="relative flex h-[100dvh] sm:h-[90vh] w-full max-w-6xl flex-col lg:flex-row overflow-hidden bg-white sm:rounded-2xl shadow-2xl">
+        <div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 sm:p-4 font-sans backdrop-blur-sm"
+            onClick={onClose}
+        >
+            <div 
+                className="relative flex h-[100dvh] sm:h-[90vh] w-full max-w-6xl flex-col lg:flex-row overflow-hidden bg-white sm:rounded-2xl shadow-2xl scale-95 opacity-0 animate-[fadeIn_0.2s_ease-out_forwards]"
+                onClick={(e) => e.stopPropagation()}
+            >
                 
                 {/* Close Button Floating above everything */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 rounded-full bg-white/90 p-2 text-gray-900 shadow-sm backdrop-blur-md transition hover:scale-105"
+                    className="absolute top-4 right-4 z-50 rounded-full bg-white/90 p-2 text-gray-900 shadow-sm backdrop-blur-md transition hover:scale-105 active:scale-95"
                 >
                     <X size={20} strokeWidth={2.5} />
                 </button>
 
                 {success ? (
-                    <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center animate-step">
+                    <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center">
                         <div className="mb-6 rounded-full bg-green-50 p-6 text-green-500 ring-8 ring-green-50/50">
                             <CheckCircle size={64} strokeWidth={2} />
                         </div>

@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, logout, user } = useAuth();
+  const isHome = location.pathname === "/";
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -22,10 +24,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 z-100 w-full transition-all duration-500 ${
-        scrolled 
-          ? "bg-[#0A1633]/90 backdrop-blur-lg shadow-xl py-2" 
-          : "bg-transparent py-4"
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
+        isHome && !scrolled
+          ? "bg-transparent py-4 text-white"
+          : "bg-[#0b1a2b]/80 backdrop-blur-md border-b border-white/10 py-2 text-white shadow-xl"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -35,7 +37,7 @@ const Navbar = () => {
             onClick={() => navigate("/")}
           >
             <h1
-              className="text-3xl font-bold tracking-tighter text-white"
+              className="text-3xl font-bold tracking-tighter"
               style={{ fontFamily: "Orbitron, sans-serif" }}
             >
               <span className="text-[#C8102E] transition-all group-hover:text-red-400">L</span>OKAR
@@ -47,7 +49,7 @@ const Navbar = () => {
               <a
                 key={item}
                 href="#"
-                className="relative text-sm font-semibold tracking-wide text-white uppercase transition-all hover:text-[#C8102E] before:absolute before:-bottom-1 before:left-0 before:h-0.5 before:w-0 before:bg-[#C8102E] before:transition-all hover:before:w-full"
+                className="relative text-sm font-semibold tracking-wide uppercase transition-all hover:text-[#C8102E] before:absolute before:-bottom-1 before:left-0 before:h-0.5 before:w-0 before:bg-[#C8102E] before:transition-all hover:before:w-full"
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(item === "Home" ? "/" : item === "Browse Cars" ? "/cars" : "#");
@@ -77,14 +79,14 @@ const Navbar = () => {
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className="text-sm font-bold text-white transition-all hover:text-[#C8102E]"
+                className="text-sm font-bold transition-all hover:text-[#C8102E]"
               >
                 Sign Out
               </button>
             ) : (
               <button
                 onClick={() => navigate("/login")}
-                className="text-sm font-bold text-white transition-all hover:text-[#C8102E]"
+                className="text-sm font-bold transition-all hover:text-[#C8102E]"
               >
                 Sign In
               </button>
@@ -93,7 +95,11 @@ const Navbar = () => {
             {(!isAuthenticated || user?.role === "customer") && (
               <button 
                 onClick={() => navigate("/become-partner")}
-                className="rounded-full bg-white px-6 py-2.5 text-xs font-bold tracking-widest text-[#0A1633] uppercase shadow-[0_4px_20px_rgba(255,255,255,0.15)] transition-all hover:scale-105 hover:bg-gray-100 active:scale-95"
+                className={`rounded-full px-6 py-2.5 text-xs font-bold tracking-widest uppercase transition-all hover:scale-105 active:scale-95 ${
+                  isHome && !scrolled
+                    ? "bg-white text-[#0A1633] shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:bg-gray-100"
+                    : "bg-[#C8102E] text-white shadow-[0_4px_20px_rgba(200,16,46,0.2)] hover:bg-red-700"
+                }`}
               >
                 Become Partner
               </button>

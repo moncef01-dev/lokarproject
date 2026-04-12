@@ -11,6 +11,7 @@ export interface PrebookingFormData {
     start_date: string;
     end_date: string;
     pickup_location: string;
+    rental_reason: string;
     consent_given: boolean;
     car_id: string;
     agency_id: string;

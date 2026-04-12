@@ -439,6 +439,27 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({
                                             </p>
                                         )}
                                     </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700">
+                                            Cause de location *
+                                        </label>
+                                        <select
+                                            {...register("rental_reason", {
+                                                required: "Cause de location is required",
+                                            })}
+                                            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-[#0A1633] focus:ring-1 focus:ring-[#0A1633]"
+                                        >
+                                            <option value="">Sélectionnez une cause</option>
+                                            <option value="Utilisation personnelle">Utilisation personnelle</option>
+                                            <option value="Cortège">Cortège</option>
+                                            <option value="Délégation">Délégation</option>
+                                        </select>
+                                        {errors.rental_reason && (
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {errors.rental_reason.message}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Consent */}

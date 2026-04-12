@@ -9,6 +9,7 @@ export interface Prebooking {
     start_date: string;
     end_date: string;
     car_id: string;
+    rental_reason: string;
     status: string;
     created_at: string;
     // Add other fields as needed

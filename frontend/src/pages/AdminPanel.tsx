@@ -1092,6 +1092,11 @@ const AdminPanel: React.FC = () => {
                           <div className="text-xs text-gray-500">
                             {booking.email}
                           </div>
+                          {booking.rental_reason && (
+                            <span className="mt-1 inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-700 font-medium">
+                              Cause: {booking.rental_reason}
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm text-gray-600">

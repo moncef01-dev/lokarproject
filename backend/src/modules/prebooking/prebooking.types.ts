@@ -10,6 +10,7 @@ export interface IPrebooking extends Document {
   start_date: Date;
   end_date: Date;
   pickup_location: string;
+  rental_reason: string;
   consent_given: boolean;
   consent_timestamp: Date;
   car_id: Types.ObjectId; // Reference to the car
@@ -30,6 +31,7 @@ export interface CreatePrebookingDTO {
   start_date: string; // ISO date string
   end_date: string; // ISO date string
   pickup_location: string;
+  rental_reason: string;
   consent_given: boolean;
   car_id: string;
   agency_id: string;

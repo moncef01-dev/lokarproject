@@ -12,6 +12,7 @@ const PrebookingSchema = new Schema<IPrebooking>(
         start_date: { type: Date, required: true },
         end_date: { type: Date, required: true },
         pickup_location: { type: String, required: true },
+        rental_reason: { type: String, required: true },
         consent_given: { type: Boolean, required: true },
         consent_timestamp: { type: Date, default: Date.now },
         car_id: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true }, // Assuming 'Vehicle' model name

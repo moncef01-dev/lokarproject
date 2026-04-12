@@ -20,6 +20,7 @@ export const CreatePrebookingSchema = z.object({
         start_date: z.string(),
         end_date: z.string(),
         pickup_location: z.string().min(1, "Pickup location is required"),
+        rental_reason: z.string().min(1, "Rental reason is required"),
         consent_given: z.boolean().refine((val) => val === true, {
             message: "You must accept the terms and conditions",
         }),

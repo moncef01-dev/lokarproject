@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Check } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -30,18 +30,18 @@ const Hero = () => {
               </div> */}
 
               <h1
-                className="text-4xl leading-tight font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl"
+                className="text-4xl leading-tight font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-7xl"
                 style={{ fontFamily: "Orbitron, sans-serif" }}
               >
-                REDEFINING
+                FIND AND BOOK
                 <br />
                 <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                  MOBILITY.
+                  RENTAL CARS IN SECONDS.
                 </span>
               </h1>
 
-              <p className="max-w-xl text-base leading-relaxed text-gray-200 sm:text-lg md:text-xl">
-                Discover a seamless way to rent. Lokar bridges the gap between premium car agencies and your next adventure, ensuring every mile is driven with confidence and style.
+              <p className="max-w-xl text-base leading-relaxed text-gray-200 sm:text-lg md:text-xl border-l-4 border-[#C8102E] pl-4">
+                Browse verified agencies, compare prices, and reserve instantly.
               </p>
             </div>
 
@@ -50,7 +50,7 @@ const Hero = () => {
                 onClick={handleExplore}
                 className="group flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-lg font-bold text-[#C8102E] shadow-xl transition-all hover:scale-105 hover:bg-gray-100"
               >
-                Explore Fleet
+                Browse Cars
                 <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
 
@@ -60,6 +60,21 @@ const Hero = () => {
               >
                 Become Partner
               </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-300 font-medium pt-4">
+              <div className="flex items-center gap-2">
+                <div className="bg-white/20 backdrop-blur-md rounded-full p-1"><Check className="h-4 w-4 text-white" /></div>
+                Verified agencies
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="bg-white/20 backdrop-blur-md rounded-full p-1"><Check className="h-4 w-4 text-white" /></div>
+                No hidden fees
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="bg-white/20 backdrop-blur-md rounded-full p-1"><Check className="h-4 w-4 text-white" /></div>
+                Fast booking
+              </div>
             </div>
           </div>
 

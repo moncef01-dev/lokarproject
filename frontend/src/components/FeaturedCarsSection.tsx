@@ -62,7 +62,7 @@ const FeaturedCarsSection = () => {
             onClick={() => navigate("/cars")}
             className="mx-auto flex items-center gap-2 rounded-lg bg-[#C8102E] px-10 py-4 text-lg font-semibold text-white transition hover:bg-red-700"
           >
-            View All Available Cars
+            View All Cars
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>

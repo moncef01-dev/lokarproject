@@ -11,7 +11,20 @@ const BrandSection = () => {
     const fetchAgencies = async () => {
       try {
         const data = await publicService.getAllAgencies();
-        setAgencies(data);
+        let displayAgencies = data;
+        
+        // Pad with mock agencies to ensure a minimum of 4 agencies are shown
+        if (displayAgencies.length < 4) {
+          const mockAgencies = [
+            { _id: 'mock1', name: 'Elite Rentals', img_path: '' },
+            { _id: 'mock2', name: 'Global Drive', img_path: '' },
+            { _id: 'mock3', name: 'Speedo Cars', img_path: '' },
+            { _id: 'mock4', name: 'Luxury Motors', img_path: '' },
+          ];
+          displayAgencies = [...displayAgencies, ...mockAgencies.slice(0, 4 - displayAgencies.length)] as Agency[];
+        }
+        
+        setAgencies(displayAgencies);
       } catch (error) {
         console.error("Failed to fetch agencies:", error);
       } finally {
@@ -77,15 +90,6 @@ const BrandSection = () => {
             )}
           </div>
         )}
-
-        <div className="text-center">
-          <button
-            onClick={() => navigate("/cars")}
-            className="rounded-lg bg-[#C8102E] px-8 py-3 text-white transition hover:bg-red-700"
-          >
-            Find Your Car
-          </button>
-        </div>
       </div>
     </div>
   );

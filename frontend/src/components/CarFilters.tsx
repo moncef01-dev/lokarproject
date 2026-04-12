@@ -52,24 +52,24 @@ const CarFilters: React.FC<CarFiltersProps> = ({
         AVAILABLE <span className="text-[#C8102E]">CARS</span>
       </h2>
 
-      <div className="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-md">
+      <div className="flex flex-col gap-6 rounded-2xl bg-white p-5 md:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 transition-all">
         {/* Top Row: Search and Core Filters */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center">
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
+          <div className="relative flex-[1.5]">
+            <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search by brand or model..."
-              className="w-full rounded-lg border border-gray-200 py-3 pr-4 pl-10 focus:border-[#C8102E] focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 py-3.5 pr-4 pl-12 text-gray-900 placeholder-gray-400 bg-gray-50/50 shadow-sm transition-all hover:bg-gray-50 focus:border-gray-900 focus:bg-white focus:ring-1 focus:ring-gray-900 focus:outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="flex items-center gap-2 md:w-1/4">
-            <Filter className="h-5 w-5 text-gray-500" />
+          <div className="flex items-center gap-2 flex-1 relative">
+            <Filter className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <select
-              className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-[#C8102E] focus:outline-none"
+              className="w-full appearance-none rounded-xl border border-gray-200 bg-white py-3.5 pr-10 pl-11 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
               value={selectedAgency}
               onChange={(e) => setSelectedAgency(e.target.value)}
             >
@@ -80,10 +80,10 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               ))}
             </select>
           </div>
-          <div className="flex items-center gap-2 md:w-1/4">
-            <Tag className="h-5 w-5 text-gray-500" />
+          <div className="flex items-center gap-2 flex-1 relative">
+            <Tag className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <select
-              className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-[#C8102E] focus:outline-none"
+              className="w-full appearance-none rounded-xl border border-gray-200 bg-white py-3.5 pr-10 pl-11 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
             >
@@ -94,10 +94,10 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               ))}
             </select>
           </div>
-          <div className="flex items-center gap-2 md:w-1/4">
-            <Filter className="h-5 w-5 text-gray-500" />
+          <div className="flex items-center gap-2 flex-1 relative">
+            <Filter className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <select
-              className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-[#C8102E] focus:outline-none"
+              className="w-full appearance-none rounded-xl border border-gray-200 bg-white py-3.5 pr-10 pl-11 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
@@ -112,38 +112,42 @@ const CarFilters: React.FC<CarFiltersProps> = ({
         </div>
 
         {/* Bottom Row: Price and Luxury */}
-        <div className="flex flex-col gap-4 border-t border-gray-100 pt-4 md:flex-row md:items-center justify-between">
+        <div className="flex flex-col gap-4 border-t border-gray-100 pt-5 md:flex-row md:items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-gray-500" />
-              <input
-                type="number"
-                placeholder="Min Price"
-                className="w-32 rounded-lg border border-gray-200 px-4 py-2 focus:border-[#C8102E] focus:outline-none"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-              />
-              <span className="text-gray-500">-</span>
-              <input
-                type="number"
-                placeholder="Max Price"
-                className="w-32 rounded-lg border border-gray-200 px-4 py-2 focus:border-[#C8102E] focus:outline-none"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-              />
+            <div className="flex items-center gap-3">
+              <DollarSign className="h-5 w-5 text-gray-400" />
+              <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    placeholder="Min DZD"
+                    className="w-28 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm transition-all focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                  />
+                  <span className="text-gray-300">-</span>
+                  <input
+                    type="number"
+                    placeholder="Max DZD"
+                    className="w-28 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm transition-all focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+              </div>
             </div>
           </div>
           
-          <label className="flex items-center gap-2 cursor-pointer bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
-            <Gem className={`h-5 w-5 ${isLuxury ? "text-[#C8102E]" : "text-gray-400"}`} />
+          <label className="group flex cursor-pointer items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/50 px-5 py-2.5 shadow-sm transition-all hover:bg-white hover:border-gray-300 hover:shadow-md">
+            <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isLuxury ? "bg-gray-900" : "bg-white border border-gray-200"}`}>
+               <Gem className={`h-4 w-4 transition-colors ${isLuxury ? "text-white" : "text-gray-400 group-hover:text-gray-600"}`} />
+            </div>
             <input
               type="checkbox"
               checked={isLuxury}
               onChange={(e) => setIsLuxury(e.target.checked)}
               className="hidden"
             />
-            <span className={`font-medium ${isLuxury ? "text-[#C8102E]" : "text-gray-600"}`}>
-              Luxury Vehicles Only
+            <span className={`text-sm font-bold transition-colors ${isLuxury ? "text-gray-900" : "text-gray-500 group-hover:text-gray-700"}`}>
+              Luxury Only
             </span>
           </label>
         </div>

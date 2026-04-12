@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
+import { Search } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CarCard from "../components/CarCard";
@@ -104,11 +105,27 @@ const Cars = () => {
 
           {/* Cars Grid */}
           {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-red-600"></div>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <div key={n} className="flex h-full min-h-[420px] flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm animate-pulse">
+                  <div className="h-64 bg-gray-100" />
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="mb-4 h-6 w-3/4 rounded-md bg-gray-200" />
+                    <div className="mb-8 h-4 w-1/3 rounded-md bg-gray-100" />
+                    <div className="mb-6 flex gap-4">
+                      <div className="h-4 w-16 rounded-md bg-gray-100" />
+                      <div className="h-4 w-16 rounded-md bg-gray-100" />
+                    </div>
+                    <div className="mt-auto flex justify-between border-t border-gray-100 pt-5">
+                      <div className="h-8 w-24 rounded-md bg-gray-200" />
+                      <div className="h-10 w-28 rounded-full bg-gray-200" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 transition-all duration-700">
               {filteredCars.map((car) => (
                 <CarCard key={car._id} car={car} />
               ))}
@@ -116,10 +133,30 @@ const Cars = () => {
           )}
 
           {!loading && filteredCars.length === 0 && (
-            <div className="py-20 text-center">
-              <p className="text-xl text-gray-500">
-                No cars found matching your criteria.
+            <div className="flex flex-col items-center justify-center py-24 transition-opacity duration-500">
+              <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100">
+                <Search className="h-10 w-10 text-gray-300" />
+              </div>
+              <h3 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                No cars found
+              </h3>
+              <p className="max-w-sm text-center font-medium text-gray-500">
+                We couldn't find any vehicles matching your exact criteria. Try adjusting your filters.
               </p>
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedAgency("All");
+                  setSelectedBrand("All");
+                  setSelectedCategory("All");
+                  setMinPrice("");
+                  setMaxPrice("");
+                  setIsLuxury(false);
+                }}
+                className="mt-8 rounded-full border border-gray-200 bg-white px-6 py-3 text-sm font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md active:scale-95"
+              >
+                Clear all filters
+              </button>
             </div>
           )}
         </div>

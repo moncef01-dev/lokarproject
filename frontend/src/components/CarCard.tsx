@@ -35,7 +35,7 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
 
   return (
     <>
-      <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-200 hover:shadow-[0_14px_28px_rgba(0,0,0,0.06)] hover:ring-[3px] hover:ring-slate-100/70">
+      <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] hover:ring-[3px] hover:ring-gray-100/50">
         {/* Top Section: Image */}
         <div className="relative h-64 w-full overflow-hidden bg-gray-50">
           <img
@@ -58,15 +58,19 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
           
           {/* Top-right: Badges */}
           <div className="absolute top-4 right-4 flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1.5 text-xs font-semibold text-gray-900 shadow-sm backdrop-blur-md border border-white/20">
+            <div className="flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm backdrop-blur-md border border-white/20">
               <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
               <span>{car.rating || "New"}</span>
             </div>
             <div
-              className={`rounded-full px-3 py-1.5 text-xs font-bold shadow-sm backdrop-blur-md border border-white/20 ${
-                car.availability === "available" 
-                  ? "bg-green-500/90 text-white" 
-                  : "bg-[#C8102E]/90 text-white"
+              className={`rounded-full px-3 py-1 text-xs font-bold shadow-sm backdrop-blur-md border border-white/20 transition-colors ${
+                car.availability === "available"
+                  ? "bg-green-500/90 text-white"
+                  : car.availability === "rented"
+                    ? "bg-gray-500/90 text-white"
+                    : car.availability === "maintenance"
+                      ? "bg-orange-500/90 text-white"
+                      : "bg-gray-800/90 text-white"
               }`}
             >
               {car.availability === "available"
@@ -110,9 +114,9 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="mt-auto border-t border-slate-100 pt-5">
-            <div className="flex items-end justify-between">
+          {/* Divider and Price */}
+          <div className="mt-auto pt-6">
+            <div className="flex items-end justify-between border-t border-gray-100 pt-5">
               <div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-2xl font-bold tracking-tight text-gray-900">

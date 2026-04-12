@@ -1,19 +1,27 @@
+import { useNavigate } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
 const CTASection = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-[#C8102E] py-12">
+    <div className="bg-[#C8102E] py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+        <div className="flex flex-col items-center justify-center text-center gap-8">
           <div className="text-white">
-            <h3 className="mb-2 text-3xl font-bold">
-              GET LATEST UPDATES AND BEST OFFERS
+            <h3 className="mb-4 text-4xl font-bold tracking-tight" style={{ fontFamily: "Orbitron, sans-serif" }}>
+              START RENTING TODAY
             </h3>
-            <p className="text-gray-100">
-              Subscribe to our newsletter for exclusive deals
+            <p className="text-lg text-gray-100 max-w-2xl mx-auto">
+              Join thousands of satisfied customers and discover the easiest way to book your next ride. Your premium adventure awaits.
             </p>
           </div>
-          <button className="rounded-lg bg-white px-8 py-4 font-semibold text-[#C8102E] transition hover:bg-gray-100">
-            Subscribe
+          <button 
+            onClick={() => navigate("/cars")}
+            className="group flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-lg font-bold text-[#C8102E] shadow-xl transition-all hover:scale-105 hover:bg-gray-100"
+          >
+            Browse Cars
+            <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </button>
         </div>
       </div>

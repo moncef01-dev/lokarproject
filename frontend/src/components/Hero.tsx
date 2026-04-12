@@ -1,15 +1,46 @@
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Check } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const requestRef = useRef<number>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth < 768) return;
+      
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+
+      requestRef.current = requestAnimationFrame(() => {
+        if (heroRef.current) {
+          heroRef.current.style.setProperty("--parallax-y", `${window.scrollY}`);
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, []);
 
   const handleExplore = () => {
     navigate("/cars");
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#0A1633] text-white">
+    <div 
+      ref={heroRef}
+      className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#0A1633] text-white"
+      style={{ "--parallax-y": "0" } as React.CSSProperties}
+    >
       {/* Background Gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#C8102E] via-[#8B0A1E] to-[#0A1633] opacity-90"></div>
 
@@ -24,11 +55,6 @@ const Hero = () => {
           {/* Text Content */}
           <div className="animate-fade-in-up z-10 flex flex-col justify-center space-y-8">
             <div className="space-y-4">
-              {/* <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 font-medium backdrop-blur-md">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm">Premium Car Rental Service</span>
-              </div> */}
-
               <h1
                 className="text-4xl leading-tight font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-7xl"
                 style={{ fontFamily: "Orbitron, sans-serif" }}
@@ -83,18 +109,37 @@ const Hero = () => {
             {/* Background Blob */}
             <div className="absolute top-1/2 left-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-linear-to-b from-white/10 to-transparent blur-2xl"></div>
 
-            <div className="relative z-10 w-full max-w-150 transform transition-transform duration-500 hover:scale-105 max-lg:hidden">
-              <img
-                src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800"
-                alt="Luxury Sports Car"
-                className="w-full drop-shadow-2xl"
-              />
+            {/* Parallax Container */}
+            <div 
+              className="relative z-10 w-full max-w-150 transition-transform duration-300 ease-out will-change-transform"
+              style={{ transform: "translateY(calc(var(--parallax-y) * 0.05px))" }}
+            >
+              {/* Animation Layer (Slow Zoom + Hover Scale) */}
+              <div className="group/car relative overflow-hidden rounded-2xl shadow-2xl transition-transform duration-700 ease-in-out hover:scale-[1.02]">
+                <div className="animate-slow-zoom duration-[10s] infinite ease-in-out">
+                  <img
+                    src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800"
+                    alt="Luxury Sports Car"
+                    className="w-full object-cover transition-transform duration-700"
+                  />
+                </div>
 
-              <div className="absolute top-0 -right-4 animate-pulse rounded-xl bg-white/10 p-4 backdrop-blur-md sm:top-20 sm:-right-8">
+                {/* Cinematic Gradient Overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: "linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.2), transparent)"
+                  }}
+                ></div>
+
+                {/* Light Sweep / Reflection Effect */}
+                <div className="absolute inset-0 animate-light-sweep pointer-events-none bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-[0.08] duration-[8s] infinite ease-in-out"></div>
+              </div>
+
+              {/* Float Badge */}
+              <div className="absolute top-10 -right-4 animate-pulse rounded-xl bg-white/10 p-4 backdrop-blur-md sm:top-20 sm:-right-8">
                 <div className="text-center">
-                  <p className="text-xs font-medium text-gray-300">
-                    Daily Rate
-                  </p>
+                  <p className="text-xs font-medium text-gray-300">Daily Rate</p>
                   <p className="text-xl font-bold text-white">From DZD 4500</p>
                 </div>
               </div>

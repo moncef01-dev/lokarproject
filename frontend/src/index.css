@@ -22,6 +22,16 @@
       transform: translateX(-50%);
     }
   }
+
+  @keyframes slow-zoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.06); }
+  }
+
+  @keyframes light-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    15%, 100% { transform: translateX(200%) skewX(-15deg); }
+  }
 }
 
 body {
@@ -38,3 +48,8 @@ h5,
 h6 {
   font-family: var(--font-heading);
 }
+
+button {
+  cursor: pointer;
+}
+

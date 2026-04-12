@@ -17,33 +17,36 @@ const logos = [
 
 const MovingLogosSection = () => {
   return (
-    <div className="bg-white py-20 overflow-hidden border-b border-gray-100">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8 text-center">
-        <p className="text-sm font-semibold tracking-widest text-[#0A1633] uppercase opacity-60">
-          Discover our world-class marques
-        </p>
+    <div className="bg-white py-24 overflow-hidden border-b border-gray-100">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16 text-center">
+        <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
+          Trusted Network
+        </h2>
+        <h3 className="text-3xl font-bold text-[#0A1633] sm:text-4xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
+          VERIFIED RENTAL PARTNERS
+        </h3>
       </div>
 
-      <div className="relative flex overflow-hidden w-full">
-        <div className="flex animate-marquee gap-16 whitespace-nowrap">
+      <div className="relative flex overflow-hidden w-full group">
+        <div className="flex animate-marquee gap-20 whitespace-nowrap">
           {/* We duplicate the array to create a seamless infinite scroll loop */}
           {[...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div
               key={index}
-              className="flex items-center justify-center px-10 flex-shrink-0"
+              className="flex items-center justify-center px-8 flex-shrink-0 transition-all duration-500 filter grayscale hover:grayscale-0 opacity-40 hover:opacity-100"
             >
               <img
                 src={logo.path}
                 alt={logo.name}
-                className="h-16 md:h-20 w-auto object-contain"
+                className="h-12 md:h-14 w-auto object-contain"
               />
             </div>
           ))}
         </div>
 
         {/* Fade edges */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent"></div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent"></div>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
       </div>
     </div>
   );

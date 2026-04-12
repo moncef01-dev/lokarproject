@@ -1,103 +1,111 @@
-import { Facebook, Instagram, Twitter, Phone, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Facebook, Instagram, Twitter, Phone, Mail, MapPin, Linkedin, ArrowUp } from "lucide-react";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer id="contact" className="bg-[#0A1633] py-12 text-white">
+    <footer id="contact" className="bg-white pt-24 pb-12 overflow-hidden border-t border-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 grid gap-8 md:grid-cols-4">
-          <div>
-            <h3
-              className="mb-4 text-3xl font-bold"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+          {/* Brand Info */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-1">
+            <h1
+              className="text-3xl font-black tracking-tighter text-[#0A1633] mb-6 cursor-pointer"
               style={{ fontFamily: "Orbitron, sans-serif" }}
+              onClick={() => navigate("/")}
             >
               <span className="text-[#C8102E]">L</span>OKAR
-            </h3>
-            <p className="mb-4 text-gray-400">
-              Your trusted partner in connecting with the best car rental
-              agencies.
+            </h1>
+            <p className="text-gray-500 font-medium leading-relaxed mb-8 max-w-sm">
+              The premium car rental marketplace in Algeria. We bridge the gap between luxury car agencies and your next adventure with trust and transparency.
             </p>
             <div className="flex gap-4">
-              <Facebook className="h-5 w-5 cursor-pointer transition hover:text-[#C8102E]" />
-              <Instagram className="h-5 w-5 cursor-pointer transition hover:text-[#C8102E]" />
-              <Twitter className="h-5 w-5 cursor-pointer transition hover:text-[#C8102E]" />
+              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+                <a key={i} href="#" className="h-10 w-10 flex items-center justify-center rounded-full bg-gray-50 text-[#0A1633] transition-all hover:bg-[#C8102E] hover:text-white">
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h4 className="mb-4 text-lg font-bold">Useful Links</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li>
-                <a href="#" className="transition hover:text-[#C8102E]">
-                  About Us
-                </a>
+            <h4 className="text-sm font-bold tracking-widest text-[#0A1633] uppercase mb-8">Navigation</h4>
+            <ul className="space-y-4 text-gray-400 font-semibold uppercase tracking-tight text-xs">
+              {["Home", "Browse Cars", "About Us", "Contact", "Become Partner"].map((link) => (
+                <li key={link}>
+                  <a 
+                    href="#" 
+                    className="text-gray-500 font-semibold transition-all hover:text-[#C8102E] hover:translate-x-1 inline-block"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (link === "Home") navigate("/");
+                      if (link === "Browse Cars") navigate("/cars");
+                      if (link === "Become Partner") navigate("/become-partner");
+                    }}
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h4 className="text-sm font-bold tracking-widest text-[#0A1633] uppercase mb-8">Contact</h4>
+            <ul className="space-y-6">
+              <li className="flex gap-4">
+                <MapPin className="h-5 w-5 text-[#C8102E] shrink-0" />
+                <span className="text-gray-500 font-semibold uppercase tracking-tight text-xs">Algiers, Algeria</span>
               </li>
-              <li>
-                <a href="#" className="transition hover:text-[#C8102E]">
-                  How It Works
-                </a>
+              <li className="flex gap-4">
+                <Phone className="h-5 w-5 text-[#C8102E] shrink-0" />
+                <span className="text-gray-500 font-semibold tracking-tight text-xs">+213 557 952 981</span>
               </li>
-              <li>
-                <a href="#" className="transition hover:text-[#C8102E]">
-                  For Agencies
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition hover:text-[#C8102E]">
-                  FAQ
-                </a>
+              <li className="flex gap-4">
+                <Mail className="h-5 w-5 text-[#C8102E] shrink-0" />
+                <span className="text-gray-500 font-semibold tracking-tight text-xs uppercase">support@lokar.dz</span>
               </li>
             </ul>
           </div>
 
+          {/* Trust & Payment Area */}
           <div>
-            <h4 className="mb-4 text-lg font-bold">Contact</h4>
-            <ul className="space-y-3 text-gray-400">
-              <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                +213 557 952 981
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                zinafimoncef63@gmail.com
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="mb-4 text-lg font-bold">Contact Options</h4>
-            <div className="space-y-3">
-              <a
-                href="tel:+213557952981"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 transition hover:bg-blue-700"
-              >
-                <Phone className="h-4 w-4" />
-                Call
-              </a>
-              <a
-                href="mailto:zinafimoncef63@gmail.com"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 py-3 transition hover:bg-blue-600"
-              >
-                <Mail className="h-4 w-4" />
-                Email
-              </a>
-              <a
-                href="https://wa.me/213557952981"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#00C853] py-3 transition hover:bg-green-600"
-              >
-                <Phone className="h-4 w-4" />
-                WhatsApp
-              </a>
+            <h4 className="text-sm font-bold tracking-widest text-[#0A1633] uppercase mb-8">Trust & Payment</h4>
+            <div className="grid grid-cols-3 gap-4 mb-8 grayscale opacity-50">
+              <div className="h-8 bg-gray-200 rounded flex items-center justify-center font-black text-[10px] text-gray-400">VISA</div>
+              <div className="h-8 bg-gray-200 rounded flex items-center justify-center font-black text-[10px] text-gray-400">MC</div>
+              <div className="h-8 bg-gray-200 rounded flex items-center justify-center font-black text-[10px] text-gray-400">DA</div>
+            </div>
+            <div className="p-6 rounded-2xl bg-gray-50 ring-1 ring-gray-100 italic text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-loose">
+              "Lokar is committed to providing a secure environment for all vehicle rental transactions in Algeria."
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
-          <p>
-            &copy; 2026 Lokar. All rights reserved. Made with passion for car
-            enthusiasts.
+        <div className="pt-12 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            © {currentYear} LOKAR. ALL RIGHTS RESERVED.
           </p>
+          
+          <div className="flex gap-8 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <a href="#" className="hover:text-[#C8102E]">Privacy Policy</a>
+            <a href="#" className="hover:text-[#C8102E]">Terms of Service</a>
+          </div>
+
+          <button 
+            onClick={scrollToTop}
+            className="h-12 w-12 flex items-center justify-center rounded-full bg-[#0A1633] text-white shadow-xl transition-all hover:bg-[#C8102E] hover:translate-y-[-4px] active:scale-90"
+          >
+            <ArrowUp className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </footer>
@@ -105,3 +113,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

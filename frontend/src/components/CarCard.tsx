@@ -35,105 +35,86 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
 
   return (
     <>
-      <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] hover:ring-[3px] hover:ring-gray-100/50">
-        {/* Top Section: Image */}
-        <div className="relative h-64 w-full overflow-hidden bg-gray-50">
+      <div className="group relative h-full flex flex-col overflow-hidden rounded-3xl bg-white transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)] hover:-translate-y-2 ring-1 ring-gray-100">
+        {/* Top Section: Image Area */}
+        <div className="relative h-64 w-full overflow-hidden bg-[#F9FAFB]">
           <img
             src={image}
             alt={`${car.brand} ${name}`}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
                 "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1000";
             }}
           />
           
-          {/* Subtle Dark Gradient Overlay for Cinematic Lighting */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-900/30 via-gray-900/5 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-linear-to-t from-[#0A1633]/40 via-transparent to-transparent opacity-60"></div>
           
-          {/* Top-left: Agency Badge */}
-          <div className="absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold tracking-wide text-gray-900 shadow-sm backdrop-blur-md border border-white/20">
-            {agencyName}
+          {/* Agency Badge */}
+          <div className="absolute top-5 left-5">
+            <div className="glass-card rounded-full px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#0A1633] uppercase shadow-sm">
+              {agencyName}
+            </div>
           </div>
           
-          {/* Top-right: Badges */}
-          <div className="absolute top-4 right-4 flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm backdrop-blur-md border border-white/20">
+          {/* Status/Urgency Badges */}
+          <div className="absolute top-5 right-5 flex flex-col items-end gap-2">
+            <div className="flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-[#0A1633] shadow-sm backdrop-blur-md">
               <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-              <span>{car.rating || "New"}</span>
+              <span>{car.rating || "5.0"}</span>
             </div>
-            <div
-              className={`rounded-full px-3 py-1 text-xs font-bold shadow-sm backdrop-blur-md border border-white/20 transition-colors ${
-                car.availability === "available"
-                  ? "bg-green-500/90 text-white"
-                  : car.availability === "rented"
-                    ? "bg-gray-500/90 text-white"
-                    : car.availability === "maintenance"
-                      ? "bg-orange-500/90 text-white"
-                      : "bg-gray-800/90 text-white"
-              }`}
-            >
-              {car.availability === "available"
-                ? "Available"
-                : car.availability === "rented"
-                  ? "Rented"
-                  : car.availability === "maintenance"
-                    ? "Maintenance"
-                    : car.availability
-                      ? car.availability.charAt(0).toUpperCase() + car.availability.slice(1)
-                      : "Unknown"}
-            </div>
+            
+            {car.availability === "available" && (
+              <div className="animate-pulse rounded-full bg-orange-500 px-2.5 py-1 text-[9px] font-black uppercase tracking-tighter text-white shadow-lg">
+                Only 2 left
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Bottom Section: Content */}
-        <div className="flex flex-1 flex-col p-5 sm:p-6">
-          <div className="mb-1 flex items-baseline justify-between">
-            <h4 className="text-xl font-bold tracking-tight text-gray-900 line-clamp-1">
-              {car.brand} {name}
+        {/* Bottom Section: Info */}
+        <div className="flex flex-1 flex-col p-6 sm:p-8">
+          <div className="mb-2">
+            <h4 className="text-2xl font-bold tracking-tight text-[#0A1633]">
+              {car.brand} <span className="text-gray-400">{name}</span>
             </h4>
-          </div>
-          
-          <div className="mb-6 text-sm font-medium text-gray-500">
-            {car.year} • {agencyName}
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+              Model Year {car.year}
+            </p>
           </div>
 
           {/* Specs */}
-          <div className="mb-7 flex items-center gap-5 text-sm font-medium text-gray-600">
-            <div className="flex items-center gap-1.5">
-              <Fuel className="h-4 w-4 text-gray-400" />
-              {car.specs?.fuel || "Petrol"}
+          <div className="my-8 flex items-center justify-between border-y border-gray-50 py-4">
+            <div className="flex flex-col items-center gap-1">
+              <Fuel className="h-4 w-4 text-[#C8102E]" />
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{car.specs?.fuel || "Petrol"}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Settings className="h-4 w-4 text-gray-400" />
-              {car.specs?.transmission || "Auto"}
+            <div className="flex flex-col items-center gap-1">
+              <Settings className="h-4 w-4 text-[#C8102E]" />
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{car.specs?.transmission || "Auto"}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Users className="h-4 w-4 text-gray-400" />
-              {car.specs?.seats || 5} Seats
+            <div className="flex flex-col items-center gap-1">
+              <Users className="h-4 w-4 text-[#C8102E]" />
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{car.specs?.seats || 5} Seats</span>
             </div>
           </div>
 
-          {/* Divider and Price */}
-          <div className="mt-auto pt-6">
-            <div className="flex items-end justify-between border-t border-gray-100 pt-5">
-              <div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold tracking-tight text-gray-900">
-                    {hasPrice ? `${car.price?.toLocaleString()} DZD` : "-- DZD"}
-                  </span>
-                  <span className="text-sm font-medium text-gray-500">/day</span>
-                </div>
+          <div className="mt-auto flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Price Per Day</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-[#0A1633]">
+                  {hasPrice ? `${car.price?.toLocaleString()} DZD` : "-- DZD"}
+                </span>
               </div>
-
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.15)] active:scale-95"
-              >
-                Reserve
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
             </div>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group/btn relative flex items-center justify-center rounded-full bg-[#0A1633] p-4 text-white transition-all hover:bg-[#C8102E] hover:rotate-90 active:scale-90"
+            >
+              <ArrowRight className="h-5 w-5 transition-transform" />
+            </button>
           </div>
         </div>
       </div>

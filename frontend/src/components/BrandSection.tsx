@@ -35,57 +35,62 @@ const BrandSection = () => {
   }, []);
 
   return (
-    <div className="bg-white py-16">
+    <div className="bg-gray-50 py-24 border-b border-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 text-center">
+        <div className="mb-16 text-center">
+          <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
+            Network Excellence
+          </h2>
           <h3
-            className="mb-4 text-4xl font-bold text-[#0A1633]"
+            className="text-4xl font-bold text-[#0A1633] sm:text-5xl"
             style={{ fontFamily: "Orbitron, sans-serif" }}
           >
-            OUR PARTNER AGENCIES
+            VERIFIED RENTAL PARTNERS
           </h3>
-          <p className="text-gray-600">
-            Browse cars by verified rental agencies
-          </p>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-red-600"></div>
+            <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[#C8102E]"></div>
           </div>
         ) : (
-          <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
             {agencies.length > 0 ? (
               agencies.map((agency) => (
-                <button
+                <div
                   key={agency._id}
-                  className="group flex flex-col items-center justify-center rounded-xl bg-gray-50 p-6 transition hover:bg-[#C8102E] hover:text-white"
-                  onClick={() => navigate("/cars")} // Ideally filter by agency
+                  className="group relative flex flex-col items-center justify-center rounded-3xl bg-white p-8 transition-all hover:bg-[#0A1633] shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer border border-gray-100"
+                  onClick={() => navigate("/cars")}
                 >
-                  <img
-                    src={
-                      agency.img_path ||
-                      "https://ui-avatars.com/api/?name=" +
-                        agency.name +
-                        "&background=random"
-                    }
-                    alt={agency.name}
-                    className="mb-3 h-16 w-16 rounded-full bg-white object-cover shadow-sm transition-transform group-hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
+                  <div className="relative mb-4 h-20 w-20 overflow-hidden rounded-2xl ring-4 ring-gray-50 transition-all group-hover:ring-[#C8102E]/20">
+                    <img
+                      src={
+                        agency.img_path ||
                         "https://ui-avatars.com/api/?name=" +
-                        agency.name +
-                        "&background=random";
-                    }}
-                  />
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-white">
+                          agency.name +
+                          "&background=random"
+                      }
+                      alt={agency.name}
+                      className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://ui-avatars.com/api/?name=" +
+                          agency.name +
+                          "&background=random";
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs font-bold text-[#0A1633] uppercase tracking-widest text-center group-hover:text-white transition-colors line-clamp-1">
                     {agency.name}
                   </span>
-                </button>
+                  
+                  {/* Subtle Glow Effect on Hover */}
+                  <div className="absolute inset-0 rounded-3xl bg-[#C8102E] opacity-0 blur-xl transition-all group-hover:opacity-5 -z-10"></div>
+                </div>
               ))
             ) : (
-              <div className="col-span-full text-center text-gray-500">
-                No agencies registered yet.
+              <div className="col-span-full text-center text-gray-400 font-medium">
+                Establishing partner networks...
               </div>
             )}
           </div>

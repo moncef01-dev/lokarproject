@@ -35,6 +35,8 @@ export interface Vehicle {
     seats?: number;
   };
   img_path: string;
+  category?: string;
+  is_luxury?: boolean;
   availability: string;
   agency_id: string;
 }
@@ -95,6 +97,12 @@ export const adminService = {
     }
     if (vehicleData.specs?.seats !== undefined) {
       formData.append("seats", String(vehicleData.specs.seats));
+    }
+    if (vehicleData.category) {
+      formData.append("category", vehicleData.category);
+    }
+    if (vehicleData.is_luxury !== undefined) {
+      formData.append("is_luxury", String(vehicleData.is_luxury));
     }
     formData.append("availability", vehicleData.availability || "available");
 
@@ -183,6 +191,12 @@ export const adminService = {
     }
     if (vehicleData.specs?.seats !== undefined) {
       formData.append("seats", String(vehicleData.specs.seats));
+    }
+    if (vehicleData.category) {
+      formData.append("category", vehicleData.category);
+    }
+    if (vehicleData.is_luxury !== undefined) {
+      formData.append("is_luxury", String(vehicleData.is_luxury));
     }
     formData.append("availability", vehicleData.availability || "available");
 

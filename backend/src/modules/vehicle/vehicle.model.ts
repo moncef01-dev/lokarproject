@@ -9,6 +9,8 @@ const vehicleSchema = new mongoose.Schema(
     },
     brand: { type: String, required: true },
     model: { type: String, required: true },
+    category: { type: String },
+    is_luxury: { type: Boolean, default: false },
     img_path: { type: String },
     year: { type: String },
     price: { type: Number },

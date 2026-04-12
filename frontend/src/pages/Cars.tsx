@@ -9,6 +9,12 @@ import { publicService } from "../services/public.service";
 const Cars = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAgency, setSelectedAgency] = useState("All");
+  const [selectedBrand, setSelectedBrand] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [isLuxury, setIsLuxury] = useState(false);
+
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,23 +32,47 @@ const Cars = () => {
     fetchCars();
   }, []);
 
-  // Extract unique agency names for filter
+  // Extract unique arrays for filters
   const agencies = [
     "All",
     ...new Set(cars.map((car) => car.agency_id?.name).filter(Boolean)),
+  ];
+  
+  const brands = [
+    "All",
+    ...new Set(cars.map((car) => car.brand).filter(Boolean)),
+  ];
+
+  const categories = [
+    "All",
+    ...new Set(cars.map((car) => car.category).filter(Boolean)),
   ];
 
   const filteredCars = cars.filter((car) => {
     const model = car.model || "";
     const brand = car.brand || "";
     const agencyName = car.agency_id?.name || "";
+    const category = car.category || "";
+    const price = car.price || 0;
+    const luxury = car.is_luxury || false;
 
     const matchesSearch =
       model.toLowerCase().includes(searchTerm.toLowerCase()) ||
       brand.toLowerCase().includes(searchTerm.toLowerCase());
+      
     const matchesAgency =
       selectedAgency === "All" || agencyName === selectedAgency;
-    return matchesSearch && matchesAgency;
+
+    const matchesBrand = selectedBrand === "All" || brand === selectedBrand;
+    
+    const matchesCategory = selectedCategory === "All" || category === selectedCategory;
+
+    const matchesMinPrice = minPrice === "" || price >= Number(minPrice);
+    const matchesMaxPrice = maxPrice === "" || price <= Number(maxPrice);
+    
+    const matchesLuxury = !isLuxury || luxury;
+
+    return matchesSearch && matchesAgency && matchesBrand && matchesCategory && matchesMinPrice && matchesMaxPrice && matchesLuxury;
   });
 
   return (
@@ -57,7 +87,19 @@ const Cars = () => {
             setSearchTerm={setSearchTerm}
             selectedAgency={selectedAgency}
             setSelectedAgency={setSelectedAgency}
-            agencies={agencies}
+            agencies={agencies as string[]}
+            selectedBrand={selectedBrand}
+            setSelectedBrand={setSelectedBrand}
+            brands={brands as string[]}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            categories={categories as string[]}
+            minPrice={minPrice}
+            setMinPrice={setMinPrice}
+            maxPrice={maxPrice}
+            setMaxPrice={setMaxPrice}
+            isLuxury={isLuxury}
+            setIsLuxury={setIsLuxury}
           />
 
           {/* Cars Grid */}

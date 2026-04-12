@@ -11,6 +11,10 @@ export const vehicleSchema = z.object({
   brand: z.string().min(1, { message: "Brand is required" }),
 
   model: z.string().min(1, { message: "Model is required" }),
+  
+  category: z.string().optional(),
+  
+  is_luxury: z.union([z.boolean(), z.string().transform(v => v === "true")]).optional(),
 
   year: z.string().optional(),
 

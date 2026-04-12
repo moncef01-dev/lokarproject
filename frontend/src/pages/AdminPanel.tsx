@@ -93,6 +93,8 @@ const AdminPanel: React.FC = () => {
       transmission: "",
       seats: undefined,
     },
+    category: "",
+    is_luxury: false,
     img_path: "",
     availability: "available",
   });
@@ -232,6 +234,8 @@ const AdminPanel: React.FC = () => {
           transmission: "",
           seats: undefined,
         },
+        category: "",
+        is_luxury: false,
         img_path: "",
         availability: "available",
       });
@@ -300,6 +304,8 @@ const AdminPanel: React.FC = () => {
         transmission: "",
         seats: undefined,
       },
+      category: "",
+      is_luxury: false,
       img_path: "",
       availability: "available",
     });
@@ -1605,6 +1611,42 @@ const AdminPanel: React.FC = () => {
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
                     placeholder="e.g. M4"
                   />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Category
+                  </label>
+                  <select
+                    value={currentCar.category || ""}
+                    onChange={(e) =>
+                      setCurrentCar({ ...currentCar, category: e.target.value })
+                    }
+                    className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
+                  >
+                    <option value="">Select Category</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Berline">Berline</option>
+                    <option value="Cabriolet">Cabriolet</option>
+                    <option value="Sport">Sport</option>
+                    <option value="Compact">Compact</option>
+                    <option value="Minivan">Minivan</option>
+                  </select>
+                </div>
+                <div className="space-y-2 flex items-end pb-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentCar.is_luxury || false}
+                      onChange={(e) =>
+                        setCurrentCar({ ...currentCar, is_luxury: e.target.checked })
+                      }
+                      className="w-5 h-5 accent-[#C8102E] border-gray-300 rounded"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Luxury Vehicle</span>
+                  </label>
                 </div>
               </div>
 

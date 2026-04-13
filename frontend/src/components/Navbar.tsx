@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ShieldCheck } from "lucide-react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,9 +19,10 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    logout();
-    navigate("/login");
+    await logout();
+    navigate("/login", { replace: true });
   };
+
 
   return (
     <nav
@@ -62,13 +64,17 @@ const Navbar = () => {
               (user?.role === "superadmin" || user?.role === "agency") && (
                 <a
                   href="#"
-                  className="rounded-full bg-[#C8102E]/10 px-4 py-1.5 text-xs font-bold text-[#C8102E] ring-1 ring-inset ring-[#C8102E]/20 transition-all hover:bg-[#C8102E]/20"
+                  className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-brand-red/10 px-4 py-2 text-xs font-bold text-brand-red ring-1 ring-inset ring-brand-red/20 transition-all hover:bg-brand-red/20 hover:scale-105 active:scale-95"
                   onClick={(e) => {
                     e.preventDefault();
                     navigate("/admin");
                   }}
                 >
-                  Admin Portal
+                  <ShieldCheck size={14} className="transition-transform group-hover:rotate-12" />
+                  <span>Admin Portal</span>
+                  
+                  {/* Shine Effect Overlay */}
+                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shine" />
                 </a>
               )}
           </div>

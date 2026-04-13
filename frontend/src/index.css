@@ -13,6 +13,8 @@
   --font-body: "Inter", sans-serif;
 
   --animate-marquee: marquee 40s linear infinite;
+  --animate-shine: light-sweep 3s ease-in-out infinite;
+
 
   @keyframes marquee {
     from {

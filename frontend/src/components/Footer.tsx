@@ -40,8 +40,8 @@ const Footer = () => {
             <ul className="space-y-4 text-gray-400 font-semibold uppercase tracking-tight text-xs">
               {["Home", "Browse Cars", "About Us", "Contact", "Become Partner"].map((link) => (
                 <li key={link}>
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="text-gray-500 font-semibold transition-all hover:text-[#C8102E] hover:translate-x-1 inline-block"
                     onClick={(e) => {
                       e.preventDefault();
@@ -63,7 +63,7 @@ const Footer = () => {
             <ul className="space-y-6">
               <li className="flex gap-4">
                 <MapPin className="h-5 w-5 text-[#C8102E] shrink-0" />
-                <span className="text-gray-500 font-semibold uppercase tracking-tight text-xs">Algiers, Algeria</span>
+                <span className="text-gray-500 font-semibold uppercase tracking-tight text-xs">Constantine, Algeria</span>
               </li>
               <li className="flex gap-4">
                 <Phone className="h-5 w-5 text-[#C8102E] shrink-0" />
@@ -71,7 +71,7 @@ const Footer = () => {
               </li>
               <li className="flex gap-4">
                 <Mail className="h-5 w-5 text-[#C8102E] shrink-0" />
-                <span className="text-gray-500 font-semibold tracking-tight text-xs uppercase">support@lokar.dz</span>
+                <span className="text-gray-500 font-semibold tracking-tight text-xs uppercase">zinafimoncef63@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -102,13 +102,13 @@ const Footer = () => {
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
             © {currentYear} LOKAR. ALL RIGHTS RESERVED.
           </p>
-          
+
           <div className="flex gap-8 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
             <a href="#" className="hover:text-[#C8102E]">Privacy Policy</a>
             <a href="#" className="hover:text-[#C8102E]">Terms of Service</a>
           </div>
 
-          <button 
+          <button
             onClick={scrollToTop}
             className="h-12 w-12 flex items-center justify-center rounded-full bg-[#0A1633] text-white shadow-xl transition-all hover:bg-[#C8102E] hover:translate-y-[-4px] active:scale-90"
           >

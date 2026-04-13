@@ -7,7 +7,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: () => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
 }
 
@@ -44,11 +44,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await checkAuth();
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    // Ideally call backend logout here to clear cookies
-    // await api.post('/auth/logout');
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
   };
 
   return (

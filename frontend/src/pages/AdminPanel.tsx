@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Car,
@@ -496,12 +496,16 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  if (authLoading || (isLoading && !error)) {
+  if (authLoading) {
     return (
       <div className="bg-brand-navy flex h-screen items-center justify-center">
         <Loader2 className="text-brand-red h-10 w-10 animate-spin" />
       </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
   return (

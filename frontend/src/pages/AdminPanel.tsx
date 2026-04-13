@@ -359,7 +359,7 @@ const AdminPanel: React.FC = () => {
       await contractService.downloadContract(contract._id);
     } catch (err) {
       console.error("Failed to generate contract", err);
-      setError("Failed to generate contract. Please try again.");
+      // setError("Failed to generate contract. Please try again.");
     } finally {
       setLoadingContracts((prev) => ({ ...prev, [prebookingId]: false }));
     }

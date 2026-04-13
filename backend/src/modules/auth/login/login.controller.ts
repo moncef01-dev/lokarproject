@@ -28,14 +28,16 @@ export async function loginHnadler(req: Request, res: Response) {
 
   res
     .cookie("access_token", accessToken, {
-      // maxAge: 15 * 60 * 1000,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
+      sameSite: "none", // Required for cross-domain (Vercel → Render)
+      secure: true,     // Required when sameSite is 'none'
     })
     .cookie("refresh_token", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      // path: "/api/auth/refresh",
+      sameSite: "none", // Required for cross-domain
+      secure: true,
     })
     .status(200)
     .json({

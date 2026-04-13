@@ -17,15 +17,16 @@ export async function signupHnadler(req: Request, res: Response) {
   // console.log("refresh", " ", accessToken);
   res
     .cookie("access_token", accessToken, {
-      // maxAge: 15 * 30 * 30 * 30 * 1000,
       maxAge: 30 * 1000,
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "none",
+      secure: true,
     })
     .cookie("refresh_token", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: "lax",
       httpOnly: true,
+      sameSite: "none",
+      secure: true,
     });
   res.status(201).json({
     message: "User created successfully",

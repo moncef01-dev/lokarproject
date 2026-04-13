@@ -13,13 +13,13 @@ authRouter.post("/logout", (req, res) => {
   res
     .clearCookie("access_token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
+      secure: true,
     })
     .clearCookie("refresh_token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
+      secure: true,
     })
     .status(200)
     .json({ message: "Logged out successfully" });

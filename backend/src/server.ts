@@ -7,6 +7,9 @@ connectDB();
 server.on("listening", () => {
   console.log(`Server is listening on port ${PORT}`);
   setInterval(() => {
-    fetch("https://backend-gazg.onrender.com").catch(() => {});
-  }, 120000);
+    fetch("https://backend-gazg.onrender.com").then((res) => {
+      // fetch("http://localhost:3000").then((res) => {
+      console.log(res.status);
+    }).catch(() => { });
+  }, 1200);
 });

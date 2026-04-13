@@ -26,6 +26,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+app.get("/", (req, res) => {
+  res.send("hello ezz")
+})
 console.log("node env " + getNodeENV());
 app.get(
   "/api",

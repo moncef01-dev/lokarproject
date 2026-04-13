@@ -11,5 +11,5 @@ server.on("listening", () => {
       // fetch("http://localhost:3000").then((res) => {
       console.log(res.status);
     }).catch(() => { });
-  }, 1200);
+  }, 10000);
 });

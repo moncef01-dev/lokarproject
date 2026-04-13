@@ -66,7 +66,6 @@ const Hero = () => {
           <div className="space-y-6">
             <h1
               className="text-5xl font-black uppercase tracking-tighter sm:text-7xl lg:text-8xl"
-              style={{ fontFamily: "Orbitron, sans-serif" }}
             >
               FIND AND BOOK
               <br />
@@ -108,9 +107,12 @@ const Hero = () => {
               <Check className="h-4 w-4 text-[#C8102E]" strokeWidth={3} />
               No hidden fees
             </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-[#C8102E]" strokeWidth={3} />
-              Fast booking
+            <div className="flex items-center gap-2 bg-white/10 px-10 py-5 rounded-full border-2 border-white/20 backdrop-blur-2xl hover:bg-white/15 transition-all hover:scale-105 active:scale-95 cursor-default group">
+              <div className="flex gap-3 mr-5 bg-white/10 p-2 rounded-lg">
+                <img src="/assets/cib.svg" alt="CIB" className="h-6 w-auto brightness-0 invert opacity-100" />
+                <img src="/assets/edahabia.svg" alt="Edahabia" className="h-6 w-auto brightness-0 invert opacity-100" />
+              </div>
+              <span className="text-sm sm:text-base text-white font-black tracking-[0.1em] uppercase">Pay Online with CIB / Edahabia</span>
             </div>
           </div>
           

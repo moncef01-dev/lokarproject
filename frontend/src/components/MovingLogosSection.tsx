@@ -23,7 +23,7 @@ const MovingLogosSection = () => {
           Trusted Network
         </h2>
         <h3 className="text-3xl font-bold text-[#0A1633] sm:text-4xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
-          VERIFIED RENTAL PARTNERS
+          Browse Cars from Leading Brands
         </h3>
       </div>
 

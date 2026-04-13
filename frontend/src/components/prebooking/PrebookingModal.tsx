@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { X, CheckCircle, AlertCircle, Fuel, Settings, Users, ArrowLeft, ArrowRight, ShieldCheck, MapPin, BadgeCheck } from "lucide-react";
+import { X, CheckCircle, AlertCircle, Fuel, Settings, Users, ArrowLeft, ArrowRight, ShieldCheck, MapPin, BadgeCheck, CreditCard, Wallet, Landmark } from "lucide-react";
 import { usePrebooking, type PrebookingFormData } from "../../hooks/usePrebooking";
 import { getImageUrl } from "../../utils/imageUtils";
 
@@ -26,21 +26,38 @@ interface PrebookingModalProps {
     };
 }
 
+type PaymentStep = "select" | "form" | "processing" | "success";
+type PaymentMethod = "pickup" | "card";
+type CardType = "cib" | "edahabia";
+
 const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => {
-    const { createPrebooking, isLoading, error, success, resetState } = usePrebooking();
+    const { createPrebooking, isLoading: isApiLoading, error, success: apiSuccess, resetState } = usePrebooking();
     const [step, setStep] = useState(1);
+    
+    // Payment Specific State
+    const [paymentStep, setPaymentStep] = useState<PaymentStep>("select");
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
+    const [cardType, setCardType] = useState<CardType | null>(null);
+    const [processingMessage, setProcessingMessage] = useState("Processing payment...");
+    const [bookingId] = useState(() => `LK-${Math.floor(100000 + Math.random() * 900000)}`);
 
     const {
         register,
         handleSubmit,
         watch,
         trigger,
-        formState: { errors },
+        formState: { errors, isValid },
         reset,
-    } = useForm<PrebookingFormData>({ mode: "onChange" });
+    } = useForm<PrebookingFormData & { card_number?: string; card_expiry?: string; card_cvv?: string; card_name?: string }>({ 
+        mode: "onChange" 
+    });
 
     const startDate = watch("start_date");
     const endDate = watch("end_date");
+    const cardNumber = watch("card_number") || "";
+    const cardName = watch("card_name") || "";
+    const cardExpiry = watch("card_expiry") || "";
+    
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
 
     useEffect(() => {
@@ -67,6 +84,9 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
     useEffect(() => {
         if (isOpen) {
             setStep(1);
+            setPaymentStep("select");
+            setPaymentMethod(null);
+            setCardType(null);
         } else {
             reset();
             resetState();
@@ -89,32 +109,88 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
         }
     }, [startDate, endDate, car.price]);
 
+    // Processing Message Progression
+    useEffect(() => {
+        if (paymentStep === "processing") {
+            const messages = ["Processing payment...", "Verifying card...", "Confirming booking..."];
+            let i = 0;
+            const interval = setInterval(() => {
+                i++;
+                if (i < messages.length) {
+                    setProcessingMessage(messages[i]);
+                } else {
+                    clearInterval(interval);
+                }
+            }, 600);
+            return () => clearInterval(interval);
+        }
+    }, [paymentStep]);
+
     const handleNextStep = async () => {
         let fields: Array<keyof PrebookingFormData> = [];
         if (step === 1) fields = ["start_date", "end_date", "pickup_location", "rental_reason"];
-        if (step === 2) fields = ["customer_name", "phone", "email", "date_of_birth"];
+        if (step === 2) fields = ["customer_name", "phone", "email", "date_of_birth", "license_number", "license_issue_date", "consent_given"];
         
-        const isStepValid = await trigger(fields);
+        const isStepValid = await trigger(fields as any);
         if (isStepValid) {
             setStep(s => s + 1);
         }
     };
 
-    const onSubmit = async (data: PrebookingFormData) => {
+    const startPaymentFlow = async () => {
+        if (paymentMethod === "pickup") {
+            // Validate all current data before finalizing
+            handleSubmit(handleFinalSubmit)();
+        } else {
+            setPaymentStep("form");
+        }
+    };
+
+    const handleFinalSubmit = async (data: any) => {
         const agencyId = typeof car.agency_id === "object" ? car.agency_id._id : car.agency_id;
         if (!agencyId) return;
 
-        await createPrebooking({
-            ...data,
-            car_id: car._id || String(car.id),
-            agency_id: agencyId,
-        });
+        if (paymentMethod === "card") {
+            setPaymentStep("processing");
+            // Simulate payment delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+
+        try {
+            await createPrebooking({
+                ...data,
+                car_id: car._id || String(car.id),
+                agency_id: agencyId,
+            } as PrebookingFormData);
+            
+            if (paymentMethod === "card") {
+                setPaymentStep("success");
+            }
+        } catch (err) {
+            setPaymentStep("select"); // Go back on error
+        }
     };
 
     if (!isOpen) return null;
 
     const carImage = getImageUrl(car.img_path || car.image);
     const agencyName = typeof car.agency_id === "object" ? car.agency_id?.name : "Partner Agency";
+
+    // Format card number for preview
+    const formatCardNumber = (num: string) => {
+        const v = num.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        const matches = v.match(/\d{4,16}/g);
+        const match = matches && matches[0] || '';
+        const parts = [];
+        for (let i = 0, len = match.length; i < len; i += 4) {
+            parts.push(match.substring(i, i + 4));
+        }
+        if (parts.length) {
+            return parts.join(' ');
+        } else {
+            return v;
+        }
+    };
 
     return (
         <div 
@@ -134,333 +210,399 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                     <X size={20} strokeWidth={2.5} />
                 </button>
 
-                {success ? (
-                    <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center">
-                        <div className="mb-6 rounded-full bg-green-50 p-6 text-green-500 ring-8 ring-green-50/50">
-                            <CheckCircle size={64} strokeWidth={2} />
+                {(apiSuccess && (paymentMethod === "pickup" || paymentStep === "success")) ? (
+                    <div className="flex h-full w-full flex-col items-center justify-center p-8 bg-white overflow-y-auto">
+                        <div className="mb-8 flex flex-col items-center animate-[fadeIn_0.5s_ease-out]">
+                            <div className="mb-6 rounded-full bg-green-500 p-5 text-white shadow-2xl shadow-green-200">
+                                <CheckCircle size={56} strokeWidth={2.5} />
+                            </div>
+                            <h2 className="text-3xl font-black text-gray-900 tracking-tight text-center">
+                                {paymentMethod === "card" ? "Payment Successful ✅" : "Booking Confirmed ✅"}
+                            </h2>
+                            <p className="mt-2 text-gray-500 font-bold tracking-widest uppercase text-xs">
+                                Booking #{bookingId} confirmed
+                            </p>
                         </div>
-                        <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900">
-                            Reservation Requested!
-                        </h2>
-                        <p className="mb-8 max-w-md text-gray-500 leading-relaxed">
-                            Your booking request for the <strong className="text-gray-900">{car.brand} {car.model}</strong> has been secured and sent directly to {agencyName}. They will contact you shortly.
-                        </p>
+
+                        <div className="w-full max-w-md space-y-4 rounded-3xl border border-gray-100 bg-gray-50/50 p-6 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="h-16 w-24 overflow-hidden rounded-xl">
+                                    <img src={carImage} alt={car.model} className="h-full w-full object-cover" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900">{car.brand} {car.model}</h4>
+                                    <p className="text-xs text-gray-500 font-medium">{agencyName}</p>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-4">
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Pick up</p>
+                                    <p className="text-sm font-bold text-gray-900">
+                                        {startDate ? new Date(startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '---'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Return</p>
+                                    <p className="text-sm font-bold text-gray-900">
+                                        {endDate ? new Date(endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '---'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Amount {paymentMethod === "card" ? "Paid" : "to pay"}</span>
+                                <span className="text-lg font-black text-gray-900">{totalPrice?.toLocaleString()} DZD</span>
+                            </div>
+                        </div>
+
                         <button
                             onClick={onClose}
-                            className="rounded-full bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-gray-800 hover:shadow-lg active:scale-95"
+                            className="mt-10 rounded-full bg-gray-900 px-10 py-4 text-sm font-bold text-white shadow-xl transition-all hover:bg-gray-800 hover:scale-105 active:scale-95"
                         >
                             Return to Catalog
                         </button>
                     </div>
                 ) : (
                     <>
-                        {/* ======================= LEFT: PRODUCT SHOWCASE (Scrollable on Desktop) ======================= */}
+                        {/* ======================= LEFT: PRODUCT SHOWCASE ======================= */}
                         <div className="flex-1 lg:overflow-y-auto bg-gray-50 flex flex-col relative w-full lg:w-3/5">
-                            {/* Hero Image Group */}
                             <div className="relative h-[45vh] lg:h-[500px] w-full shrink-0">
-                                <img
-                                    src={carImage}
-                                    alt={`${car.brand} ${car.model}`}
-                                    className="h-full w-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent pointer-events-none" />
-                                
-                                {/* Top Badges */}
+                                <img src={carImage} alt={car.model} className="h-full w-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent" />
                                 <div className="absolute top-6 left-6 flex gap-2">
-                                    <span className="rounded-full bg-white/20 backdrop-blur-md border border-white/20 px-3 py-1 text-xs font-semibold tracking-wide text-white shadow-sm">
-                                        {car.year}
-                                    </span>
-                                    {car.availability === "available" && (
-                                        <span className="rounded-full bg-green-500/90 backdrop-blur-md px-3 py-1 text-xs font-bold text-white shadow-sm">
-                                            Available Now
-                                        </span>
-                                    )}
+                                    <span className="rounded-full bg-white/20 backdrop-blur-md border border-white/20 px-3 py-1 text-xs font-semibold text-white">{car.year}</span>
+                                    {car.availability === "available" && <span className="rounded-full bg-green-500/90 backdrop-blur-md px-3 py-1 text-xs font-bold text-white uppercase tracking-widest">Available</span>}
                                 </div>
-
-                                {/* Hero Text */}
-                                <div className="absolute bottom-8 left-6 md:left-10 text-white pr-6">
-                                    <p className="text-sm font-semibold tracking-widest text-white/80 uppercase mb-1">{car.brand}</p>
-                                    <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-2">
-                                        {car.model}
-                                    </h1>
+                                <div className="absolute bottom-8 left-6 md:left-10 text-white">
+                                    <p className="text-sm font-bold tracking-[0.2em] text-white/70 uppercase mb-1">{car.brand}</p>
+                                    <h1 className="text-4xl sm:text-5xl font-black tracking-tighter">{car.model}</h1>
                                 </div>
                             </div>
 
-                            {/* Info Section under Hero */}
                             <div className="p-6 md:p-10 space-y-10">
-                                {/* Specs Cards */}
                                 <div className="grid grid-cols-3 gap-4">
-                                    <div className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                                        <Fuel className="h-6 w-6 text-gray-400 mb-2" />
-                                        <span className="text-sm font-bold text-gray-900">{car.specs?.fuel || "Petrol"}</span>
-                                        <span className="text-xs text-gray-400 font-medium">Fuel</span>
-                                    </div>
-                                    <div className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                                        <Settings className="h-6 w-6 text-gray-400 mb-2" />
-                                        <span className="text-sm font-bold text-gray-900">{car.specs?.transmission || "Auto"}</span>
-                                        <span className="text-xs text-gray-400 font-medium">Gearbox</span>
-                                    </div>
-                                    <div className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                                        <Users className="h-6 w-6 text-gray-400 mb-2" />
-                                        <span className="text-sm font-bold text-gray-900">{car.specs?.seats || 5}</span>
-                                        <span className="text-xs text-gray-400 font-medium">Seats</span>
-                                    </div>
+                                    {[
+                                        { Icon: Fuel, value: car.specs?.fuel || "Petrol", label: "Fuel" },
+                                        { Icon: Settings, value: car.specs?.transmission || "Auto", label: "Gearbox" },
+                                        { Icon: Users, value: car.specs?.seats || 5, label: "Seats" }
+                                    ].map((spec, i) => (
+                                        <div key={i} className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                                            <spec.Icon className="h-6 w-6 text-gray-400 mb-2" />
+                                            <span className="text-sm font-bold text-gray-900">{spec.value}</span>
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{spec.label}</span>
+                                        </div>
+                                    ))}
                                 </div>
 
-                                {/* Notes & Eligibility */}
-                                <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                                    <h4 className="mb-3 font-bold text-gray-900">Eligibility Requirements</h4>
-                                    <ul className="space-y-2 text-sm text-gray-600 font-medium list-disc list-inside">
-                                        <li>Minimum age: 25 years</li>
-                                        <li>Driving license issued at least 2 years ago</li>
-                                        <li>ID or passport required at pickup</li>
-                                        <li>Deposit may be required</li>
+                                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                                    <h4 className="mb-4 font-black flex items-center gap-2 text-gray-900 uppercase tracking-widest text-xs">
+                                        <BadgeCheck className="text-red-600 h-4 w-4" /> Eligibility Requirements
+                                    </h4>
+                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {["Minimum age: 25 years", "2+ years license exp.", "Valid ID required", "Deposit may apply"].map((text, i) => (
+                                            <li key={i} className="text-xs text-gray-500 font-bold uppercase tracking-tight flex items-center gap-2">
+                                                <div className="h-1 w-1 rounded-full bg-red-600" /> {text}
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-
-                        {/* ======================= RIGHT: BOOKING PANEL (Non-Scrollable on Desktop) ======================= */}
-                        <div className="w-full lg:w-2/5 shrink-0 bg-white border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col h-[55vh] lg:h-full z-10 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] lg:shadow-none">
-                            
-                            {/* Sticky Header inside Sidebar */}
+                        {/* ======================= RIGHT: FORM PANEL ======================= */}
+                        <div className="w-full lg:w-2/5 shrink-0 bg-white border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col h-[55vh] lg:h-full z-10">
+                            {/* Sub-Header */}
                             <div className="p-6 md:p-8 border-b border-gray-100 bg-white shrink-0">
-                                <div className="flex items-end justify-between mb-2">
-                                    <div className="flex items-baseline gap-1.5">
-                                        <span className="text-3xl font-extrabold tracking-tight text-gray-900">
-                                            {car.price ? `${car.price.toLocaleString()} DZD` : "--"}
-                                        </span>
-                                        <span className="text-sm font-medium text-gray-500">/day</span>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">Daily rate</span>
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="text-3xl font-black tracking-tighter text-gray-900">{car.price?.toLocaleString()} DZD</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-400 font-medium">
-                                    <div className="flex flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                        <div className={`h-full bg-gray-900 transition-all duration-500 ${step === 1 ? 'w-1/3' : step === 2 ? 'w-2/3' : 'w-full'}`} />
+                                    <div className="text-right">
+                                        <span className="text-[10px] font-black tracking-[0.2em] text-red-600 uppercase">Step {step}/3</span>
+                                        <div className="flex mt-1 h-1.5 w-24 bg-gray-100 rounded-full overflow-hidden">
+                                            <div className="h-full bg-gray-900 transition-all duration-500" style={{ width: `${(step / 3) * 100}%` }} />
+                                        </div>
                                     </div>
-                                    <span className="shrink-0 w-12 text-right">Step {step}/3</span>
                                 </div>
                             </div>
 
-                            {/* Booking Form Area (Never scrolls) */}
-                            <div className="flex-1 p-6 md:p-8 bg-white relative">
+                            {/* Content Area */}
+                            <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
                                 {error && (
-                                    <div className="mb-6 flex items-start gap-3 rounded-xl bg-red-50 p-4 text-red-600 border border-red-100 animate-step">
+                                    <div className="mb-6 flex items-start gap-3 rounded-xl bg-red-50 p-4 text-red-600 border border-red-100 animate-[fadeIn_0.3s]">
                                         <AlertCircle size={20} className="mt-0.5 shrink-0" />
-                                        <p className="text-sm font-medium">{error}</p>
+                                        <p className="text-xs font-bold uppercase tracking-tight">{error}</p>
                                     </div>
                                 )}
 
-                                <form id="prebooking-form" onSubmit={handleSubmit(onSubmit)} className="pb-10 lg:pb-0">
-                                    
-                                    {/* --- STEP 1: Rental Details --- */}
+                                <form id="prebooking-form" onSubmit={handleSubmit(handleFinalSubmit)}>
                                     {step === 1 && (
-                                        <div className="space-y-6 animate-step">
-                                            <h3 className="text-xl font-bold tracking-tight text-gray-900 mb-2">Rental Details</h3>
-                                            
+                                        <div className="space-y-6">
+                                            <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Rental Details</h3>
                                             <div className="space-y-4">
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Start Date</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        min={new Date().toISOString().slice(0, 16)}
-                                                        {...register("start_date", { required: "Start date required" })}
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.start_date && <p className="text-xs text-red-500 font-medium">{errors.start_date.message}</p>}
-                                                </div>
-
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">End Date</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        min={watch("start_date") || new Date().toISOString().slice(0, 16)}
-                                                        {...register("end_date", { 
-                                                            required: "End date required",
-                                                            validate: val => new Date(val) > new Date(watch("start_date")) || "End date must be after start" 
-                                                        })}
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.end_date && <p className="text-xs text-red-500 font-medium">{errors.end_date.message}</p>}
-                                                </div>
-
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Pickup Location</label>
-                                                    <div className="relative">
-                                                        <MapPin size={18} className="absolute top-1/2 left-3.5 -translate-y-1/2 text-gray-400" />
-                                                        <input
-                                                            {...register("pickup_location", { required: "Location required" })}
-                                                            placeholder="Airport, City Center..."
-                                                            className="w-full rounded-xl border border-gray-200 pl-10 pr-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                        />
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Start Date</label>
+                                                        <input type="datetime-local" {...register("start_date", { required: true })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" />
                                                     </div>
-                                                    {errors.pickup_location && <p className="text-xs text-red-500 font-medium">{errors.pickup_location.message}</p>}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">End Date</label>
+                                                        <input type="datetime-local" {...register("end_date", { required: true })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" />
+                                                    </div>
                                                 </div>
-
                                                 <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Reason for Rental</label>
-                                                    <select
-                                                        {...register("rental_reason", { required: "Reason required" })}
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors bg-white"
-                                                    >
-                                                        <option value="">Select a reason</option>
-                                                        <option value="Utilisation personnelle">Personal Use (Utilisation personnelle)</option>
-                                                        <option value="Cortège">Wedding / Procession (Cortège)</option>
-                                                        <option value="Délégation">Delegation (Délégation)</option>
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pickup Location</label>
+                                                    <input {...register("pickup_location", { required: true })} placeholder="Algiers Airport, etc." className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Purpose</label>
+                                                    <select {...register("rental_reason", { required: true })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all">
+                                                        <option value="Personal">Personal Use</option>
+                                                        <option value="Business">Business</option>
+                                                        <option value="Event">Event / Wedding</option>
                                                     </select>
-                                                    {errors.rental_reason && <p className="text-xs text-red-500 font-medium">{errors.rental_reason.message}</p>}
                                                 </div>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* --- STEP 2: Personal Info --- */}
                                     {step === 2 && (
-                                        <div className="space-y-6 animate-step hidden-scrollbar">
-                                            <h3 className="text-xl font-bold tracking-tight text-gray-900 mb-2">Personal Information</h3>
-                                            
+                                        <div className="space-y-6">
+                                            <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Your Information</h3>
                                             <div className="space-y-4">
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Full Name</label>
-                                                    <input
-                                                        {...register("customer_name", { required: "Full name required" })}
-                                                        placeholder="John Doe"
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.customer_name && <p className="text-xs text-red-500 font-medium">{errors.customer_name.message}</p>}
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Name</label>
+                                                        <input {...register("customer_name", { required: "Name required" })} placeholder="Full Name" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        {errors.customer_name && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.customer_name.message}</p>}
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Phone</label>
+                                                        <input {...register("phone", { required: "Phone required" })} placeholder="05/06/07..." className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        {errors.phone && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.phone.message}</p>}
+                                                    </div>
                                                 </div>
 
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Phone</label>
-                                                    <input
-                                                        {...register("phone", { required: "Phone required", minLength: { value: 10, message: "Valid phone required" } })}
-                                                        placeholder="+1 234 567 890"
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.phone && <p className="text-xs text-red-500 font-medium">{errors.phone.message}</p>}
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email (Optional)</label>
+                                                        <input {...register("email")} placeholder="email@example.com" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</label>
+                                                        <input type="date" {...register("date_of_birth", { required: "DOB required" })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        {errors.date_of_birth && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.date_of_birth.message}</p>}
+                                                    </div>
                                                 </div>
 
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Email Address <span className="font-normal text-gray-400">(Optional)</span></label>
-                                                    <input
-                                                        type="email"
-                                                        {...register("email")}
-                                                        placeholder="john@example.com"
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">License No</label>
+                                                        <input {...register("license_number", { required: "License required" })} placeholder="123456789" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Issue Date</label>
+                                                        <input type="date" {...register("license_issue_date", { required: "Issue date required" })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                    </div>
                                                 </div>
-
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Date of Birth</label>
-                                                    <input
-                                                        type="date"
-                                                        {...register("date_of_birth", { 
-                                                            required: "DOB required",
-                                                            validate: val => (new Date().getFullYear() - new Date(val).getFullYear() >= 25) || "Must be 25+ years old"
-                                                        })}
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.date_of_birth && <p className="text-xs text-red-500 font-medium">{errors.date_of_birth.message}</p>}
+                                                <div className="pt-2">
+                                                    <label className="flex items-start gap-3 cursor-pointer group">
+                                                        <input type="checkbox" {...register("consent_given", { required: "Please confirm requirements" })} className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-600" />
+                                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight leading-relaxed">
+                                                            I certify that I am 25+ and agree to provide my ID and License during vehicle pick-up.
+                                                        </span>
+                                                    </label>
+                                                    {errors.consent_given && <p className="text-[8px] text-red-500 font-bold uppercase mt-1">{errors.consent_given.message}</p>}
                                                 </div>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* --- STEP 3: Driving Info & Consent --- */}
                                     {step === 3 && (
-                                        <div className="space-y-6 animate-step hidden-scrollbar">
-                                            <h3 className="text-xl font-bold tracking-tight text-gray-900 mb-2">Driving License</h3>
-                                            
-                                            <div className="space-y-4">
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">License Number</label>
-                                                    <input
-                                                        {...register("license_number", { required: "License required" })}
-                                                        placeholder="D12345678"
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.license_number && <p className="text-xs text-red-500 font-medium">{errors.license_number.message}</p>}
-                                                </div>
+                                        <div className="space-y-6">
+                                            {paymentStep === "select" && (
+                                                <div className="space-y-6 animate-[fadeIn_0.3s]">
+                                                    <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Payment Method</h3>
+                                                    <div className="grid gap-4">
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => setPaymentMethod("pickup")}
+                                                            className={`flex items-center justify-between gap-4 p-5 rounded-3xl border-2 transition-all group ${paymentMethod === 'pickup' ? 'border-red-600 bg-red-50' : 'border-gray-100 hover:border-gray-200'}`}
+                                                        >
+                                                            <div className="flex items-center gap-4">
+                                                                <div className={`p-3 rounded-2xl ${paymentMethod === 'pickup' ? 'bg-red-600 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-gray-100'}`}>
+                                                                    <Landmark size={24} />
+                                                                </div>
+                                                                <div className="text-left">
+                                                                    <p className="font-black text-gray-900 uppercase tracking-tighter">Pay on Arrival</p>
+                                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tight">At pickup location</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className={`h-5 w-5 rounded-full border-2 ${paymentMethod === 'pickup' ? 'border-red-600 bg-red-600' : 'border-gray-200'}`} />
+                                                        </button>
 
-                                                <div className="space-y-1.5">
-                                                    <label className="text-sm font-semibold text-gray-700">Issue Date</label>
-                                                    <input
-                                                        type="date"
-                                                        {...register("license_issue_date", { 
-                                                            required: "Issue date required",
-                                                            validate: val => {
-                                                                const issue = new Date(val);
-                                                                const limit = new Date(); limit.setFullYear(limit.getFullYear() - 2);
-                                                                return issue <= limit || "License must be > 2 years old";
-                                                            }
-                                                        })}
-                                                        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
-                                                    />
-                                                    {errors.license_issue_date && <p className="text-xs text-red-500 font-medium">{errors.license_issue_date.message}</p>}
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => setPaymentMethod("card")}
+                                                            className={`flex items-center justify-between gap-4 p-5 rounded-3xl border-2 transition-all group ${paymentMethod === 'card' ? 'border-gray-900 bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}
+                                                        >
+                                                            <div className="flex items-center gap-4">
+                                                                <div className={`p-3 rounded-2xl ${paymentMethod === 'card' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-gray-100'}`}>
+                                                                    <CreditCard size={24} />
+                                                                </div>
+                                                                <div className="text-left">
+                                                                    <p className="font-black text-gray-900 uppercase tracking-tighter">Secure Card Payment</p>
+                                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tight text-red-600">Online Selection</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className={`h-5 w-5 rounded-full border-2 ${paymentMethod === 'card' ? 'border-gray-900 bg-gray-900' : 'border-gray-200'}`} />
+                                                        </button>
+                                                    </div>
                                                 </div>
+                                            )}
 
-                                                <div className="pt-4 border-t border-gray-100">
-                                                    <label className="flex items-start gap-3 cursor-pointer group">
-                                                        <div className="flex h-6 items-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                {...register("consent_given", { required: "Consent required" })}
-                                                                className="h-5 w-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900 shrink-0"
-                                                            />
+                                            {paymentStep === "form" && (
+                                                <div className="space-y-6 animate-[fadeIn_0.3s]">
+                                                    <div className="flex items-center justify-between">
+                                                        <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Credit Card</h3>
+                                                        <button type="button" onClick={() => setPaymentStep("select")} className="text-[10px] font-black uppercase text-red-600 hover:underline tracking-widest">Change</button>
+                                                    </div>
+
+                                                    {/* Fake Card Preview */}
+                                                    <div className="relative h-44 w-full rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 text-white shadow-2xl overflow-hidden ring-1 ring-white/10 group">
+                                                        <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                                                            {cardType ? (
+                                                                <img src={`/assets/${cardType}.svg`} alt={cardType} className="h-6 w-auto" />
+                                                            ) : (
+                                                                <CreditCard className="h-8 w-8 text-white/20" />
+                                                            )}
                                                         </div>
-                                                        <div className="text-sm leading-6">
-                                                            <span className="font-semibold text-gray-900 block mb-0.5">Eligibility requirements</span>
-                                                            <span className="text-gray-500 font-medium">I confirm I am 25+ years old with a valid license over 2 years old.</span>
+                                                        <div className="mt-8">
+                                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Card Number</p>
+                                                            <p className="text-xl font-black tracking-[0.2em]">
+                                                                {cardNumber ? formatCardNumber(cardNumber) : "•••• •••• •••• ••••"}
+                                                            </p>
                                                         </div>
-                                                    </label>
-                                                    {errors.consent_given && <p className="text-xs text-red-500 font-medium mt-2 ml-8">{errors.consent_given.message}</p>}
+                                                        <div className="mt-auto flex justify-between items-end">
+                                                            <div>
+                                                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40 mb-1">Holder Name</p>
+                                                                <p className="text-xs font-bold uppercase tracking-widest">{cardName || "YOUR NAME"}</p>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40 mb-1">Expiry</p>
+                                                                <p className="text-xs font-bold uppercase tracking-widest">{cardExpiry || "MM/YY"}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Selection Card List */}
+                                                    <div className="flex gap-4">
+                                                        {["cib", "edahabia"].map((type) => (
+                                                            <button 
+                                                                key={type}
+                                                                type="button" 
+                                                                onClick={() => setCardType(type as CardType)}
+                                                                className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${cardType === type ? 'border-red-600 bg-red-50' : 'border-gray-50 hover:border-gray-100'}`}
+                                                            >
+                                                                <img src={`/assets/${type}.svg`} alt={type} className="h-4 w-auto grayscale group-hover:grayscale-0" />
+                                                                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{type === 'cib' ? 'CIB' : 'Edahabia'}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="space-y-4">
+                                                        <div className="space-y-1.5">
+                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Card Number</label>
+                                                            <input {...register("card_number", { required: paymentMethod === 'card' })} placeholder="0000 0000 0000 0000" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div className="space-y-1.5">
+                                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name on Card</label>
+                                                                <input {...register("card_name", { required: paymentMethod === 'card' })} placeholder="J. DOE" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-2">
+                                                                <div className="space-y-1.5">
+                                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Expiry</label>
+                                                                    <input {...register("card_expiry", { required: paymentMethod === 'card' })} placeholder="MM/YY" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                                </div>
+                                                                <div className="space-y-1.5">
+                                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">CVV</label>
+                                                                    <input {...register("card_cvv", { required: paymentMethod === 'card' })} placeholder="***" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
+
+                                            {paymentStep === "processing" && (
+                                                <div className="flex h-full flex-col items-center justify-center p-8 text-center animate-[fadeIn_0.5s]">
+                                                    <div className="relative mb-8">
+                                                        <div className="h-20 w-20 animate-spin rounded-full border-[6px] border-gray-100 border-t-red-600 shadow-xl" />
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <ShieldCheck className="text-gray-200 h-8 w-8" />
+                                                        </div>
+                                                    </div>
+                                                    <h3 className="text-lg font-black text-gray-900 uppercase tracking-tighter">{processingMessage}</h3>
+                                                    <p className="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Your connection is secured via SATIM</p>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </form>
                             </div>
 
-                            {/* Sticky Footer Footer inside Sidebar */}
-                            <div className="p-6 md:p-8 border-t border-gray-100 bg-white shrink-0 mt-auto">
-                                {totalPrice !== null && (
-                                    <div className="flex justify-between items-center mb-4 text-sm font-semibold">
-                                        <span className="text-gray-600 underline underline-offset-4">Total estimated</span>
-                                        <span className="text-gray-900 text-lg">{totalPrice.toLocaleString()} DZD</span>
+                            {/* Footer */}
+                            {!apiSuccess && paymentStep !== "processing" && (
+                                <div className="p-6 md:p-8 border-t border-gray-100 bg-white shrink-0 mt-auto">
+                                    {totalPrice !== null && (
+                                        <div className="flex justify-between items-center mb-6">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total estimated</span>
+                                            <span className="text-2xl font-black text-gray-900 tracking-tighter">{totalPrice.toLocaleString()} DZD</span>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="flex gap-3">
+                                        {step > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (step === 3 && paymentStep === "form") {
+                                                        setPaymentStep("select");
+                                                    } else {
+                                                        setStep(s => s - 1);
+                                                    }
+                                                }}
+                                                className="flex items-center justify-center p-4 rounded-2xl border border-gray-100 text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all"
+                                            >
+                                                <ArrowLeft size={20} />
+                                            </button>
+                                        )}
+                                        {step < 3 ? (
+                                            <button
+                                                type="button"
+                                                onClick={handleNextStep}
+                                                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gray-900 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-gray-200 transition-all hover:bg-gray-800 hover:scale-[1.02] active:scale-95"
+                                            >
+                                                Next Step <ArrowRight size={16} strokeWidth={3} />
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={paymentStep === "select" ? startPaymentFlow : handleSubmit(handleFinalSubmit)}
+                                                disabled={isApiLoading || (paymentStep === 'select' && !paymentMethod) || (paymentStep === 'form' && (!cardNumber || !cardType || !cardName || !cardExpiry))}
+                                                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-red-600 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-red-100 transition-all hover:bg-red-700 hover:scale-[1.02] active:scale-95 disabled:bg-gray-300 disabled:shadow-none"
+                                            >
+                                                {isApiLoading ? "Finalizing..." : paymentStep === 'select' ? "Confirm Method" : "Pay & Book Now"}
+                                            </button>
+                                        )}
                                     </div>
-                                )}
-                                
-                                <div className="flex gap-3">
-                                    {step > 1 && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setStep(s => s - 1)}
-                                            className="flex items-center justify-center p-3.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                                        >
-                                            <ArrowLeft size={20} />
-                                        </button>
-                                    )}
-                                    {step < 3 ? (
-                                        <button
-                                            type="button"
-                                            onClick={handleNextStep}
-                                            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gray-900 py-3.5 text-sm font-bold text-white transition-all hover:bg-gray-800 hover:shadow-md active:scale-95"
-                                        >
-                                            Next Step
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="submit"
-                                            form="prebooking-form"
-                                            disabled={isLoading}
-                                            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gray-900 py-3.5 text-sm font-bold text-white transition-all hover:bg-gray-800 hover:shadow-md disabled:bg-gray-400 disabled:opacity-70 active:scale-95"
-                                        >
-                                            {isLoading ? "Processing..." : "Reserve Now"}
-                                        </button>
-                                    )}
                                 </div>
-                            </div>
-
+                            )}
                         </div>
                     </>
                 )}

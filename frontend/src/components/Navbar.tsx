@@ -91,19 +91,6 @@ const Navbar = () => {
                 Sign In
               </button>
             )}
-
-            {(!isAuthenticated || user?.role === "customer") && (
-              <button 
-                onClick={() => navigate("/become-partner")}
-                className={`rounded-full px-6 py-2.5 text-xs font-bold tracking-widest uppercase transition-all hover:scale-105 active:scale-95 ${
-                  isHome && !scrolled
-                    ? "bg-white text-[#0A1633] shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:bg-gray-100"
-                    : "bg-[#C8102E] text-white shadow-[0_4px_20px_rgba(200,16,46,0.2)] hover:bg-red-700"
-                }`}
-              >
-                Become Partner
-              </button>
-            )}
           </div>
         </div>
       </div>

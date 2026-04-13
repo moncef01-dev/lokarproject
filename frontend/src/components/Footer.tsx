@@ -79,13 +79,12 @@ const Footer = () => {
           {/* Trust & Payment Area */}
           <div>
             <h4 className="text-sm font-bold tracking-widest text-[#0A1633] uppercase mb-8">Trust & Payment</h4>
-            <div className="grid grid-cols-3 gap-4 mb-8 grayscale opacity-50">
-              <div className="h-8 bg-gray-200 rounded flex items-center justify-center font-black text-[10px] text-gray-400">VISA</div>
-              <div className="h-8 bg-gray-200 rounded flex items-center justify-center font-black text-[10px] text-gray-400">MC</div>
-              <div className="h-8 bg-gray-200 rounded flex items-center justify-center font-black text-[10px] text-gray-400">DA</div>
+            <div className="flex gap-4 mb-8 bg-gray-50 p-4 rounded-xl ring-1 ring-gray-100">
+              <img src="/assets/cib.svg" alt="CIB Algeria" className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity" />
+              <img src="/assets/edahabia.svg" alt="Edahabia" className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity" />
             </div>
-            <div className="p-6 rounded-2xl bg-gray-50 ring-1 ring-gray-100 italic text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-loose">
-              "Lokar is committed to providing a secure environment for all vehicle rental transactions in Algeria."
+            <div className="p-6 rounded-2xl bg-[#0A1633] text-white shadow-xl italic text-[10px] font-bold uppercase tracking-widest leading-loose">
+              "Experience the standard of premium mobility with secure online payments powered by SATIM network."
             </div>
           </div>
         </div>

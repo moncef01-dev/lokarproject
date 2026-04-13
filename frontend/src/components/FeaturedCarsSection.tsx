@@ -36,9 +36,14 @@ const FeaturedCarsSection = () => {
             <br />
             CARS
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 font-medium">
             Explore our top-rated vehicles from verified agencies
           </p>
+          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-[#0A1633] uppercase tracking-[0.2em] opacity-60">
+            <span className="h-px w-8 bg-gray-200"></span>
+            Pay Online with CIB / Edahabia
+            <span className="h-px w-8 bg-gray-200"></span>
+          </div>
         </div>
 
         {loading ? (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicService, type Agency } from "../services/public.service";
+import { getImageUrl } from "../utils/imageUtils";
 
 const BrandSection = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const BrandSection = () => {
                   <div className="relative mb-4 h-20 w-20 overflow-hidden rounded-2xl ring-4 ring-gray-50 transition-all group-hover:ring-[#C8102E]/20">
                     <img
                       src={
-                        agency.img_path ||
+                        getImageUrl(agency.img_path) ||
                         "https://ui-avatars.com/api/?name=" +
                           agency.name +
                           "&background=random"

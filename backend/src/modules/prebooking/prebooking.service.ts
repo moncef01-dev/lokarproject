@@ -21,22 +21,6 @@ export const createPrebookingService = async (data: CreatePrebookingDTO) => {
     const start = new Date(data.start_date);
     const end = new Date(data.end_date);
 
-    // 2. Check for duplicate submissions (same phone, same car, same start date, status=pending)
-    const duplicate = await checkDuplicatePrebookingDAL(data.phone, data.car_id, start);
-    if (duplicate) {
-        throw new Error(
-            "You have already submitted a pending request for this car and date."
-        );
-    }
-
-    // 3. Check for overlap (Double Booking Prevention)
-    const overlap = await checkOverlapPrebookingDAL(data.car_id, start, end);
-    if (overlap) {
-        throw new Error(
-            "This car is already booked or requested for the selected dates."
-        );
-    }
-
     // 4. Calculate expires_at (24 hours from now)
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 

@@ -11,6 +11,10 @@ export interface Prebooking {
     car_id: string;
     rental_reason: string;
     status: string;
+    payment_method: string;
+    payment_status: string;
+    card_type?: string;
+    total_price: number;
     created_at: string;
     // Add other fields as needed
 }

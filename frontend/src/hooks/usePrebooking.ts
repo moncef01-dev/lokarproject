@@ -15,6 +15,10 @@ export interface PrebookingFormData {
     consent_given: boolean;
     car_id: string;
     agency_id: string;
+    payment_method: "pickup" | "card";
+    payment_status: "pending" | "paid" | "failed";
+    card_type?: "cib" | "edahabia" | null;
+    total_price: number;
 }
 
 export const usePrebooking = () => {

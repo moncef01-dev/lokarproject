@@ -146,6 +146,29 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
         }
     };
 
+    // Card Formatting Helpers
+    const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 16) value = value.slice(0, 16);
+        const formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+        e.target.value = formattedValue;
+    };
+
+    const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 4) value = value.slice(0, 4);
+        if (value.length >= 2) {
+            value = value.slice(0, 2) + "/" + value.slice(2);
+        }
+        e.target.value = value;
+    };
+
+    const handleCVVChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 3) value = value.slice(0, 3);
+        e.target.value = value;
+    };
+
     const handleFinalSubmit = async (data: any) => {
         const agencyId = typeof car.agency_id === "object" ? car.agency_id._id : car.agency_id;
         if (!agencyId) return;
@@ -161,6 +184,10 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                 ...data,
                 car_id: car._id || String(car.id),
                 agency_id: agencyId,
+                payment_method: paymentMethod,
+                payment_status: paymentMethod === "card" ? "paid" : "pending",
+                card_type: cardType,
+                total_price: totalPrice || 0,
             } as PrebookingFormData);
             
             if (paymentMethod === "card") {
@@ -517,7 +544,20 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                     <div className="space-y-4">
                                                         <div className="space-y-1.5">
                                                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Card Number</label>
-                                                            <input {...register("card_number", { required: paymentMethod === 'card' })} placeholder="0000 0000 0000 0000" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                            <input 
+                                                                {...register("card_number", { 
+                                                                    required: paymentMethod === 'card',
+                                                                    pattern: { value: /^(\d{4} ){3}\d{4}$|^\d{16}$/, message: "Invalid card number" }
+                                                                })} 
+                                                                onChange={(e) => {
+                                                                    handleCardNumberChange(e);
+                                                                    register("card_number").onChange(e);
+                                                                }}
+                                                                placeholder="0000 0000 0000 0000" 
+                                                                maxLength={19}
+                                                                className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" 
+                                                            />
+                                                            {errors.card_number && <p className="text-[8px] text-red-500 font-bold uppercase mt-1">16 digits required</p>}
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <div className="space-y-1.5">
@@ -527,11 +567,35 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                             <div className="grid grid-cols-2 gap-2">
                                                                 <div className="space-y-1.5">
                                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Expiry</label>
-                                                                    <input {...register("card_expiry", { required: paymentMethod === 'card' })} placeholder="MM/YY" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                                    <input 
+                                                                        {...register("card_expiry", { 
+                                                                            required: paymentMethod === 'card',
+                                                                            pattern: { value: /^(0[1-9]|1[0-2])\/\d{2}$/, message: "MM/YY" }
+                                                                        })} 
+                                                                        onChange={(e) => {
+                                                                            handleExpiryChange(e);
+                                                                            register("card_expiry").onChange(e);
+                                                                        }}
+                                                                        placeholder="MM/YY" 
+                                                                        maxLength={5}
+                                                                        className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" 
+                                                                    />
                                                                 </div>
                                                                 <div className="space-y-1.5">
                                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">CVV</label>
-                                                                    <input {...register("card_cvv", { required: paymentMethod === 'card' })} placeholder="***" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                                    <input 
+                                                                        {...register("card_cvv", { 
+                                                                            required: paymentMethod === 'card',
+                                                                            pattern: { value: /^\d{3}$/, message: "3 digits" }
+                                                                        })} 
+                                                                        onChange={(e) => {
+                                                                            handleCVVChange(e);
+                                                                            register("card_cvv").onChange(e);
+                                                                        }}
+                                                                        placeholder="***" 
+                                                                        maxLength={3}
+                                                                        className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" 
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -22,6 +22,22 @@ const PrebookingSchema = new Schema<IPrebooking>(
             enum: ["pending", "confirmed", "completed", "expired", "cancelled"],
             default: "pending",
         },
+        payment_method: { 
+            type: String, 
+            enum: ["pickup", "card"], 
+            required: true 
+        },
+        payment_status: { 
+            type: String, 
+            enum: ["pending", "paid", "failed"], 
+            default: "pending" 
+        },
+        card_type: { 
+            type: String, 
+            enum: ["cib", "edahabia", null],
+            default: null
+        },
+        total_price: { type: Number, required: true },
         expires_at: { type: Date, required: true },
     },
     {

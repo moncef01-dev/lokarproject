@@ -26,6 +26,10 @@ export const CreatePrebookingSchema = z.object({
         }),
         car_id: z.string().min(1, "Car ID is required"),
         agency_id: z.string().min(1, "Agency ID is required"),
+        payment_method: z.enum(["pickup", "card"]),
+        payment_status: z.enum(["pending", "paid", "failed"]).default("pending"),
+        card_type: z.enum(["cib", "edahabia"]).optional().or(z.null()),
+        total_price: z.number().positive("Total price must be positive"),
     }).refine((data) => {
         const start = new Date(data.start_date);
         const end = new Date(data.end_date);

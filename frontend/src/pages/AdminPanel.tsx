@@ -1065,6 +1065,7 @@ const AdminPanel: React.FC = () => {
                       <th className="px-6 py-4">Contact</th>
                       <th className="px-6 py-4">Dates</th>
                       <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-center">Payment</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1131,6 +1132,18 @@ const AdminPanel: React.FC = () => {
                             <option value="cancelled">Cancelled</option>
                             <option value="expired">Expired</option>
                           </select>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <div className="flex flex-col items-center">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${
+                              booking.payment_method === 'card' ? 'bg-gray-900 text-white' : 'bg-brand-navy text-white'
+                            }`}>
+                              {booking.payment_method}
+                            </span>
+                            <span className="mt-1 text-xs font-black text-gray-900">
+                              {booking.total_price?.toLocaleString()} DZD
+                            </span>
+                          </div>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">

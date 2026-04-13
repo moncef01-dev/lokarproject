@@ -16,6 +16,10 @@ export interface IPrebooking extends Document {
   car_id: Types.ObjectId; // Reference to the car
   agency_id: Types.ObjectId; // Reference to the agency
   status: "pending" | "confirmed" | "completed" | "expired" | "cancelled";
+  payment_method: "pickup" | "card";
+  payment_status: "pending" | "paid" | "failed";
+  card_type?: "cib" | "edahabia";
+  total_price: number;
   expires_at: Date;
   created_at: Date;
   updated_at: Date;
@@ -35,4 +39,8 @@ export interface CreatePrebookingDTO {
   consent_given: boolean;
   car_id: string;
   agency_id: string;
+  payment_method: "pickup" | "card";
+  payment_status: "pending" | "paid" | "failed";
+  card_type?: "cib" | "edahabia";
+  total_price: number;
 }

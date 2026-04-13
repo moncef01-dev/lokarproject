@@ -1,50 +1,95 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Gift } from "lucide-react";
+import { ChevronRight, Check } from "lucide-react";
 
 const CTASection = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  return (
-    <div className="bg-[#0A1633] py-24 relative overflow-hidden">
-      {/* Background Graphic */}
-      <div className="absolute top-0 left-0 h-full w-full opacity-10">
-        <div className="absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C8102E] blur-[120px]"></div>
-      </div>
-
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="glass-card-dark flex flex-col items-center justify-between gap-12 rounded-[40px] p-12 md:flex-row md:p-20 ring-1 ring-white/10">
-          <div className="flex-1 text-center md:text-left">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#C8102E]/20 px-4 py-2 text-xs font-bold tracking-widest text-[#C8102E] uppercase ring-1 ring-[#C8102E]/30">
-              <Gift className="h-4 w-4" />
-              Limited Offer
+    return (
+        <section className="relative overflow-hidden bg-black py-24 sm:py-32">
+            {/* Background Layer: Cinematic Image Overlay */}
+            <div className="absolute inset-0 z-0 select-none pointer-events-none">
+                <img
+                    src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1600&q=80"
+                    alt="Luxury Car Detail"
+                    className="h-full w-full object-cover opacity-30 brightness-50 grayscale-[0.5]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+                
+                {/* Glow Effects */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div className="h-[400px] w-[600px] rounded-full bg-[#C8102E]/20 blur-[150px]" />
+                </div>
             </div>
-            <h3 className="mb-6 text-4xl font-bold text-white sm:text-6xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
-              GET UP TO 30% OFF
-              <br />
-              <span className="text-gray-400">EXCLUSIVE DEALS.</span>
-            </h3>
-            <p className="max-w-md text-lg text-gray-400 font-medium leading-relaxed">
-              Join our premium club and be the first to know about new luxury arrivals and member-only pricing.
-            </p>
-          </div>
 
-          <div className="flex w-full flex-1 flex-col gap-4 sm:flex-row md:justify-end">
-            <div className="relative flex-1 max-w-sm">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="w-full rounded-full bg-white/5 border border-white/10 px-8 py-5 text-white placeholder-gray-500 outline-none transition-all focus:bg-white/10 focus:ring-2 focus:ring-[#C8102E]/50"
-              />
+            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col items-center text-center">
+                    
+                    {/* Content Header */}
+                    <div className="space-y-6">
+                        <h2 
+                            className="text-4xl font-black uppercase tracking-tighter text-white sm:text-6xl lg:text-7xl"
+                            style={{ fontFamily: "Orbitron, sans-serif" }}
+                        >
+                            Find Your Perfect
+                            <br />
+                            <span className="bg-gradient-to-r from-[#C8102E] to-red-400 bg-clip-text text-transparent">
+                                Car Today
+                            </span>
+                        </h2>
+                        
+                        <p className="mx-auto max-w-2xl text-lg font-medium tracking-tight text-gray-400 sm:text-xl">
+                            Browse premium vehicles from trusted agencies and book in seconds.
+                            The most reliable car rental experience in Algeria.
+                        </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-12 flex flex-col gap-6 sm:flex-row">
+                        <button
+                            onClick={() => navigate("/cars")}
+                            className="group flex items-center justify-center gap-3 rounded-full bg-white px-12 py-5 text-sm font-black tracking-widest text-[#0A1633] shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all hover:scale-105 hover:shadow-[0_20px_50px_rgba(255,255,255,0.2)] active:scale-95 uppercase"
+                        >
+                            Browse Cars
+                            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </button>
+
+                        <button
+                            onClick={() => navigate("/cars?category=luxury")}
+                            className="relative flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-12 py-5 text-sm font-bold tracking-widest text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-white/40 active:scale-95 uppercase group"
+                        >
+                            <span className="absolute inset-0 rounded-full bg-red-600/10 blur-[20px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                            Explore Luxury Cars
+                        </button>
+                    </div>
+
+                    {/* Trust Verification Row */}
+                    <div className="mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 border-t border-white/10 pt-10 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
+                        <div className="flex items-center gap-3 group transition-colors hover:text-white/80">
+                            <div className="flex items-center justify-center h-6 w-6 rounded-full bg-green-500/10 text-green-500 ring-1 ring-green-500/20">
+                                <Check size={12} strokeWidth={4} />
+                            </div>
+                            <span>Verified agencies only</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 group transition-colors hover:text-white/80">
+                            <div className="flex items-center justify-center h-6 w-6 rounded-full bg-red-500/10 text-[#C8102E] ring-1 ring-[#C8102E]/20">
+                                <Check size={12} strokeWidth={4} />
+                            </div>
+                            <span>Pay online with CIB / Edahabia</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 group transition-colors hover:text-white/80">
+                            <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
+                                <Check size={12} strokeWidth={4} />
+                            </div>
+                            <span>Or pay at pickup</span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <button className="flex items-center justify-center gap-3 rounded-full bg-[#C8102E] px-10 py-5 text-sm font-bold tracking-widest text-white uppercase transition-all hover:bg-red-700 hover:scale-105 active:scale-95">
-              Subscribe
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+        </section>
+    );
 };
 
 export default CTASection;

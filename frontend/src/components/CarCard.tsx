@@ -63,12 +63,6 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
               <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
               <span>{car.rating || "5.0"}</span>
             </div>
-            
-            {car.availability === "available" && (
-              <div className="animate-pulse rounded-full bg-orange-500 px-2.5 py-1 text-[9px] font-black uppercase tracking-tighter text-white shadow-lg">
-                Only 2 left
-              </div>
-            )}
           </div>
         </div>
 

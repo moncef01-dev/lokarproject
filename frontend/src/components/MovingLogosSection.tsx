@@ -33,12 +33,12 @@ const MovingLogosSection = () => {
           {[...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div
               key={index}
-              className="flex items-center justify-center px-8 flex-shrink-0 transition-all duration-500 filter grayscale hover:grayscale-0 opacity-40 hover:opacity-100"
+              className="flex items-center justify-center px-10 flex-shrink-0 transition-all duration-500 hover:scale-110 opacity-70 hover:opacity-100"
             >
               <img
                 src={logo.path}
                 alt={logo.name}
-                className="h-12 md:h-14 w-auto object-contain"
+                className="h-16 md:h-20 w-auto object-contain"
               />
             </div>
           ))}

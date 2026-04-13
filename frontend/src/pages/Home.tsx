@@ -9,19 +9,20 @@ import BrandSection from "../components/BrandSection";
 import TestimonialsSection from "../components/TestimonialsSection";
 import CTASection from "../components/CTASection";
 import Footer from "../components/Footer";
+import ScrollReveal from "../components/ScrollReveal";
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-[#C8102E] selection:text-white">
       <Navbar />
       <Hero />
-      <HowItWorksSection />
-      <MovingLogosSection />
-      <FeaturedCarsSection />
-      <ExperienceSection />
-      <WhyChooseSection />
-      <BrandSection />
-      <TestimonialsSection />
+      <ScrollReveal><HowItWorksSection /></ScrollReveal>
+      <ScrollReveal delay={200}><MovingLogosSection /></ScrollReveal>
+      <ScrollReveal><FeaturedCarsSection /></ScrollReveal>
+      <ScrollReveal><ExperienceSection /></ScrollReveal>
+      <ScrollReveal><WhyChooseSection /></ScrollReveal>
+      <ScrollReveal><BrandSection /></ScrollReveal>
+      <ScrollReveal><TestimonialsSection /></ScrollReveal>
       <CTASection />
       <Footer />
     </div>

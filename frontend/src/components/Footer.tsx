@@ -79,12 +79,21 @@ const Footer = () => {
           {/* Trust & Payment Area */}
           <div>
             <h4 className="text-sm font-bold tracking-widest text-[#0A1633] uppercase mb-8">Trust & Payment</h4>
-            <div className="flex gap-4 mb-8 bg-gray-50 p-4 rounded-xl ring-1 ring-gray-100">
-              <img src="/assets/cib.svg" alt="CIB Algeria" className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/assets/edahabia.svg" alt="Edahabia" className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-6 mb-8 bg-gray-50 p-6 rounded-2xl ring-1 ring-gray-100 shadow-sm transition-all hover:shadow-md">
+              <img src="/assets/cib.svg" alt="CIB Algeria" className="h-10 w-auto opacity-100 transition-transform hover:scale-110" />
+              <img src="/assets/edahabia.svg" alt="Edahabia" className="h-10 w-auto opacity-100 transition-transform hover:scale-110" />
+              <div className="h-10 w-[1px] bg-gray-200 mx-2" />
+              <div className="flex flex-col">
+                <span className="text-[8px] font-black text-[#C8102E] uppercase tracking-[0.2em] mb-0.5">Verified</span>
+                <span className="text-[10px] font-bold text-[#0A1633] uppercase">Security</span>
+              </div>
             </div>
-            <div className="p-6 rounded-2xl bg-[#0A1633] text-white shadow-xl italic text-[10px] font-bold uppercase tracking-widest leading-loose">
-              "Experience the standard of premium mobility with secure online payments powered by SATIM network."
+            <div className="relative p-6 rounded-2xl bg-[#0A1633] text-white shadow-xl overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[#C8102E]" />
+              <p className="italic text-[10px] font-bold uppercase tracking-widest leading-loose relative z-10">
+                "Experience the standard of premium mobility with secure online payments powered by SATIM network."
+              </p>
+              <div className="absolute -bottom-4 -right-4 h-16 w-16 bg-white/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
             </div>
           </div>
         </div>

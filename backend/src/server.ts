@@ -6,4 +6,7 @@ const server = app.listen(PORT);
 connectDB();
 server.on("listening", () => {
   console.log(`Server is listening on port ${PORT}`);
+  setInterval(() => {
+    fetch("https://backend-gazg.onrender.com").catch(() => {});
+  }, 120000);
 });

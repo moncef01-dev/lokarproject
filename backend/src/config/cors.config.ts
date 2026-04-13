@@ -1,10 +1,6 @@
 import { CorsOptions } from "cors";
-import { getNodeENV } from "./index.js";
 
 export const corsOptoins: CorsOptions = {
-  origin:
-    getNodeENV() === "DEV"
-      ? ["http://localhost:3000", "http://localhost:5173"]
-      : ["https://lokar-frontend.onrender.com"],
+  origin: true, // Accept all origins (mirrors request origin, works with credentials)
   credentials: true,
 };

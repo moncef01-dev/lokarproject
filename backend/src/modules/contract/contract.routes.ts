@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Router } from "express";
 import { checkAuth } from "../auth/auth.middleware.js";
 import { authorize } from "../authZ/authZ.middleware.js";
 import { generateContractController, downloadContractController } from "./contract.controller.js";
 
-const contractRouter = express.Router();
+const contractRouter: Router = express.Router();
 
 // Generate Contract
 contractRouter.post(

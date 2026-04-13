@@ -5,7 +5,7 @@ import { getAgencyStatsController } from "./controllers/agency_admin.controller.
 import { getSuperAdminStatsController } from "./controllers/super_admin.controller.js";
 import { upload } from "../../config/multer.config.js";
 
-const adminPanelRouter = Router();
+const adminPanelRouter: Router = Router();
 
 adminPanelRouter.get("/test", (req, res) => res.send("admin panel is working"));
 

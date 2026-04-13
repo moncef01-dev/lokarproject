@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   deleteVehicleHandler,
   getAgencyVehiclesHandler,
@@ -11,7 +11,7 @@ import { checkAuth } from "../auth/auth.middleware.js";
 import { authorize } from "../authZ/authZ.middleware.js";
 import { upload } from "../../config/multer.config.js";
 
-const vehicleRouter = express.Router();
+const vehicleRouter: Router = express.Router();
 
 vehicleRouter.get("/", getAllVehiclesHandler);
 

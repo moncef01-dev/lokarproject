@@ -1,4 +1,3 @@
-import React from "react";
 import { Car, Calendar, CheckCircle } from "lucide-react";
 
 const steps = [

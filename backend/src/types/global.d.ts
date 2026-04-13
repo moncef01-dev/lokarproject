@@ -22,12 +22,20 @@ declare global {
         img_path?: string | undefined;
       };
       vehicle?: {
-        agency_id: string;
+        agency_id?: string | undefined;
         brand: string;
         model: string;
+        category?: string | undefined;
+        is_luxury?: boolean | undefined;
         year?: string | undefined;
+        price?: number | undefined;
+        specs?: {
+          fuel?: string | undefined;
+          transmission?: string | undefined;
+          seats?: number | undefined;
+        } | undefined;
         img_path?: string | undefined;
-        availability: string; // Required because of default value
+        availability: string;
       };
       booking?: {
         customer_id: string;

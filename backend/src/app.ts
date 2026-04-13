@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Application, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import { checkAuth } from "./modules/auth/auth.middleware.js";
 import authRouter from "./modules/auth/auth.route.js";
@@ -14,7 +14,7 @@ import { getNodeENV } from "./config/index.js";
 import dotenv from "dotenv";
 dotenv.config({ debug: false });
 
-export const app = express();
+export const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptoins));

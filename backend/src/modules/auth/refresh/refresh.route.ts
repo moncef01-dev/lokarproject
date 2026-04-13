@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import { refreshAccessTokenHandler } from "./refresh.controller.js";
 
-const refreshRouter = express.Router();
+const refreshRouter: Router = express.Router();
 
 refreshRouter.post("/", refreshAccessTokenHandler);
 

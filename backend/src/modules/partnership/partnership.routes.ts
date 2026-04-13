@@ -8,7 +8,7 @@ import {
     denyPartnershipHandler,
 } from "./partnership.controller.js";
 
-const partnershipRouter = Router();
+const partnershipRouter: Router = Router();
 
 // Public endpoint
 partnershipRouter.post("/apply", applyForPartnershipHandler);

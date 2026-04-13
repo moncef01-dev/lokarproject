@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import { signupHnadler } from "./signup.controller.js";
 
-const signupRouter = express.Router();
+const signupRouter: Router = express.Router();
 
 signupRouter.post("/", signupHnadler);
 

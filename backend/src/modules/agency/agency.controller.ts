@@ -96,7 +96,7 @@ export async function updateAgencyHandler(req: Request, res: Response) {
     agencyData.img_path = `/uploads/${req.file.filename}`;
   }
 
-  const { data, error } = await tryCatch(updateAgency(id, agencyData));
+  const { data, error } = await tryCatch(updateAgency(id as string, agencyData));
 
   if (error) {
     res.status(400).send(error.message || "Failed to update agency");
@@ -114,7 +114,7 @@ export async function deleteAgencyHandler(req: Request, res: Response) {
     return;
   }
 
-  const { data, error } = await tryCatch(deleteAgency(id));
+  const { data, error } = await tryCatch(deleteAgency(id as string));
 
   if (error) {
     res.status(400).send(error.message || "Failed to delete agency");

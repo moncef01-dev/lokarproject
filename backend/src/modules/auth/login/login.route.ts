@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import { loginHnadler } from "./login.controller.js";
 
-const loginRouter = express.Router();
+const loginRouter: Router = express.Router();
 
 loginRouter.post("/", loginHnadler);
 

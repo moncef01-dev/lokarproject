@@ -1,4 +1,3 @@
-import React from "react";
 
 const logos = [
   { name: "BMW", path: "/carLogos/BMW-logo.png" },

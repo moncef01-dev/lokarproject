@@ -1,4 +1,4 @@
-import React from 'react';
+import { type FC } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 interface BookingPieChartProps {
@@ -7,7 +7,7 @@ interface BookingPieChartProps {
     cancelled: number;
 }
 
-const BookingPieChart: React.FC<BookingPieChartProps> = ({
+const BookingPieChart: FC<BookingPieChartProps> = ({
     confirmed,
     pending,
     cancelled,
@@ -33,7 +33,7 @@ const BookingPieChart: React.FC<BookingPieChartProps> = ({
                         cy="50%"
                         labelLine={false}
                         label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(0)}%`
+                            `${name}: ${((percent ?? 0) * 100).toFixed(0)}%`
                         }
                         outerRadius={100}
                         fill="#8884d8"

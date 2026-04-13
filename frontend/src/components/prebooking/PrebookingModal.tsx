@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import { type FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { X, CheckCircle, AlertCircle, Fuel, Settings, Users, ArrowLeft, ArrowRight, ShieldCheck, MapPin, BadgeCheck, CreditCard, Wallet, Landmark } from "lucide-react";
+import { X, CheckCircle, AlertCircle, Fuel, Settings, Users, ArrowLeft, ArrowRight, ShieldCheck, BadgeCheck, CreditCard, Landmark } from "lucide-react";
 import { usePrebooking, type PrebookingFormData } from "../../hooks/usePrebooking";
 import { getImageUrl } from "../../utils/imageUtils";
 
@@ -30,7 +30,7 @@ type PaymentStep = "select" | "form" | "processing" | "success";
 type PaymentMethod = "pickup" | "card";
 type CardType = "cib" | "edahabia";
 
-const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => {
+const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => {
     const { createPrebooking, isLoading: isApiLoading, error, success: apiSuccess, resetState } = usePrebooking();
     const [step, setStep] = useState(1);
     
@@ -46,7 +46,8 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
         handleSubmit,
         watch,
         trigger,
-        formState: { errors, isValid },
+        setError,
+        formState: { errors },
         reset,
     } = useForm<PrebookingFormData & { card_number?: string; card_expiry?: string; card_cvv?: string; card_name?: string }>({ 
         mode: "onChange" 

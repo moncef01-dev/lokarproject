@@ -13,7 +13,7 @@ const prebookingLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-const router = Router();
+const router: Router = Router();
 
 // Public endpoint for prebooking
 router.post("/", prebookingLimiter, createPrebookingController);

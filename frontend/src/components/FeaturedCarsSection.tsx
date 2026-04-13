@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CarCard from "./CarCard";

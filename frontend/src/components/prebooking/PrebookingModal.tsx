@@ -173,9 +173,18 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
         const agencyId = typeof car.agency_id === "object" ? car.agency_id._id : car.agency_id;
         if (!agencyId) return;
 
+        console.log("[DEBUG] Starting Final Submission Payload:", {
+            ...data,
+            car_id: car._id || String(car.id),
+            agency_id: agencyId,
+            payment_method: paymentMethod,
+            payment_status: paymentMethod === "card" ? "paid" : "pending",
+            total_price: totalPrice || 0
+        });
+
         if (paymentMethod === "card") {
             setPaymentStep("processing");
-            // Simulate payment delay
+            // Simulate payment delay as per requirements
             await new Promise(resolve => setTimeout(resolve, 2000));
         }
 
@@ -193,8 +202,26 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
             if (paymentMethod === "card") {
                 setPaymentStep("success");
             }
-        } catch (err) {
-            setPaymentStep("select"); // Go back on error
+        } catch (err: any) {
+            console.error("[Submission Error]", err);
+            
+            // Map Backend Validation Errors to Form Fields
+            if (err.response?.data?.message === "Validation Error" && err.response?.data?.errors) {
+                const backendErrors = err.response.data.errors;
+                backendErrors.forEach((issue: any) => {
+                    const field = issue.path[issue.path.length - 1]; // get the field name from path [body, field]
+                    setError(field as any, {
+                        type: "server",
+                        message: issue.message
+                    });
+                });
+                
+                // If we are on Step 3 and a Step 2 field failed, we might need to go back
+                // For simplicity, we'll stay on the current step and the error will show in the summary if added.
+                // But most Zod errors in this flow will be Step 1/2 fields.
+            }
+            
+            setPaymentStep("select"); // Reset payment UI on error
         }
     };
 
@@ -374,20 +401,42 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Start Date</label>
-                                                        <input type="datetime-local" {...register("start_date", { required: true })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" />
+                                                        <input 
+                                                            type="datetime-local" 
+                                                            {...register("start_date", { required: "Start date is required" })} 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.start_date ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
+                                                        {errors.start_date && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.start_date.message}</p>}
                                                     </div>
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">End Date</label>
-                                                        <input type="datetime-local" {...register("end_date", { required: true })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" />
+                                                        <input 
+                                                            type="datetime-local" 
+                                                            {...register("end_date", { 
+                                                                required: "End date is required",
+                                                                validate: (value) => {
+                                                                    const start = watch("start_date");
+                                                                    if (!start || !value) return true;
+                                                                    return new Date(value) > new Date(start) || "End date must be after start date";
+                                                                }
+                                                            })} 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.end_date ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
+                                                        {errors.end_date && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.end_date.message}</p>}
                                                     </div>
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pickup Location</label>
-                                                    <input {...register("pickup_location", { required: true })} placeholder="Algiers Airport, etc." className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all" />
+                                                    <input 
+                                                        {...register("pickup_location", { required: "Pickup location is required" })} 
+                                                        placeholder="Algiers Airport, etc." 
+                                                        className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.pickup_location ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                    />
+                                                    {errors.pickup_location && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.pickup_location.message}</p>}
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Purpose</label>
-                                                    <select {...register("rental_reason", { required: true })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all">
+                                                    <select {...register("rental_reason", { required: "Rental reason required" })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all">
                                                         <option value="Personal">Personal Use</option>
                                                         <option value="Business">Business</option>
                                                         <option value="Event">Event / Wedding</option>
@@ -404,12 +453,23 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Name</label>
-                                                        <input {...register("customer_name", { required: "Name required" })} placeholder="Full Name" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        <input 
+                                                            {...register("customer_name", { required: "Name required" })} 
+                                                            placeholder="Full Name" 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.customer_name ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
                                                         {errors.customer_name && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.customer_name.message}</p>}
                                                     </div>
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Phone</label>
-                                                        <input {...register("phone", { required: "Phone required" })} placeholder="05/06/07..." className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        <input 
+                                                            {...register("phone", { 
+                                                                required: "Phone required",
+                                                                minLength: { value: 10, message: "Min 10 digits" }
+                                                            })} 
+                                                            placeholder="05/06/07..." 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.phone ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
                                                         {errors.phone && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.phone.message}</p>}
                                                     </div>
                                                 </div>
@@ -421,7 +481,23 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                     </div>
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</label>
-                                                        <input type="date" {...register("date_of_birth", { required: "DOB required" })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        <input 
+                                                            type="date" 
+                                                            {...register("date_of_birth", { 
+                                                                required: "DOB required",
+                                                                validate: (value) => {
+                                                                    const today = new Date();
+                                                                    const birthDate = new Date(value);
+                                                                    let age = today.getFullYear() - birthDate.getFullYear();
+                                                                    const m = today.getMonth() - birthDate.getMonth();
+                                                                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                                                        age--;
+                                                                    }
+                                                                    return age >= 25 ? true : "You must be at least 25 years old";
+                                                                }
+                                                            })} 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.date_of_birth ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
                                                         {errors.date_of_birth && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.date_of_birth.message}</p>}
                                                     </div>
                                                 </div>
@@ -429,11 +505,33 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">License No</label>
-                                                        <input {...register("license_number", { required: "License required" })} placeholder="123456789" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        <input 
+                                                            {...register("license_number", { required: "License number required" })} 
+                                                            placeholder="123456789" 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.license_number ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
+                                                        {errors.license_number && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.license_number.message}</p>}
                                                     </div>
                                                     <div className="space-y-1.5">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Issue Date</label>
-                                                        <input type="date" {...register("license_issue_date", { required: "Issue date required" })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
+                                                        <input 
+                                                            type="date" 
+                                                            {...register("license_issue_date", { 
+                                                                required: "Issue date required",
+                                                                validate: (value) => {
+                                                                    const today = new Date();
+                                                                    const issueDate = new Date(value);
+                                                                    let diff = today.getFullYear() - issueDate.getFullYear();
+                                                                    const m = today.getMonth() - issueDate.getMonth();
+                                                                    if (m < 0 || (m === 0 && today.getDate() < issueDate.getDate())) {
+                                                                        diff--;
+                                                                    }
+                                                                    return diff >= 2 ? true : "License must be at least 2 years old";
+                                                                }
+                                                            })} 
+                                                            className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.license_issue_date ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
+                                                        />
+                                                        {errors.license_issue_date && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.license_issue_date.message}</p>}
                                                     </div>
                                                 </div>
                                                 <div className="pt-2">
@@ -546,8 +644,7 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Card Number</label>
                                                             <input 
                                                                 {...register("card_number", { 
-                                                                    required: paymentMethod === 'card',
-                                                                    pattern: { value: /^(\d{4} ){3}\d{4}$|^\d{16}$/, message: "Invalid card number" }
+                                                                    required: paymentMethod === 'card'
                                                                 })} 
                                                                 onChange={(e) => {
                                                                     handleCardNumberChange(e);
@@ -569,8 +666,7 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Expiry</label>
                                                                     <input 
                                                                         {...register("card_expiry", { 
-                                                                            required: paymentMethod === 'card',
-                                                                            pattern: { value: /^(0[1-9]|1[0-2])\/\d{2}$/, message: "MM/YY" }
+                                                                            required: paymentMethod === 'card'
                                                                         })} 
                                                                         onChange={(e) => {
                                                                             handleExpiryChange(e);
@@ -585,8 +681,7 @@ const PrebookingModal: React.FC<PrebookingModalProps> = ({ isOpen, onClose, car 
                                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">CVV</label>
                                                                     <input 
                                                                         {...register("card_cvv", { 
-                                                                            required: paymentMethod === 'card',
-                                                                            pattern: { value: /^\d{3}$/, message: "3 digits" }
+                                                                            required: paymentMethod === 'card'
                                                                         })} 
                                                                         onChange={(e) => {
                                                                             handleCVVChange(e);

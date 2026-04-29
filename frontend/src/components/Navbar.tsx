@@ -47,14 +47,39 @@ const Navbar = () => {
           </div>
 
           <div className="hidden items-center space-x-10 md:flex">
-            {["Home", "Browse Cars", "About", "Contact"].map((item) => (
+            {["Home", "Browse Cars", "Pricing", "About", "Contact"].map((item) => (
               <a
                 key={item}
                 href="#"
                 className="relative text-sm font-semibold tracking-wide uppercase transition-all hover:text-[#C8102E] before:absolute before:-bottom-1 before:left-0 before:h-0.5 before:w-0 before:bg-[#C8102E] before:transition-all hover:before:w-full"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(item === "Home" ? "/" : item === "Browse Cars" ? "/cars" : "#");
+                  if (item === "Home") {
+                    navigate("/");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  } else if (item === "Browse Cars") {
+                    navigate("/cars");
+                  } else if (item === "Pricing") {
+                    if (location.pathname !== "/") {
+                      navigate("/");
+                      setTimeout(() => {
+                        document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    } else {
+                      document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                    }
+                  } else if (item === "About") {
+                    if (location.pathname !== "/") {
+                      navigate("/");
+                      setTimeout(() => {
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                      }, 100);
+                    } else {
+                      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                    }
+                  } else if (item === "Contact") {
+                    navigate("/become-partner");
+                  }
                 }}
               >
                 {item}

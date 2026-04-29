@@ -8,6 +8,7 @@ import ExperienceSection from "../components/ExperienceSection";
 import BrandSection from "../components/BrandSection";
 import TestimonialsSection from "../components/TestimonialsSection";
 import CTASection from "../components/CTASection";
+import PricingSection from "../components/PricingSection";
 import Footer from "../components/Footer";
 import ScrollReveal from "../components/ScrollReveal";
 
@@ -23,6 +24,7 @@ const Home = () => {
       <ScrollReveal><WhyChooseSection /></ScrollReveal>
       <ScrollReveal><BrandSection /></ScrollReveal>
       <ScrollReveal><TestimonialsSection /></ScrollReveal>
+      <ScrollReveal><PricingSection /></ScrollReveal>
       <CTASection />
       <Footer />
     </div>

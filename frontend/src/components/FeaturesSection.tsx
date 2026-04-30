@@ -1,24 +1,27 @@
 import { Award, Shield, Clock } from "lucide-react";
-
-const features = [
-  {
-    icon: <Award className="h-8 w-8" />,
-    title: "All Brands",
-    description: "Access to all major car brands from trusted agencies",
-  },
-  {
-    icon: <Shield className="h-8 w-8" />,
-    title: "Free Support",
-    description: "24/7 customer support for all your rental needs",
-  },
-  {
-    icon: <Clock className="h-8 w-8" />,
-    title: "Affordable Prices",
-    description: "Competitive rates from multiple agencies in one place",
-  },
-];
+import { useLanguage } from "../context/LanguageContext";
 
 const FeaturesSection = () => {
+  const { t } = useLanguage();
+
+  const features = [
+    {
+      icon: <Award className="h-8 w-8" />,
+      title: t("features.brands.title"),
+      description: t("features.brands.desc"),
+    },
+    {
+      icon: <Shield className="h-8 w-8" />,
+      title: t("features.support.title"),
+      description: t("features.support.desc"),
+    },
+    {
+      icon: <Clock className="h-8 w-8" />,
+      title: t("features.price.title"),
+      description: t("features.price.desc"),
+    },
+  ];
+
   return (
     <div className="bg-gray-100 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -44,3 +47,4 @@ const FeaturesSection = () => {
 };
 
 export default FeaturesSection;
+

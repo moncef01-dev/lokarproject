@@ -1,4 +1,5 @@
 import { Search, Filter, Tag, DollarSign, Gem } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 interface CarFiltersProps {
   searchTerm: string;
@@ -43,6 +44,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
   isLuxury,
   setIsLuxury,
 }) => {
+  const { t } = useLanguage();
   return (
     <div className="mb-12">
       <h2
@@ -59,7 +61,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
             <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by brand or model..."
+              placeholder={t("filters.search")}
               className="w-full rounded-xl border border-gray-200 py-3.5 pr-4 pl-12 text-gray-900 placeholder-gray-400 bg-gray-50/50 shadow-sm transition-all hover:bg-gray-50 focus:border-gray-900 focus:bg-white focus:ring-1 focus:ring-gray-900 focus:outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -73,9 +75,10 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               value={selectedAgency}
               onChange={(e) => setSelectedAgency(e.target.value)}
             >
-              {agencies.map((agency) => (
+              <option value="All">All {t("filters.agency")}s</option>
+              {agencies.filter(a => a !== "All").map((agency) => (
                 <option key={agency} value={agency}>
-                  {agency === "All" ? "All Agencies" : agency}
+                  {agency}
                 </option>
               ))}
             </select>
@@ -87,9 +90,10 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
             >
-              {brands.map((brand) => (
+              <option value="All">All {t("filters.brand")}s</option>
+              {brands.filter(b => b !== "All").map((brand) => (
                 <option key={brand} value={brand}>
-                  {brand === "All" ? "All Brands" : brand}
+                  {brand}
                 </option>
               ))}
             </select>
@@ -101,7 +105,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              <option value="All">All Categories</option>
+              <option value="All">All {t("filters.category")}s</option>
               {categories.filter(c => c !== "All").map((category) => (
                 <option key={category} value={category}>
                   {category}
@@ -119,7 +123,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               <div className="flex items-center gap-2">
                   <input
                     type="number"
-                    placeholder="Min DZD"
+                    placeholder={t("filters.min")}
                     className="w-28 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm transition-all focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
@@ -127,7 +131,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
                   <span className="text-gray-300">-</span>
                   <input
                     type="number"
-                    placeholder="Max DZD"
+                    placeholder={t("filters.max")}
                     className="w-28 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm transition-all focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
@@ -147,7 +151,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               className="hidden"
             />
             <span className={`text-sm font-bold transition-colors ${isLuxury ? "text-gray-900" : "text-gray-500 group-hover:text-gray-700"}`}>
-              Luxury Only
+              {t("filters.luxury")}
             </span>
           </label>
         </div>

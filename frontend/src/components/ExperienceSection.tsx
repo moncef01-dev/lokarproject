@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 const ExperienceSection = () => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
 
   return (
     <div className="relative py-32 overflow-hidden">
@@ -21,27 +23,27 @@ const ExperienceSection = () => {
         <div className="flex flex-col items-center">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold tracking-widest text-white uppercase backdrop-blur-md ring-1 ring-white/20">
             <span className="h-2 w-2 rounded-full bg-[#C8102E] animate-pulse"></span>
-            Elevate Your Journey
+            {t("experience.tag")}
           </div>
           
           <h2 
             className="mb-8 text-4xl font-bold text-white sm:text-7xl"
             style={{ fontFamily: "Orbitron, sans-serif" }}
           >
-            DRIVE YOUR DREAM CAR
+            {t("experience.title1")}
             <br />
-            <span className="text-gray-400">WITH CONFIDENCE.</span>
+            <span className="text-gray-400">{t("experience.title2")}</span>
           </h2>
           
           <p className="mx-auto mb-12 max-w-2xl text-lg text-gray-300 font-medium">
-            From sleek sports cars to luxury sedans, we provide access to the world's most desired brands. Experience mobility at its finest.
+            {t("experience.desc")}
           </p>
 
           <button
-            onClick={() => navigate("/cars")}
+            onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
             className="group flex items-center gap-3 rounded-full bg-[#C8102E] px-10 py-5 text-sm font-bold tracking-widest text-white uppercase shadow-2xl transition-all hover:scale-105 hover:bg-red-700 active:scale-95"
           >
-            Explore Our Fleet
+            {t("experience.btn")}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </button>
         </div>

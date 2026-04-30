@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { ShieldCheck } from "lucide-react";
 
 const Navbar = () => {
@@ -8,7 +9,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, logout, user } = useAuth();
-  const isHome = location.pathname === "/";
+  const { t, language, setLanguage } = useLanguage();
+  
+  // Home path can be / or /en
+  const isHome = location.pathname === "/" || location.pathname === "/en";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,42 +51,48 @@ const Navbar = () => {
           </div>
 
           <div className="hidden items-center space-x-10 md:flex">
-            {["Home", "Browse Cars", "Pricing", "About", "Contact"].map((item) => (
+            {[
+              { key: "nav.home", label: t("nav.home"), action: "home" },
+              { key: "nav.browse", label: t("nav.browse"), action: "browse" },
+              { key: "nav.pricing", label: t("nav.pricing"), action: "pricing" },
+              { key: "nav.about", label: t("nav.about"), action: "about" },
+              { key: "nav.contact", label: t("nav.contact"), action: "contact" }
+            ].map((item) => (
               <a
-                key={item}
+                key={item.key}
                 href="#"
                 className="relative text-sm font-semibold tracking-wide uppercase transition-all hover:text-[#C8102E] before:absolute before:-bottom-1 before:left-0 before:h-0.5 before:w-0 before:bg-[#C8102E] before:transition-all hover:before:w-full"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (item === "Home") {
-                    navigate("/");
+                  if (item.action === "home") {
+                    navigate(language === 'en' ? "/en" : "/");
                     window.scrollTo({ top: 0, behavior: "smooth" });
-                  } else if (item === "Browse Cars") {
-                    navigate("/cars");
-                  } else if (item === "Pricing") {
-                    if (location.pathname !== "/") {
-                      navigate("/");
+                  } else if (item.action === "browse") {
+                    navigate(language === 'en' ? "/en/cars" : "/cars");
+                  } else if (item.action === "pricing") {
+                    if (!isHome) {
+                      navigate(language === 'en' ? "/en" : "/");
                       setTimeout(() => {
                         document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                     } else {
                       document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
                     }
-                  } else if (item === "About") {
-                    if (location.pathname !== "/") {
-                      navigate("/");
+                  } else if (item.action === "about") {
+                    if (!isHome) {
+                      navigate(language === 'en' ? "/en" : "/");
                       setTimeout(() => {
                         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
                       }, 100);
                     } else {
                       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
                     }
-                  } else if (item === "Contact") {
-                    navigate("/become-partner");
+                  } else if (item.action === "contact") {
+                    navigate(language === 'en' ? "/en/become-partner" : "/become-partner");
                   }
                 }}
               >
-                {item}
+                {item.label}
               </a>
             ))}
             {isAuthenticated &&
@@ -92,11 +102,11 @@ const Navbar = () => {
                   className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-brand-red/10 px-4 py-2 text-xs font-bold text-brand-red ring-1 ring-inset ring-brand-red/20 transition-all hover:bg-brand-red/20 hover:scale-105 active:scale-95"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate("/admin");
+                    navigate(language === 'en' ? "/en/admin" : "/admin");
                   }}
                 >
                   <ShieldCheck size={14} className="transition-transform group-hover:rotate-12" />
-                  <span>Admin Portal</span>
+                  <span>{t("nav.admin")}</span>
                   
                   {/* Shine Effect Overlay */}
                   <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shine" />
@@ -105,6 +115,20 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-6">
+            <div className="flex items-center gap-2 text-xs font-bold tracking-widest bg-white/5 px-2 py-1 rounded-full ring-1 ring-white/10">
+              <button 
+                onClick={() => setLanguage("fr")}
+                className={`px-2 py-1 rounded-full transition-all ${language === "fr" ? "bg-white text-[#0A1633]" : "text-gray-400 hover:text-white"}`}
+              >
+                FR
+              </button>
+              <button 
+                onClick={() => setLanguage("en")}
+                className={`px-2 py-1 rounded-full transition-all ${language === "en" ? "bg-white text-[#0A1633]" : "text-gray-400 hover:text-white"}`}
+              >
+                EN
+              </button>
+            </div>
             <div className="h-6 w-px bg-white/20 hidden md:block"></div>
             
             {isAuthenticated ? (
@@ -112,14 +136,14 @@ const Navbar = () => {
                 onClick={handleLogout}
                 className="text-sm font-bold transition-all hover:text-[#C8102E]"
               >
-                Sign Out
+                {t("nav.signOut")}
               </button>
             ) : (
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => navigate(language === 'en' ? "/en/login" : "/login")}
                 className="text-sm font-bold transition-all hover:text-[#C8102E]"
               >
-                Sign In
+                {t("nav.signIn")}
               </button>
             )}
           </div>

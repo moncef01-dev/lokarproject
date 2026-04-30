@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicService, type Agency } from "../services/public.service";
 import { getImageUrl } from "../utils/imageUtils";
+import { useLanguage } from "../context/LanguageContext";
 
 const BrandSection = () => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,13 +42,13 @@ const BrandSection = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
-            Network Excellence
+            {t("brand.tag")}
           </h2>
           <h3
             className="text-4xl font-bold text-[#0A1633] sm:text-5xl"
             style={{ fontFamily: "Orbitron, sans-serif" }}
           >
-            VERIFIED RENTAL PARTNERS
+            {t("brand.title")}
           </h3>
         </div>
 
@@ -61,7 +63,7 @@ const BrandSection = () => {
                 <div
                   key={agency._id}
                   className="group relative flex flex-col items-center justify-center rounded-3xl bg-white p-8 transition-all hover:bg-[#0A1633] shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer border border-gray-100"
-                  onClick={() => navigate("/cars")}
+                  onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
                 >
                   <div className="relative mb-4 h-20 w-20 overflow-hidden rounded-2xl ring-4 ring-gray-50 transition-all group-hover:ring-[#C8102E]/20">
                     <img
@@ -91,7 +93,7 @@ const BrandSection = () => {
               ))
             ) : (
               <div className="col-span-full text-center text-gray-400 font-medium">
-                Establishing partner networks...
+                {t("brand.loading")}
               </div>
             )}
           </div>

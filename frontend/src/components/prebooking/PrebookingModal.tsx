@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { X, CheckCircle, AlertCircle, Fuel, Settings, Users, ArrowLeft, ArrowRight, ShieldCheck, BadgeCheck, CreditCard, Landmark } from "lucide-react";
 import { usePrebooking, type PrebookingFormData } from "../../hooks/usePrebooking";
 import { getImageUrl } from "../../utils/imageUtils";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface PrebookingModalProps {
     isOpen: boolean;
@@ -31,6 +32,7 @@ type PaymentMethod = "pickup" | "card";
 type CardType = "cib" | "edahabia";
 
 const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => {
+    const { t } = useLanguage();
     const { createPrebooking, isLoading: isApiLoading, error, success: apiSuccess, resetState } = usePrebooking();
     const [step, setStep] = useState(1);
     
@@ -62,11 +64,6 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!isOpen) return;
-
-        const originalOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
                 e.preventDefault();
@@ -74,10 +71,22 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
             }
         };
 
-        window.addEventListener("keydown", handleEsc);
+        if (isOpen) {
+            // Measure scrollbar width BEFORE hiding it to prevent layout shift.
+            // window.innerWidth includes the scrollbar; clientWidth does not.
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+            // Compensate for the scrollbar disappearing so the page doesn't jump.
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+            document.body.style.overflow = "hidden";
+
+            window.addEventListener("keydown", handleEsc);
+        }
 
         return () => {
-            document.body.style.overflow = originalOverflow;
+            // Always restore on cleanup (handles both close and unmount).
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
             window.removeEventListener("keydown", handleEsc);
         };
     }, [isOpen, onClose]);
@@ -247,20 +256,74 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
         }
     };
 
+    const leftPanelContent = (
+        <>
+            <div className="relative h-[30vh] sm:h-[40vh] lg:h-[450px] w-full shrink-0">
+                <img src={carImage} alt={car.model} className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent" />
+                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex gap-2">
+                    <span className="rounded-full bg-white/20 backdrop-blur-md border border-white/20 px-3 py-1 text-xs font-semibold text-white">{car.year}</span>
+                    {car.availability === "available" && <span className="rounded-full bg-green-500/90 backdrop-blur-md px-3 py-1 text-xs font-bold text-white uppercase tracking-widest">{t("prebook.available")}</span>}
+                </div>
+                <div className="absolute bottom-6 left-4 sm:bottom-8 sm:left-6 text-white">
+                    <p className="text-xs sm:text-sm font-bold tracking-[0.2em] text-white/70 uppercase mb-1">{car.brand}</p>
+                    <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">{car.model}</h1>
+                </div>
+            </div>
+
+            <div className="p-6 sm:p-8 space-y-8">
+                <div className="grid grid-cols-3 gap-3">
+                    {[
+                        { Icon: Fuel, value: car.specs?.fuel || "Petrol", label: t("prebook.fuel") },
+                        { Icon: Settings, value: car.specs?.transmission || "Auto", label: t("prebook.gearbox") },
+                        { Icon: Users, value: car.specs?.seats || 5, label: t("prebook.seats") }
+                    ].map((spec, i) => (
+                        <div key={i} className="flex flex-col items-center justify-center p-3 sm:p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                            <spec.Icon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400 mb-2" />
+                            <span className="text-xs sm:text-sm font-bold text-gray-900">{spec.value}</span>
+                            <span className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">{spec.label}</span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 shadow-sm">
+                    <h4 className="mb-4 font-black flex items-center gap-2 text-gray-900 uppercase tracking-widest text-[10px] sm:text-xs">
+                        <BadgeCheck className="text-red-600 h-4 w-4" /> {t("prebook.req.title")}
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {[t("prebook.req.age"), t("prebook.req.exp"), t("prebook.req.id"), t("prebook.req.deposit")].map((text, i) => (
+                            <li key={i} className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-tight flex items-center gap-2">
+                                <div className="h-1 w-1 rounded-full bg-red-600" /> {text}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </>
+    );
+
     return (
         <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 sm:p-4 font-sans backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6 bg-black/60 backdrop-blur-md font-sans transition-opacity"
             onClick={onClose}
         >
+            {/* Modal Container */}
             <div 
-                className="relative flex h-[100dvh] sm:h-[90vh] w-full max-w-6xl flex-col lg:flex-row overflow-hidden bg-white sm:rounded-2xl shadow-2xl scale-95 opacity-0 animate-[fadeIn_0.2s_ease-out_forwards]"
+                className="relative w-full h-[95dvh] sm:h-[85vh] sm:max-h-[900px] max-w-[1100px] bg-white rounded-t-[32px] sm:rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-[slideUp_0.3s_ease-out] sm:animate-[zoomIn_0.2s_ease-out]"
                 onClick={(e) => e.stopPropagation()}
             >
-                
-                {/* Close Button Floating above everything */}
+                {/* Mobile Close Handle */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 rounded-full bg-white/90 p-2 text-gray-900 shadow-sm backdrop-blur-md transition hover:scale-105 active:scale-95"
+                    className="absolute top-4 right-4 z-[60] rounded-full bg-black/30 backdrop-blur-md p-2 text-white lg:hidden"
+                >
+                    <X size={20} strokeWidth={2.5} />
+                </button>
+
+                {/* Desktop Close Button */}
+                <button
+                    onClick={onClose}
+                    className="hidden lg:flex absolute top-6 right-6 z-[60] rounded-full bg-white p-3 text-gray-500 hover:text-gray-900 shadow-sm border border-gray-100 hover:shadow-md transition-all hover:scale-105 active:scale-95"
                 >
                     <X size={20} strokeWidth={2.5} />
                 </button>
@@ -272,10 +335,10 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                 <CheckCircle size={56} strokeWidth={2.5} />
                             </div>
                             <h2 className="text-3xl font-black text-gray-900 tracking-tight text-center">
-                                {paymentMethod === "card" ? "Payment Successful ✅" : "Booking Confirmed ✅"}
+                                {paymentMethod === "card" ? t("prebook.success") : t("prebook.confirmed")}
                             </h2>
                             <p className="mt-2 text-gray-500 font-bold tracking-widest uppercase text-xs">
-                                Booking #{bookingId} confirmed
+                                {t("prebook.booking_no")}{bookingId}
                             </p>
                         </div>
 
@@ -306,7 +369,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                             </div>
 
                             <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Amount {paymentMethod === "card" ? "Paid" : "to pay"}</span>
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">{paymentMethod === "card" ? t("prebook.paid") : t("prebook.topay")}</span>
                                 <span className="text-lg font-black text-gray-900">{totalPrice?.toLocaleString()} DZD</span>
                             </div>
                         </div>
@@ -315,79 +378,48 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                             onClick={onClose}
                             className="mt-10 rounded-full bg-gray-900 px-10 py-4 text-sm font-bold text-white shadow-xl transition-all hover:bg-gray-800 hover:scale-105 active:scale-95"
                         >
-                            Return to Catalog
+                            {t("prebook.returntocatalog")}
                         </button>
                     </div>
                 ) : (
                     <>
-                        {/* ======================= LEFT: PRODUCT SHOWCASE ======================= */}
-                        <div className="flex-1 lg:overflow-y-auto bg-gray-50 flex flex-col relative w-full lg:w-3/5">
-                            <div className="relative h-[45vh] lg:h-[500px] w-full shrink-0">
-                                <img src={carImage} alt={car.model} className="h-full w-full object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent" />
-                                <div className="absolute top-6 left-6 flex gap-2">
-                                    <span className="rounded-full bg-white/20 backdrop-blur-md border border-white/20 px-3 py-1 text-xs font-semibold text-white">{car.year}</span>
-                                    {car.availability === "available" && <span className="rounded-full bg-green-500/90 backdrop-blur-md px-3 py-1 text-xs font-bold text-white uppercase tracking-widest">Available</span>}
-                                </div>
-                                <div className="absolute bottom-8 left-6 md:left-10 text-white">
-                                    <p className="text-sm font-bold tracking-[0.2em] text-white/70 uppercase mb-1">{car.brand}</p>
-                                    <h1 className="text-4xl sm:text-5xl font-black tracking-tighter">{car.model}</h1>
-                                </div>
-                            </div>
-
-                            <div className="p-6 md:p-10 space-y-10">
-                                <div className="grid grid-cols-3 gap-4">
-                                    {[
-                                        { Icon: Fuel, value: car.specs?.fuel || "Petrol", label: "Fuel" },
-                                        { Icon: Settings, value: car.specs?.transmission || "Auto", label: "Gearbox" },
-                                        { Icon: Users, value: car.specs?.seats || 5, label: "Seats" }
-                                    ].map((spec, i) => (
-                                        <div key={i} className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                                            <spec.Icon className="h-6 w-6 text-gray-400 mb-2" />
-                                            <span className="text-sm font-bold text-gray-900">{spec.value}</span>
-                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{spec.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                                    <h4 className="mb-4 font-black flex items-center gap-2 text-gray-900 uppercase tracking-widest text-xs">
-                                        <BadgeCheck className="text-red-600 h-4 w-4" /> Eligibility Requirements
-                                    </h4>
-                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        {["Minimum age: 25 years", "2+ years license exp.", "Valid ID required", "Deposit may apply"].map((text, i) => (
-                                            <li key={i} className="text-xs text-gray-500 font-bold uppercase tracking-tight flex items-center gap-2">
-                                                <div className="h-1 w-1 rounded-full bg-red-600" /> {text}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
+                        {/* ======================= LEFT: PRODUCT SHOWCASE (DESKTOP) ======================= */}
+                        <div className="hidden lg:flex w-[40%] bg-gray-50 flex-col overflow-y-auto border-r border-gray-100 custom-scrollbar shrink-0">
+                            {leftPanelContent}
                         </div>
 
-                        {/* ======================= RIGHT: FORM PANEL ======================= */}
-                        <div className="w-full lg:w-2/5 shrink-0 bg-white border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col h-[55vh] lg:h-full z-10">
-                            {/* Sub-Header */}
-                            <div className="p-6 md:p-8 border-b border-gray-100 bg-white shrink-0">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">Daily rate</span>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-3xl font-black tracking-tighter text-gray-900">{car.price?.toLocaleString()} DZD</span>
+                        {/* ======================= RIGHT: FORM PANEL (MOBILE + DESKTOP) ======================= */}
+                        <div className="flex-1 flex flex-col h-full bg-white relative lg:w-[60%]">
+                            
+                            {/* MAIN SCROLLABLE AREA */}
+                            <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+                                
+                                {/* LEFT: PRODUCT SHOWCASE (MOBILE INLINE) */}
+                                <div className="lg:hidden w-full bg-gray-50 flex flex-col shrink-0 border-b border-gray-100">
+                                    {leftPanelContent}
+                                </div>
+
+                                {/* Form Sub-Header */}
+                                <div className="p-5 md:p-8 border-b border-gray-100 bg-white/95 backdrop-blur-sm shrink-0 sticky top-0 z-20">
+                                    <div className="flex items-center justify-between mb-2 sm:mb-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">{t("prebook.dailyrate")}</span>
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-2xl sm:text-3xl font-black tracking-tighter text-gray-900">{car.price?.toLocaleString()} DZD</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="text-[10px] font-black tracking-[0.2em] text-red-600 uppercase">Step {step}/3</span>
-                                        <div className="flex mt-1 h-1.5 w-24 bg-gray-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-gray-900 transition-all duration-500" style={{ width: `${(step / 3) * 100}%` }} />
+                                        <div className="text-right">
+                                            <span className="text-[10px] font-black tracking-[0.2em] text-red-600 uppercase">{t("prebook.step")} {step}/3</span>
+                                            <div className="flex mt-1 h-1.5 w-20 sm:w-24 bg-gray-100 rounded-full overflow-hidden">
+                                                <div className="h-full bg-gray-900 transition-all duration-500" style={{ width: `${(step / 3) * 100}%` }} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Content Area */}
-                            <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
-                                {error && (
+                                {/* Content Area */}
+                                <div className="p-5 md:p-8 flex-1">
+                                    {error && (
                                     <div className="mb-6 flex items-start gap-3 rounded-xl bg-red-50 p-4 text-red-600 border border-red-100 animate-[fadeIn_0.3s]">
                                         <AlertCircle size={20} className="mt-0.5 shrink-0" />
                                         <p className="text-xs font-bold uppercase tracking-tight">{error}</p>
@@ -397,11 +429,11 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                 <form id="prebooking-form" onSubmit={handleSubmit(handleFinalSubmit)}>
                                     {step === 1 && (
                                         <div className="space-y-6">
-                                            <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Rental Details</h3>
+                                            <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">{t("prebook.details.title")}</h3>
                                             <div className="space-y-4">
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Start Date</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.details.start")}</label>
                                                         <input 
                                                             type="datetime-local" 
                                                             {...register("start_date", { required: "Start date is required" })} 
@@ -410,7 +442,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                         {errors.start_date && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.start_date.message}</p>}
                                                     </div>
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">End Date</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.details.end")}</label>
                                                         <input 
                                                             type="datetime-local" 
                                                             {...register("end_date", { 
@@ -427,20 +459,20 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                     </div>
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pickup Location</label>
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.details.location")}</label>
                                                     <input 
                                                         {...register("pickup_location", { required: "Pickup location is required" })} 
-                                                        placeholder="Algiers Airport, etc." 
+                                                        placeholder={t("prebook.details.location.ph")} 
                                                         className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.pickup_location ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
                                                     />
                                                     {errors.pickup_location && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.pickup_location.message}</p>}
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Purpose</label>
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.details.purpose")}</label>
                                                     <select {...register("rental_reason", { required: "Rental reason required" })} className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all">
-                                                        <option value="Personal">Personal Use</option>
-                                                        <option value="Business">Business</option>
-                                                        <option value="Event">Event / Wedding</option>
+                                                        <option value="Personal">{t("prebook.details.p.personal")}</option>
+                                                        <option value="Business">{t("prebook.details.p.business")}</option>
+                                                        <option value="Event">{t("prebook.details.p.event")}</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -449,20 +481,20 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
 
                                     {step === 2 && (
                                         <div className="space-y-6">
-                                            <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Your Information</h3>
+                                            <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">{t("prebook.info.title")}</h3>
                                             <div className="space-y-4">
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Name</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.info.name")}</label>
                                                         <input 
                                                             {...register("customer_name", { required: "Name required" })} 
-                                                            placeholder="Full Name" 
+                                                            placeholder={t("prebook.info.name")} 
                                                             className={`w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold focus:ring-red-600 focus:border-red-600 transition-all ${errors.customer_name ? 'border-red-500 ring-1 ring-red-500' : ''}`} 
                                                         />
                                                         {errors.customer_name && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.customer_name.message}</p>}
                                                     </div>
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Phone</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.info.phone")}</label>
                                                         <input 
                                                             {...register("phone", { 
                                                                 required: "Phone required",
@@ -477,11 +509,11 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email (Optional)</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.info.email")}</label>
                                                         <input {...register("email")} placeholder="email@example.com" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
                                                     </div>
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.info.dob")}</label>
                                                         <input 
                                                             type="date" 
                                                             {...register("date_of_birth", { 
@@ -505,7 +537,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">License No</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.info.license")}</label>
                                                         <input 
                                                             {...register("license_number", { required: "License number required" })} 
                                                             placeholder="123456789" 
@@ -514,7 +546,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                         {errors.license_number && <p className="text-[8px] text-red-500 font-bold uppercase">{errors.license_number.message}</p>}
                                                     </div>
                                                     <div className="space-y-1.5">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Issue Date</label>
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.info.issue")}</label>
                                                         <input 
                                                             type="date" 
                                                             {...register("license_issue_date", { 
@@ -539,7 +571,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                     <label className="flex items-start gap-3 cursor-pointer group">
                                                         <input type="checkbox" {...register("consent_given", { required: "Please confirm requirements" })} className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-600" />
                                                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight leading-relaxed">
-                                                            I certify that I am 25+ and agree to provide my ID and License during vehicle pick-up.
+                                                            {t("prebook.info.consent")}
                                                         </span>
                                                     </label>
                                                     {errors.consent_given && <p className="text-[8px] text-red-500 font-bold uppercase mt-1">{errors.consent_given.message}</p>}
@@ -552,7 +584,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                         <div className="space-y-6">
                                             {paymentStep === "select" && (
                                                 <div className="space-y-6 animate-[fadeIn_0.3s]">
-                                                    <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Payment Method</h3>
+                                                    <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">{t("prebook.pay.title")}</h3>
                                                     <div className="grid gap-4">
                                                         <button 
                                                             type="button"
@@ -564,8 +596,8 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                                     <Landmark size={24} />
                                                                 </div>
                                                                 <div className="text-left">
-                                                                    <p className="font-black text-gray-900 uppercase tracking-tighter">Pay on Arrival</p>
-                                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tight">At pickup location</p>
+                                                                    <p className="font-black text-gray-900 uppercase tracking-tighter">{t("prebook.pay.arrival")}</p>
+                                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tight">{t("prebook.pay.arrival.desc")}</p>
                                                                 </div>
                                                             </div>
                                                             <div className={`h-5 w-5 rounded-full border-2 ${paymentMethod === 'pickup' ? 'border-red-600 bg-red-600' : 'border-gray-200'}`} />
@@ -581,8 +613,8 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                                     <CreditCard size={24} />
                                                                 </div>
                                                                 <div className="text-left">
-                                                                    <p className="font-black text-gray-900 uppercase tracking-tighter">Secure Card Payment</p>
-                                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tight text-red-600">Online Selection</p>
+                                                                    <p className="font-black text-gray-900 uppercase tracking-tighter">{t("prebook.pay.card")}</p>
+                                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tight text-red-600">{t("prebook.pay.card.desc")}</p>
                                                                 </div>
                                                             </div>
                                                             <div className={`h-5 w-5 rounded-full border-2 ${paymentMethod === 'card' ? 'border-gray-900 bg-gray-900' : 'border-gray-200'}`} />
@@ -594,8 +626,8 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                             {paymentStep === "form" && (
                                                 <div className="space-y-6 animate-[fadeIn_0.3s]">
                                                     <div className="flex items-center justify-between">
-                                                        <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">Credit Card</h3>
-                                                        <button type="button" onClick={() => setPaymentStep("select")} className="text-[10px] font-black uppercase text-red-600 hover:underline tracking-widest">Change</button>
+                                                        <h3 className="text-xl font-black text-gray-900 uppercase tracking-tighter">{t("prebook.pay.cc")}</h3>
+                                                        <button type="button" onClick={() => setPaymentStep("select")} className="text-[10px] font-black uppercase text-red-600 hover:underline tracking-widest">{t("prebook.pay.change")}</button>
                                                     </div>
 
                                                     {/* Fake Card Preview */}
@@ -608,18 +640,18 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                             )}
                                                         </div>
                                                         <div className="mt-8">
-                                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Card Number</p>
+                                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">{t("prebook.pay.cardnumber")}</p>
                                                             <p className="text-xl font-black tracking-[0.2em]">
                                                                 {cardNumber ? formatCardNumber(cardNumber) : "•••• •••• •••• ••••"}
                                                             </p>
                                                         </div>
                                                         <div className="mt-auto flex justify-between items-end">
                                                             <div>
-                                                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40 mb-1">Holder Name</p>
+                                                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40 mb-1">{t("prebook.pay.holder")}</p>
                                                                 <p className="text-xs font-bold uppercase tracking-widest">{cardName || "YOUR NAME"}</p>
                                                             </div>
                                                             <div className="text-right">
-                                                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40 mb-1">Expiry</p>
+                                                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40 mb-1">{t("prebook.pay.expiry")}</p>
                                                                 <p className="text-xs font-bold uppercase tracking-widest">{cardExpiry || "MM/YY"}</p>
                                                             </div>
                                                         </div>
@@ -642,7 +674,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
 
                                                     <div className="space-y-4">
                                                         <div className="space-y-1.5">
-                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Card Number</label>
+                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.pay.cardnumber")}</label>
                                                             <input 
                                                                 {...register("card_number", { 
                                                                     required: paymentMethod === 'card'
@@ -659,12 +691,12 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <div className="space-y-1.5">
-                                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name on Card</label>
+                                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.pay.holder")}</label>
                                                                 <input {...register("card_name", { required: paymentMethod === 'card' })} placeholder="J. DOE" className="w-full rounded-xl border-gray-100 bg-gray-50/50 px-4 py-3 text-sm font-bold" />
                                                             </div>
                                                             <div className="grid grid-cols-2 gap-2">
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Expiry</label>
+                                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.pay.expiry")}</label>
                                                                     <input 
                                                                         {...register("card_expiry", { 
                                                                             required: paymentMethod === 'card'
@@ -679,7 +711,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                                     />
                                                                 </div>
                                                                 <div className="space-y-1.5">
-                                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">CVV</label>
+                                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.pay.cvv")}</label>
                                                                     <input 
                                                                         {...register("card_cvv", { 
                                                                             required: paymentMethod === 'card'
@@ -708,21 +740,22 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                         </div>
                                                     </div>
                                                     <h3 className="text-lg font-black text-gray-900 uppercase tracking-tighter">{processingMessage}</h3>
-                                                    <p className="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Your connection is secured via SATIM</p>
+                                                    <p className="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("prebook.pay.securedby")}</p>
                                                 </div>
                                             )}
                                         </div>
                                     )}
                                 </form>
+                                </div>
                             </div>
 
-                            {/* Footer */}
+                            {/* Footer (Always sticky outside the scroll area) */}
                             {!apiSuccess && paymentStep !== "processing" && (
-                                <div className="p-6 md:p-8 border-t border-gray-100 bg-white shrink-0 mt-auto">
+                                <div className="p-5 md:p-8 border-t border-gray-100 bg-white shrink-0 z-30 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
                                     {totalPrice !== null && (
-                                        <div className="flex justify-between items-center mb-6">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total estimated</span>
-                                            <span className="text-2xl font-black text-gray-900 tracking-tighter">{totalPrice.toLocaleString()} DZD</span>
+                                        <div className="flex justify-between items-center mb-4 sm:mb-6">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{t("prebook.total")}</span>
+                                            <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">{totalPrice.toLocaleString()} DZD</span>
                                         </div>
                                     )}
                                     
@@ -737,7 +770,7 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                                         setStep(s => s - 1);
                                                     }
                                                 }}
-                                                className="flex items-center justify-center p-4 rounded-2xl border border-gray-100 text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all"
+                                                className="flex items-center justify-center p-3 sm:p-4 rounded-2xl border border-gray-100 text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all"
                                             >
                                                 <ArrowLeft size={20} />
                                             </button>
@@ -746,18 +779,18 @@ const PrebookingModal: FC<PrebookingModalProps> = ({ isOpen, onClose, car }) => 
                                             <button
                                                 type="button"
                                                 onClick={handleNextStep}
-                                                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gray-900 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-gray-200 transition-all hover:bg-gray-800 hover:scale-[1.02] active:scale-95"
+                                                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gray-900 py-3 sm:py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-gray-200 transition-all hover:bg-gray-800 hover:scale-[1.02] active:scale-95"
                                             >
-                                                Next Step <ArrowRight size={16} strokeWidth={3} />
+                                                {t("prebook.btn.next")} <ArrowRight size={16} strokeWidth={3} />
                                             </button>
                                         ) : (
                                             <button
                                                 type="button"
                                                 onClick={paymentStep === "select" ? startPaymentFlow : handleSubmit(handleFinalSubmit)}
                                                 disabled={isApiLoading || (paymentStep === 'select' && !paymentMethod) || (paymentStep === 'form' && (!cardNumber || !cardType || !cardName || !cardExpiry))}
-                                                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-red-600 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-red-100 transition-all hover:bg-red-700 hover:scale-[1.02] active:scale-95 disabled:bg-gray-300 disabled:shadow-none"
+                                                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-red-600 py-3 sm:py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-red-100 transition-all hover:bg-red-700 hover:scale-[1.02] active:scale-95 disabled:bg-gray-300 disabled:shadow-none"
                                             >
-                                                {isApiLoading ? "Finalizing..." : paymentStep === 'select' ? "Confirm Method" : "Pay & Book Now"}
+                                                {isApiLoading ? t("prebook.btn.finalizing") : paymentStep === 'select' ? t("prebook.btn.confirm") : t("prebook.btn.pay")}
                                             </button>
                                         )}
                                     </div>

@@ -1,31 +1,33 @@
 import { Shield, Award, Clock, DollarSign, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-const benefits = [
-  {
-    icon: <Shield className="h-6 w-6" />,
-    title: "Secure Transactions",
-    description: "Every payment is protected with industry-standard encryption for your peace of mind."
-  },
-  {
-    icon: <Award className="h-6 w-6" />,
-    title: "Verified Agencies",
-    description: "We hand-pick and vet every rental partner to ensure premium service quality."
-  },
-  {
-    icon: <Clock className="h-6 w-6" />,
-    title: "Instant Booking",
-    description: "Skip the waiting room. Confirm your reservation and get on the road instantly."
-  },
-  {
-    icon: <DollarSign className="h-6 w-6" />,
-    title: "No Hidden Fees",
-    description: "What you see is what you pay. We believe in transparent pricing at every step."
-  }
-];
+import { useLanguage } from "../context/LanguageContext";
 
 const WhyChooseSection = () => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
+
+  const benefits = [
+    {
+      icon: <Shield className="h-6 w-6" />,
+      title: t("whychoose.b1.title"),
+      description: t("whychoose.b1.desc")
+    },
+    {
+      icon: <Award className="h-6 w-6" />,
+      title: t("whychoose.b2.title"),
+      description: t("whychoose.b2.desc")
+    },
+    {
+      icon: <Clock className="h-6 w-6" />,
+      title: t("whychoose.b3.title"),
+      description: t("whychoose.b3.desc")
+    },
+    {
+      icon: <DollarSign className="h-6 w-6" />,
+      title: t("whychoose.b4.title"),
+      description: t("whychoose.b4.desc")
+    }
+  ];
 
   return (
     <div className="bg-[#0A1633] py-24 relative overflow-hidden">
@@ -37,25 +39,25 @@ const WhyChooseSection = () => {
         <div className="grid items-center gap-16 lg:grid-cols-2">
           <div>
             <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
-              Why Lokar
+              {t("whychoose.tag")}
             </h2>
             <h3
               className="mb-8 text-5xl font-bold text-white leading-tight"
               style={{ fontFamily: "Orbitron, sans-serif" }}
             >
-              DRIVE YOUR DREAM CAR
+              {t("whychoose.title1")}
               <br />
-              <span className="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">WITH COMPLETE TRUST.</span>
+              <span className="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">{t("whychoose.title2")}</span>
             </h3>
             <p className="mb-10 text-lg text-gray-400 font-medium max-w-lg leading-relaxed">
-              Lokar provides the most secure and reliable marketplace for high-end vehicle rentals. We focus on the experience, so you can focus on the journey.
+              {t("whychoose.desc")}
             </p>
 
             <button
-              onClick={() => navigate("/become-partner")}
+              onClick={() => navigate(language === 'en' ? "/en/become-partner" : "/become-partner")}
               className="group flex items-center gap-3 rounded-full bg-white px-8 py-4 text-sm font-bold tracking-widest text-[#0A1633] uppercase transition-all hover:scale-105 hover:bg-gray-100"
             >
-              Learn More
+              {t("whychoose.btn")}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
           </div>

@@ -4,9 +4,11 @@ import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CarCard from "./CarCard";
 import { publicService } from "../services/public.service";
+import { useLanguage } from "../context/LanguageContext";
 
 const FeaturedCarsSection = () => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   const [featuredCars, setFeaturedCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,16 +34,16 @@ const FeaturedCarsSection = () => {
             className="mb-4 text-4xl font-bold text-[#0A1633]"
             style={{ fontFamily: "Orbitron, sans-serif" }}
           >
-            OUR FEATURED
+            {t("featuredcars.title1")}
             <br />
-            CARS
+            {t("featuredcars.title2")}
           </h3>
           <p className="text-gray-600 font-medium">
-            Explore our top-rated vehicles from verified agencies
+            {t("featuredcars.subtitle")}
           </p>
           <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-[#0A1633] uppercase tracking-[0.2em] opacity-60">
             <span className="h-px w-8 bg-gray-200"></span>
-            Pay Online with CIB / Edahabia
+            {t("featuredcars.payonline")}
             <span className="h-px w-8 bg-gray-200"></span>
           </div>
         </div>
@@ -56,7 +58,7 @@ const FeaturedCarsSection = () => {
               featuredCars.map((car) => <CarCard key={car._id} car={car} />)
             ) : (
               <div className="col-span-full text-center text-gray-500">
-                No cars available at the moment.
+                {t("featuredcars.nocars")}
               </div>
             )}
           </div>
@@ -64,10 +66,10 @@ const FeaturedCarsSection = () => {
 
         <div className="text-center">
           <button
-            onClick={() => navigate("/cars")}
+            onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
             className="mx-auto flex items-center gap-2 rounded-lg bg-[#C8102E] px-10 py-4 text-lg font-semibold text-white transition hover:bg-red-700"
           >
-            View All Cars
+            {t("featuredcars.viewall")}
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Star, Fuel, Settings, Users, ArrowRight } from "lucide-react";
 import PrebookingModal from "./prebooking/PrebookingModal";
 import { getImageUrl } from "../utils/imageUtils";
+import { useLanguage } from "../context/LanguageContext";
 
 interface CarProps {
   car: {
@@ -27,6 +28,7 @@ interface CarProps {
 }
 
 const CarCard: React.FC<CarProps> = ({ car }) => {
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const image = getImageUrl(car.img_path || car.image);
   const name = car.model || car.name || "Unknown Model";
@@ -73,7 +75,7 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
               {car.brand} <span className="text-gray-400">{name}</span>
             </h4>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
-              Model Year {car.year}
+              {t("carcard.modelyear")} {car.year}
             </p>
           </div>
 
@@ -89,13 +91,13 @@ const CarCard: React.FC<CarProps> = ({ car }) => {
             </div>
             <div className="flex flex-col items-center gap-1">
               <Users className="h-4 w-4 text-[#C8102E]" />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{car.specs?.seats || 5} Seats</span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{car.specs?.seats || 5} {t("carcard.seats")}</span>
             </div>
           </div>
 
           <div className="mt-auto flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Price Per Day</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{t("carcard.price")}</p>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black text-[#0A1633]">
                   {hasPrice ? `${car.price?.toLocaleString()} DZD` : "-- DZD"}

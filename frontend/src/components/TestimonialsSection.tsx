@@ -1,4 +1,5 @@
 import { Star, Quote } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 const testimonials = [
   {
@@ -25,22 +26,24 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-gray-50 py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
           <div className="text-center md:text-left">
             <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
-              Community Reviews
+              {t("testimonials.tag")}
             </h2>
             <h3 className="text-4xl font-bold text-[#0A1633] sm:text-5xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
-              WHAT OUR USERS SAY
+              {t("testimonials.title")}
             </h3>
           </div>
           <div className="flex items-center gap-4 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
             <div className="text-right">
-              <div className="text-xl font-bold text-[#0A1633]">Excellent 4.8/5</div>
-              <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Based on 2.5k reviews</div>
+              <div className="text-xl font-bold text-[#0A1633]">{t("testimonials.excellent")}</div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t("testimonials.basedon")}</div>
             </div>
             <div className="flex gap-1 text-[#C8102E]">
               {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="h-5 w-5 fill-current" />)}

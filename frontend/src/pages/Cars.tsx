@@ -6,8 +6,10 @@ import Footer from "../components/Footer";
 import CarCard from "../components/CarCard";
 import CarFilters from "../components/CarFilters";
 import { publicService } from "../services/public.service";
+import { useLanguage } from "../context/LanguageContext";
 
 const Cars = () => {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAgency, setSelectedAgency] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
@@ -138,10 +140,10 @@ const Cars = () => {
                 <Search className="h-10 w-10 text-gray-300" />
               </div>
               <h3 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-                No cars found
+                {t("cars.nocars")}
               </h3>
               <p className="max-w-sm text-center font-medium text-gray-500">
-                We couldn't find any vehicles matching your exact criteria. Try adjusting your filters.
+                {t("cars.nocars.desc")}
               </p>
               <button
                 onClick={() => {
@@ -155,7 +157,7 @@ const Cars = () => {
                 }}
                 className="mt-8 rounded-full border border-gray-200 bg-white px-6 py-3 text-sm font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md active:scale-95"
               >
-                Clear all filters
+                {t("cars.clear")}
               </button>
             </div>
           )}

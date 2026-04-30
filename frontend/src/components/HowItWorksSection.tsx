@@ -1,33 +1,36 @@
 import { Car, Calendar, CheckCircle } from "lucide-react";
-
-const steps = [
-  {
-    icon: <Car className="h-8 w-8" />,
-    title: "Choose your car",
-    description: "Browse our premium fleet and find the perfect match for your journey.",
-  },
-  {
-    icon: <Calendar className="h-8 w-8" />,
-    title: "Select your dates",
-    description: "Flexible rental periods that work with your schedule and travel plans.",
-  },
-  {
-    icon: <CheckCircle className="h-8 w-8" />,
-    title: "Book instantly",
-    description: "Secure your vehicle with our fast and easy reservation process.",
-  },
-];
+import { useLanguage } from "../context/LanguageContext";
 
 const HowItWorksSection = () => {
+  const { t } = useLanguage();
+
+  const steps = [
+    {
+      icon: <Car className="h-8 w-8" />,
+      title: t("howitworks.step1.title"),
+      description: t("howitworks.step1.desc"),
+    },
+    {
+      icon: <Calendar className="h-8 w-8" />,
+      title: t("howitworks.step2.title"),
+      description: t("howitworks.step2.desc"),
+    },
+    {
+      icon: <CheckCircle className="h-8 w-8" />,
+      title: t("howitworks.step3.title"),
+      description: t("howitworks.step3.desc"),
+    },
+  ];
+
   return (
     <div className="bg-white py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
-            Simple Process
+            {t("howitworks.title1")}
           </h2>
           <h3 className="text-4xl font-bold text-[#0A1633] sm:text-5xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
-            HOW IT WORKS
+            {t("howitworks.title2")}
           </h3>
         </div>
 

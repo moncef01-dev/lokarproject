@@ -35,8 +35,10 @@ const Hero = () => {
 
     if (isDeleting) {
       if (displayText.length === 0) {
-        setIsDeleting(false);
-        setPhraseIndex((prev) => (prev + 1) % cyclingPhrases.length);
+        typingTimeoutRef.current = setTimeout(() => {
+          setIsDeleting(false);
+          setPhraseIndex((prev) => (prev + 1) % cyclingPhrases.length);
+        }, 300);
         return;
       }
       typingTimeoutRef.current = setTimeout(() => {
@@ -48,7 +50,9 @@ const Hero = () => {
           setDisplayText(currentPhrase.substring(0, displayText.length + 1));
         }, 80);
       } else {
-        setIsPaused(true);
+        typingTimeoutRef.current = setTimeout(() => {
+          setIsPaused(true);
+        }, 1500);
       }
     }
 
@@ -142,7 +146,6 @@ const Hero = () => {
             </div>
             <div className="flex items-center gap-2 bg-white/10 px-10 py-5 rounded-full border-2 border-white/20 backdrop-blur-2xl hover:bg-white/15 transition-all hover:scale-105 active:scale-95 cursor-default group">
               <div className="flex gap-3 mr-5 bg-white/10 p-2 rounded-lg">
-                <img src="/assets/cib.svg" alt="CIB" className="h-6 w-auto brightness-0 invert opacity-100" />
                 <img src="/assets/edahabia.svg" alt="Edahabia" className="h-6 w-auto brightness-0 invert opacity-100" />
               </div>
               <span className="text-sm sm:text-base text-white font-black tracking-[0.1em] uppercase">{t("hero.trust.payOnline")}</span>

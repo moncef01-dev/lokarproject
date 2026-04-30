@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -21,6 +21,29 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.overflow = 'hidden';
+
+      const handleTouchMove = (e: TouchEvent) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.mobile-menu-panel')) {
+          e.preventDefault();
+        }
+      };
+
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+      return () => {
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.body.style.overflow = '';
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileMenuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -71,119 +94,18 @@ const Navbar = () => {
   ];
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
-        isHome && !scrolled
-          ? "bg-transparent py-6 text-white"
-          : "bg-charcoal-900/95 backdrop-blur-xl border-b border-white/5 py-4 text-white shadow-2xl shadow-black/30"
-      }`}
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-
-          {/* Logo */}
-          <div
-            className="group cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <div className="flex items-center gap-0.5">
-              <span
-                className="text-3xl font-black text-brand-red transition-colors group-hover:text-red-400"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                L
-              </span>
-              <span
-                className="text-3xl font-bold tracking-tight text-white"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                OKAR
-              </span>
-              <div className="ml-2 h-2 w-2 rounded-full bg-brand-red/60 group-hover:bg-brand-red transition-colors" />
-            </div>
-          </div>
-
-          {/* Desktop Nav Links */}
-          <div className="hidden items-center md:flex">
-            <div className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-2 ring-1 ring-white/10 backdrop-blur-sm">
-              {navItems.map((item) => (
-                <button
-                  key={item.key}
-                  onClick={() => handleNavClick(item.action)}
-                  className="relative px-6 py-2.5 text-[0.95rem] font-semibold text-white/75 rounded-full transition-all hover:text-white hover:bg-white/10"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Section: Admin + Auth */}
-          <div className="flex items-center gap-3">
-            {/* Admin Badge */}
-            {isAuthenticated &&
-              (user?.role === "superadmin" || user?.role === "agency") && (
-                <button
-                  onClick={() => navigate("/admin")}
-                  className="hidden items-center gap-2 rounded-full bg-brand-red/10 px-5 py-2.5 text-sm font-semibold text-brand-red ring-1 ring-inset ring-brand-red/20 transition-all hover:bg-brand-red/20 md:flex"
-                >
-                  <ShieldCheck size={16} />
-                  <span>{t("nav.admin")}</span>
-                </button>
-              )}
-
-            {/* Desktop Auth Buttons */}
-            {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="hidden items-center gap-2 rounded-full bg-white/10 px-6 py-2.5 text-sm font-semibold text-white ring-1 ring-white/10 transition-all hover:bg-white/15 hover:ring-white/20 md:flex"
-              >
-                {t("nav.signOut")}
-              </button>
-            ) : (
-              <div className="hidden items-center gap-3 md:flex">
-                <button
-                  onClick={() => navigate("/login")}
-                  className="flex items-center gap-2 rounded-full px-6 py-2.5 text-[0.9rem] font-semibold text-white/80 transition-all hover:text-white hover:bg-white/5"
-                >
-                  <LogIn size={17} />
-                  {t("nav.signIn")}
-                </button>
-                <button
-                  onClick={() => navigate("/signup")}
-                  className="flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-[0.9rem] font-bold text-charcoal-900 shadow-lg shadow-white/10 transition-all hover:shadow-white/20 hover:scale-105 active:scale-95"
-                >
-                  <UserPlus size={17} />
-                  {t("nav.signUp") || "S'inscrire"}
-                </button>
-              </div>
-            )}
-
-            {/* Mobile Menu Toggle */}
-            <button
-              className="md:hidden relative flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 text-white transition-all hover:bg-white/10 active:scale-95"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`md:hidden fixed inset-0 top-0 z-30 bg-charcoal-900/60 backdrop-blur-sm transition-opacity duration-300 ${
-          mobileMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setMobileMenuOpen(false)}
-      />
+    <>
+      {/* Mobile Menu Overlay - below navbar, above content */}
+      {mobileMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-charcoal-900/60 backdrop-blur-sm"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
       {/* Mobile Menu Panel */}
       <div
-        className={`md:hidden fixed top-0 right-0 z-40 h-full w-80 max-w-[85vw] bg-charcoal-900 shadow-2xl border-l border-white/5 transition-transform duration-500 ease-out ${
+        className={`mobile-menu-panel md:hidden fixed top-0 right-0 z-[60] h-full w-80 max-w-[85vw] bg-charcoal-900 shadow-2xl border-l border-white/5 transition-transform duration-500 ease-out ${
           mobileMenuOpen
             ? "translate-x-0"
             : "translate-x-full"
@@ -266,7 +188,108 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+          isHome && !scrolled
+            ? "bg-transparent py-6 text-white"
+            : "bg-charcoal-900/95 backdrop-blur-xl border-b border-white/5 py-4 text-white shadow-2xl shadow-black/30"
+        }`}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+
+            {/* Logo */}
+            <div
+              className="group cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <div className="flex items-center gap-0.5">
+                <span
+                  className="text-3xl font-black text-brand-red transition-colors group-hover:text-red-400"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  L
+                </span>
+                <span
+                  className="text-3xl font-bold tracking-tight text-white"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  OKAR
+                </span>
+                <div className="ml-2 h-2 w-2 rounded-full bg-brand-red/60 group-hover:bg-brand-red transition-colors" />
+              </div>
+            </div>
+
+            {/* Desktop Nav Links */}
+            <div className="hidden items-center md:flex">
+              <div className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-2 ring-1 ring-white/10 backdrop-blur-sm">
+                {navItems.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => handleNavClick(item.action)}
+                    className="relative px-6 py-2.5 text-[0.95rem] font-semibold text-white/75 rounded-full transition-all hover:text-white hover:bg-white/10"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Section: Admin + Auth */}
+            <div className="flex items-center gap-3">
+              {/* Admin Badge */}
+              {isAuthenticated &&
+                (user?.role === "superadmin" || user?.role === "agency") && (
+                  <button
+                    onClick={() => navigate("/admin")}
+                    className="hidden items-center gap-2 rounded-full bg-brand-red/10 px-5 py-2.5 text-sm font-semibold text-brand-red ring-1 ring-inset ring-brand-red/20 transition-all hover:bg-brand-red/20 md:flex"
+                  >
+                    <ShieldCheck size={16} />
+                    <span>{t("nav.admin")}</span>
+                  </button>
+                )}
+
+              {/* Desktop Auth Buttons */}
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="hidden items-center gap-2 rounded-full bg-white/10 px-6 py-2.5 text-sm font-semibold text-white ring-1 ring-white/10 transition-all hover:bg-white/15 hover:ring-white/20 md:flex"
+                >
+                  {t("nav.signOut")}
+                </button>
+              ) : (
+                <div className="hidden items-center gap-3 md:flex">
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="flex items-center gap-2 rounded-full px-6 py-2.5 text-[0.9rem] font-semibold text-white/80 transition-all hover:text-white hover:bg-white/5"
+                  >
+                    <LogIn size={17} />
+                    {t("nav.signIn")}
+                  </button>
+                  <button
+                    onClick={() => navigate("/signup")}
+                    className="flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-[0.9rem] font-bold text-charcoal-900 shadow-lg shadow-white/10 transition-all hover:shadow-white/20 hover:scale-105 active:scale-95"
+                  >
+                    <UserPlus size={17} />
+                    {t("nav.signUp") || "S'inscrire"}
+                  </button>
+                </div>
+              )}
+
+              {/* Mobile Menu Toggle */}
+              <button
+                className="md:hidden relative flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 text-white transition-all hover:bg-white/10 active:scale-95"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Menu"
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </>
   );
 };
 

@@ -25,14 +25,10 @@ const Login: FC = () => {
 
     try {
       await authService.login({ email, password });
-      await authLogin(); // Fetch user data from /api/user/me
+      await authLogin();
       navigate("/");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      console.error(err);
-      setError(
-        err.response?.data || "Failed to login. Please check your credentials.",
-      );
+    } catch (err: unknown) {
+      setError("Identifiants incorrects. Veuillez vérifier vos informations.");
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +36,6 @@ const Login: FC = () => {
 
   return (
     <div className="bg-brand-navy relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Background Ambience */}
       <div className="absolute inset-0 z-0">
         <div className="from-brand-navy absolute top-0 left-0 h-full w-1/2 bg-gradient-to-r to-transparent opacity-90"></div>
         <div className="bg-brand-red absolute right-[-10%] bottom-[-20%] h-[600px] w-[600px] rounded-full opacity-20 blur-[120px]"></div>
@@ -49,19 +44,19 @@ const Login: FC = () => {
 
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="mb-10 text-center">
-          <h1 className="font-heading mb-2 text-4xl font-bold tracking-wider text-white">
+          <h1 className="mb-2 text-3xl font-bold tracking-wide text-white" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
             LOKAR <span className="text-brand-red">.</span>
           </h1>
-          <p className="text-gray-400">
-            Welcome back. Access your premium fleet.
+          <p className="text-gray-400 text-sm">
+            Bienvenue. Accédez à votre espace premium.
           </p>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
-          <h2 className="mb-6 text-2xl font-semibold text-white">Login</h2>
+          <h2 className="mb-6 text-xl font-semibold text-white" style={{ fontFamily: "Space Grotesk, sans-serif" }}>Connexion</h2>
 
           {error && (
-            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500">
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
@@ -70,7 +65,7 @@ const Login: FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label className="ml-1 text-sm font-medium text-gray-300">
-                Email Address
+                Adresse email
               </label>
               <div className="group relative">
                 <Mail
@@ -82,7 +77,7 @@ const Login: FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-brand-navy/50 focus:border-brand-red/50 focus:ring-brand-red/50 font-body w-full rounded-xl border border-white/10 py-3 pr-4 pl-12 text-white placeholder-gray-500 transition-all focus:ring-1 focus:outline-none"
-                  placeholder="name@example.com"
+                  placeholder="votre@email.com"
                   required
                 />
               </div>
@@ -91,13 +86,13 @@ const Login: FC = () => {
             <div className="space-y-2">
               <div className="ml-1 flex items-center justify-between">
                 <label className="text-sm font-medium text-gray-300">
-                  Password
+                  Mot de passe
                 </label>
                 <a
                   href="#"
                   className="text-brand-red text-xs transition-colors hover:text-red-400"
                 >
-                  Forgot password?
+                  Mot de passe oublié ?
                 </a>
               </div>
               <div className="group relative">
@@ -125,7 +120,7 @@ const Login: FC = () => {
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
               ) : (
                 <>
-                  Sign In
+                  Se connecter
                   <ArrowRight
                     size={20}
                     className="transition-transform group-hover:translate-x-1"
@@ -137,12 +132,12 @@ const Login: FC = () => {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-400">
-              Don't have an account?{" "}
+              Pas encore de compte ?{" "}
               <Link
                 to="/signup"
                 className="text-brand-red font-medium transition-colors hover:text-red-400"
               >
-                Create Account
+                Créer un compte
               </Link>
             </p>
           </div>

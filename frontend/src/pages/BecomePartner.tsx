@@ -25,7 +25,7 @@ const BecomePartner: FC = () => {
         try {
             await adminService.applyForPartnership(formData);
             setSubmitted(true);
-            setTimeout(() => navigate(language === 'en' ? "/en" : "/"), 5000);
+            setTimeout(() => navigate("/"), 5000);
         } catch (err) {
             console.error(err);
             alert("Failed to submit application. Please try again.");
@@ -42,12 +42,12 @@ const BecomePartner: FC = () => {
                     <div className="bg-green-500/10 p-6 rounded-full mb-8">
                         <CheckCircle2 size={64} className="text-green-500 animate-bounce" />
                     </div>
-                    <h1 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: "Orbitron, sans-serif" }}>{t("partner.success.title")}</h1>
+                    <h1 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>{t("partner.success.title")}</h1>
                     <p className="text-gray-400 max-w-md text-lg">
                         {t("partner.success.desc")}
                     </p>
                     <button
-                        onClick={() => navigate(language === 'en' ? "/en" : "/")}
+                        onClick={() => navigate("/")}
                         className="mt-10 bg-white text-[#C8102E] px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition-all"
                     >
                         {t("partner.success.btn")}
@@ -66,7 +66,7 @@ const BecomePartner: FC = () => {
             <div className="relative pt-32 pb-20 px-4">
                 <div className="absolute inset-0 bg-gradient-to-b from-[#C8102E]/20 to-transparent"></div>
                 <div className="relative max-w-7xl mx-auto text-center">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ fontFamily: "Orbitron, sans-serif" }}>
+                    <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                         {t("partner.hero.title1")} <span className="text-[#C8102E]">{t("partner.hero.title2")}</span>
                     </h1>
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto">
@@ -79,7 +79,7 @@ const BecomePartner: FC = () => {
                 <div className="grid lg:grid-cols-2 gap-16 items-start">
                     {/* Benefits Section */}
                     <div className="space-y-12">
-                        <h2 className="text-3xl font-bold" style={{ fontFamily: "Orbitron, sans-serif" }}>{t("partner.why.title")}</h2>
+                        <h2 className="text-3xl font-bold" style={{ fontFamily: "Space Grotesk, sans-serif" }}>{t("partner.why.title")}</h2>
 
                         <div className="space-y-8">
                             {[

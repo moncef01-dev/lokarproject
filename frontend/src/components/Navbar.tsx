@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, logout, user } = useAuth();
-  const { t, language, setLanguage } = useLanguage();
-  
-  // Home path can be / or /en
-  const isHome = location.pathname === "/" || location.pathname === "/en";
+  const { t } = useLanguage();
+
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,126 +27,165 @@ const Navbar = () => {
     navigate("/login", { replace: true });
   };
 
+  const handleNavClick = (action: string) => {
+    setMobileMenuOpen(false);
+    switch (action) {
+      case "home":
+        navigate("/");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        break;
+      case "browse":
+        navigate("/cars");
+        break;
+      case "pricing":
+        if (!isHome) {
+          navigate("/");
+          setTimeout(() => {
+            document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        } else {
+          document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+        }
+        break;
+      case "about":
+        if (!isHome) {
+          navigate("/");
+          setTimeout(() => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+          }, 100);
+        } else {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        }
+        break;
+      case "contact":
+        navigate("/become-partner");
+        break;
+    }
+  };
+
+  const navItems = [
+    { key: "nav.home", label: t("nav.home"), action: "home" },
+    { key: "nav.browse", label: t("nav.browse"), action: "browse" },
+    { key: "nav.pricing", label: t("nav.pricing"), action: "pricing" },
+    { key: "nav.about", label: t("nav.about"), action: "about" },
+  ];
 
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
         isHome && !scrolled
           ? "bg-transparent py-4 text-white"
-          : "bg-[#0b1a2b]/80 backdrop-blur-md border-b border-white/10 py-2 text-white shadow-xl"
+          : "bg-charcoal-900/95 backdrop-blur-md border-b border-charcoal-700/50 py-3 text-white shadow-xl"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-16 items-center justify-between">
           <div
-            className="group flex cursor-pointer items-center space-x-2"
+            className="group flex cursor-pointer items-center gap-2"
             onClick={() => navigate("/")}
           >
             <h1
-              className="text-3xl font-bold tracking-tighter"
-              style={{ fontFamily: "Orbitron, sans-serif" }}
+              className="text-2xl font-bold tracking-tight"
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
-              <span className="text-[#C8102E] transition-all group-hover:text-red-400">L</span>OKAR
+              <span className="text-brand-red transition-all group-hover:text-red-400">L</span>OKAR
             </h1>
           </div>
 
-          <div className="hidden items-center space-x-10 md:flex">
-            {[
-              { key: "nav.home", label: t("nav.home"), action: "home" },
-              { key: "nav.browse", label: t("nav.browse"), action: "browse" },
-              { key: "nav.pricing", label: t("nav.pricing"), action: "pricing" },
-              { key: "nav.about", label: t("nav.about"), action: "about" },
-              { key: "nav.contact", label: t("nav.contact"), action: "contact" }
-            ].map((item) => (
-              <a
+          <div className="hidden items-center space-x-8 md:flex">
+            {navItems.map((item) => (
+              <button
                 key={item.key}
-                href="#"
-                className="relative text-sm font-semibold tracking-wide uppercase transition-all hover:text-[#C8102E] before:absolute before:-bottom-1 before:left-0 before:h-0.5 before:w-0 before:bg-[#C8102E] before:transition-all hover:before:w-full"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (item.action === "home") {
-                    navigate(language === 'en' ? "/en" : "/");
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  } else if (item.action === "browse") {
-                    navigate(language === 'en' ? "/en/cars" : "/cars");
-                  } else if (item.action === "pricing") {
-                    if (!isHome) {
-                      navigate(language === 'en' ? "/en" : "/");
-                      setTimeout(() => {
-                        document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-                      }, 100);
-                    } else {
-                      document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-                    }
-                  } else if (item.action === "about") {
-                    if (!isHome) {
-                      navigate(language === 'en' ? "/en" : "/");
-                      setTimeout(() => {
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                      }, 100);
-                    } else {
-                      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                    }
-                  } else if (item.action === "contact") {
-                    navigate(language === 'en' ? "/en/become-partner" : "/become-partner");
-                  }
-                }}
+                onClick={() => handleNavClick(item.action)}
+                className="text-sm font-medium text-white/80 transition-all hover:text-white hover:translate-y-[-1px]"
               >
                 {item.label}
-              </a>
+              </button>
             ))}
             {isAuthenticated &&
               (user?.role === "superadmin" || user?.role === "agency") && (
-                <a
-                  href="#"
-                  className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-brand-red/10 px-4 py-2 text-xs font-bold text-brand-red ring-1 ring-inset ring-brand-red/20 transition-all hover:bg-brand-red/20 hover:scale-105 active:scale-95"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(language === 'en' ? "/en/admin" : "/admin");
-                  }}
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="flex items-center gap-2 rounded-full bg-brand-red/10 px-4 py-2 text-xs font-semibold text-brand-red ring-1 ring-inset ring-brand-red/20 transition-all hover:bg-brand-red/20"
                 >
-                  <ShieldCheck size={14} className="transition-transform group-hover:rotate-12" />
+                  <ShieldCheck size={14} />
                   <span>{t("nav.admin")}</span>
-                  
-                  {/* Shine Effect Overlay */}
-                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shine" />
-                </a>
+                </button>
               )}
           </div>
 
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center gap-2 text-xs font-bold tracking-widest bg-white/5 px-2 py-1 rounded-full ring-1 ring-white/10">
-              <button 
-                onClick={() => setLanguage("fr")}
-                className={`px-2 py-1 rounded-full transition-all ${language === "fr" ? "bg-white text-[#0A1633]" : "text-gray-400 hover:text-white"}`}
-              >
-                FR
-              </button>
-              <button 
-                onClick={() => setLanguage("en")}
-                className={`px-2 py-1 rounded-full transition-all ${language === "en" ? "bg-white text-[#0A1633]" : "text-gray-400 hover:text-white"}`}
-              >
-                EN
-              </button>
-            </div>
-            <div className="h-6 w-px bg-white/20 hidden md:block"></div>
-            
+          <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className="text-sm font-bold transition-all hover:text-[#C8102E]"
+                className="hidden text-sm font-medium text-white/80 transition-all hover:text-white md:block"
               >
                 {t("nav.signOut")}
               </button>
             ) : (
               <button
-                onClick={() => navigate(language === 'en' ? "/en/login" : "/login")}
-                className="text-sm font-bold transition-all hover:text-[#C8102E]"
+                onClick={() => navigate("/login")}
+                className="hidden text-sm font-medium text-white/80 transition-all hover:text-white md:block"
               >
                 {t("nav.signIn")}
               </button>
             )}
+
+            <button
+              className="md:hidden p-2 text-white"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
+        </div>
+      </div>
+
+      <div
+        className={`md:hidden absolute top-full left-0 w-full bg-charcoal-900/98 backdrop-blur-lg border-b border-charcoal-700/50 transition-all duration-300 ${
+          mobileMenuOpen
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-4 pointer-events-none"
+        }`}
+      >
+        <div className="px-4 py-6 space-y-4">
+          {navItems.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => handleNavClick(item.action)}
+              className="block w-full text-left py-2 text-white/80 hover:text-white font-medium"
+            >
+              {item.label}
+            </button>
+          ))}
+
+          {isAuthenticated ? (
+            <button
+              onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+              className="block w-full text-left py-2 text-white/80 hover:text-white font-medium"
+            >
+              {t("nav.signOut")}
+            </button>
+          ) : (
+            <button
+              onClick={() => { navigate("/login"); setMobileMenuOpen(false); }}
+              className="block w-full text-left py-2 text-white/80 hover:text-white font-medium"
+            >
+              {t("nav.signIn")}
+            </button>
+          )}
+
+          {isAuthenticated &&
+            (user?.role === "superadmin" || user?.role === "agency") && (
+              <button
+                onClick={() => { navigate("/admin"); setMobileMenuOpen(false); }}
+                className="flex items-center gap-2 py-2 text-brand-red font-medium"
+              >
+                <ShieldCheck size={16} />
+                {t("nav.admin")}
+              </button>
+            )}
         </div>
       </div>
     </nav>

@@ -7,7 +7,7 @@ const Hero = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef<number>(null);
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,7 +34,7 @@ const Hero = () => {
   }, []);
 
   const handleExplore = () => {
-    navigate(language === 'en' ? "/en/cars" : "/cars");
+    navigate("/cars");
   };
 
   return (
@@ -67,7 +67,8 @@ const Hero = () => {
           
           <div className="space-y-6">
             <h1
-              className={`${language === 'fr' ? 'text-[28px] sm:text-4xl md:text-5xl lg:text-[64px] xl:text-[80px]' : 'text-4xl sm:text-6xl lg:text-7xl xl:text-[100px]'} font-black uppercase tracking-tighter leading-[1.1] sm:leading-[1.05]`}
+              className="text-[28px] sm:text-4xl md:text-5xl lg:text-[64px] xl:text-[80px] font-black uppercase tracking-tight leading-[1.1] sm:leading-[1.05]"
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
               <span className="block mb-1 sm:mb-2">{t("hero.title1")}</span>
               <span className="bg-gradient-to-r from-white via-white/80 to-gray-400 bg-clip-text text-transparent block text-balance mx-auto">
@@ -90,7 +91,7 @@ const Hero = () => {
             </button>
 
             <button
-              onClick={() => navigate(language === 'en' ? "/en/become-partner" : "/become-partner")}
+              onClick={() => navigate("/become-partner")}
               className="flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-12 py-5 text-sm font-bold tracking-widest text-white backdrop-blur-md transition-all hover:bg-white/10 uppercase"
             >
               {t("hero.btn.partner")}

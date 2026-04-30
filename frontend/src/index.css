@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @import "tailwindcss";
@@ -9,20 +9,28 @@
   --color-brand-green: #00c853;
   --color-bg-light: #f8f9fa;
 
-  --font-heading: "Orbitron", sans-serif;
+  --color-charcoal-900: #0f1115;
+  --color-charcoal-800: #181b21;
+  --color-charcoal-700: #232730;
+  --color-charcoal-600: #2d323d;
+  --color-charcoal-500: #3d4451;
+  --color-charcoal-400: #5a6170;
+  --color-charcoal-300: #8b919e;
+  --color-charcoal-200: #c4c8d0;
+  --color-charcoal-100: #e8eaed;
+  --color-charcoal-50: #f5f6f8;
+
+  --color-amber-500: #f59e0b;
+
+  --font-heading: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
 
   --animate-marquee: marquee 40s linear infinite;
   --animate-shine: light-sweep 3s ease-in-out infinite;
 
-
   @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 
   @keyframes slow-zoom {
@@ -43,17 +51,15 @@
 
 body {
   font-family: var(--font-body);
-  background-color: var(--color-bg-light);
-  color: var(--color-brand-navy);
+  background-color: var(--color-charcoal-50);
+  color: var(--color-charcoal-800);
+  -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 button {
@@ -85,5 +91,3 @@ button {
     100% { transform: translateY(0px); }
   }
 }
-
-

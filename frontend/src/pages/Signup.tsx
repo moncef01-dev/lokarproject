@@ -22,12 +22,8 @@ const Signup: FC = () => {
       await authService.signup({ name, email, password });
       await authLogin();
       navigate("/");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      console.error(err);
-      setError(
-        err.response?.data || "Failed to create account. Please try again.",
-      );
+    } catch (err: unknown) {
+      setError("Impossible de créer le compte. Veuillez réessayer.");
     } finally {
       setIsLoading(false);
     }
@@ -35,7 +31,6 @@ const Signup: FC = () => {
 
   return (
     <div className="bg-brand-navy relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Background Ambience */}
       <div className="absolute inset-0 z-0">
         <div className="from-brand-navy absolute top-0 left-0 h-full w-1/2 bg-gradient-to-r to-transparent opacity-90"></div>
         <div className="bg-brand-green/20 absolute top-[20%] right-[-10%] h-[500px] w-[500px] rounded-full opacity-20 blur-[100px]"></div>
@@ -44,19 +39,21 @@ const Signup: FC = () => {
 
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="mb-10 text-center">
-          <h1 className="font-heading mb-2 text-4xl font-bold tracking-wider text-white">
+          <h1 className="mb-2 text-3xl font-bold tracking-wide text-white" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
             LOKAR <span className="text-brand-red">.</span>
           </h1>
-          <p className="text-gray-400">Join the exclusive community.</p>
+          <p className="text-gray-400 text-sm">
+            Rejoignez la communauté LOKAR.
+          </p>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
-          <h2 className="mb-6 text-2xl font-semibold text-white">
-            Create Account
+          <h2 className="mb-6 text-xl font-semibold text-white" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            Créer un compte
           </h2>
 
           {error && (
-            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500">
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
@@ -65,7 +62,7 @@ const Signup: FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label className="ml-1 text-sm font-medium text-gray-300">
-                Full Name
+                Nom complet
               </label>
               <div className="group relative">
                 <User
@@ -77,7 +74,7 @@ const Signup: FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="bg-brand-navy/50 focus:border-brand-red/50 focus:ring-brand-red/50 font-body w-full rounded-xl border border-white/10 py-3 pr-4 pl-12 text-white placeholder-gray-500 transition-all focus:ring-1 focus:outline-none"
-                  placeholder="full name"
+                  placeholder="votre nom complet"
                   required
                 />
               </div>
@@ -85,7 +82,7 @@ const Signup: FC = () => {
 
             <div className="space-y-2">
               <label className="ml-1 text-sm font-medium text-gray-300">
-                Email Address
+                Adresse email
               </label>
               <div className="group relative">
                 <Mail
@@ -97,7 +94,7 @@ const Signup: FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-brand-navy/50 focus:border-brand-red/50 focus:ring-brand-red/50 font-body w-full rounded-xl border border-white/10 py-3 pr-4 pl-12 text-white placeholder-gray-500 transition-all focus:ring-1 focus:outline-none"
-                  placeholder="email address"
+                  placeholder="votre@email.com"
                   required
                 />
               </div>
@@ -105,7 +102,7 @@ const Signup: FC = () => {
 
             <div className="space-y-2">
               <label className="ml-1 text-sm font-medium text-gray-300">
-                Password
+                Mot de passe
               </label>
               <div className="group relative">
                 <Lock
@@ -132,7 +129,7 @@ const Signup: FC = () => {
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
               ) : (
                 <>
-                  Get Started
+                  Commencer
                   <Award
                     size={20}
                     className="transition-transform group-hover:scale-110"
@@ -144,12 +141,12 @@ const Signup: FC = () => {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-400">
-              Already have an account?{" "}
+              Déjà un compte ?{" "}
               <Link
                 to="/login"
                 className="text-brand-red font-medium transition-colors hover:text-red-400"
               >
-                Sign In
+                Se connecter
               </Link>
             </p>
           </div>

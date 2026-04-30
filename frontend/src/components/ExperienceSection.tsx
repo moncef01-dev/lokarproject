@@ -28,7 +28,7 @@ const ExperienceSection = () => {
           
           <h2 
             className="mb-8 text-4xl font-bold text-white sm:text-7xl"
-            style={{ fontFamily: "Orbitron, sans-serif" }}
+            style={{ fontFamily: "Space Grotesk, sans-serif" }}
           >
             {t("experience.title1")}
             <br />
@@ -40,7 +40,7 @@ const ExperienceSection = () => {
           </p>
 
           <button
-            onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
+            onClick={() => navigate("/cars")}
             className="group flex items-center gap-3 rounded-full bg-[#C8102E] px-10 py-5 text-sm font-bold tracking-widest text-white uppercase shadow-2xl transition-all hover:scale-105 hover:bg-red-700 active:scale-95"
           >
             {t("experience.btn")}

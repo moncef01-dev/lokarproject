@@ -4,7 +4,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const Footer = () => {
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -19,8 +19,8 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <h1
               className="text-3xl font-black tracking-tighter text-[#0A1633] mb-6 cursor-pointer"
-              style={{ fontFamily: "Orbitron, sans-serif" }}
-              onClick={() => navigate(language === 'en' ? "/en" : "/")}
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              onClick={() => navigate("/")}
             >
               <span className="text-[#C8102E]">L</span>OKAR
             </h1>
@@ -53,9 +53,9 @@ const Footer = () => {
                     className="text-gray-500 font-semibold transition-all hover:text-[#C8102E] hover:translate-x-1 inline-block"
                     onClick={(e) => {
                       e.preventDefault();
-                      if (link.action === "home") navigate(language === 'en' ? "/en" : "/");
-                      if (link.action === "browse") navigate(language === 'en' ? "/en/cars" : "/cars");
-                      if (link.action === "partner") navigate(language === 'en' ? "/en/become-partner" : "/become-partner");
+                      if (link.action === "home") navigate("/");
+                      if (link.action === "browse") navigate("/cars");
+                      if (link.action === "partner") navigate("/become-partner");
                     }}
                   >
                     {link.label}

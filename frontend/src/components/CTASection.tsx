@@ -4,7 +4,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const CTASection = () => {
     const navigate = useNavigate();
-    const { t, language } = useLanguage();
+    const { t } = useLanguage();
 
     return (
         <section className="relative overflow-hidden bg-black py-24 sm:py-32">
@@ -30,7 +30,7 @@ const CTASection = () => {
                     <div className="space-y-6">
                         <h2 
                             className="text-4xl font-black uppercase tracking-tighter text-white sm:text-6xl lg:text-7xl"
-                            style={{ fontFamily: "Orbitron, sans-serif" }}
+                            style={{ fontFamily: "Space Grotesk, sans-serif" }}
                         >
                             {t("cta.title1")}
                             <br />
@@ -47,7 +47,7 @@ const CTASection = () => {
                     {/* Action Buttons */}
                     <div className="mt-12 flex flex-col gap-6 sm:flex-row">
                         <button
-                            onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
+                            onClick={() => navigate("/cars")}
                             className="group flex items-center justify-center gap-3 rounded-full bg-white px-12 py-5 text-sm font-black tracking-widest text-[#0A1633] shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all hover:scale-105 hover:shadow-[0_20px_50px_rgba(255,255,255,0.2)] active:scale-95 uppercase"
                         >
                             {t("cta.btn.browse")}
@@ -55,7 +55,7 @@ const CTASection = () => {
                         </button>
 
                         <button
-                            onClick={() => navigate(language === 'en' ? "/en/cars?category=luxury" : "/cars?category=luxury")}
+                            onClick={() => navigate("/cars?category=luxury")}
                             className="relative flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-12 py-5 text-sm font-bold tracking-widest text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-white/40 active:scale-95 uppercase group"
                         >
                             <span className="absolute inset-0 rounded-full bg-red-600/10 blur-[20px] opacity-0 group-hover:opacity-100 transition-opacity" />

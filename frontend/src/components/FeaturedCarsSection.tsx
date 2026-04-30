@@ -8,7 +8,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const FeaturedCarsSection = () => {
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [featuredCars, setFeaturedCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,7 @@ const FeaturedCarsSection = () => {
         <div className="mb-12 text-center">
           <h3
             className="mb-4 text-4xl font-bold text-[#0A1633]"
-            style={{ fontFamily: "Orbitron, sans-serif" }}
+            style={{ fontFamily: "Space Grotesk, sans-serif" }}
           >
             {t("featuredcars.title1")}
             <br />
@@ -66,7 +66,7 @@ const FeaturedCarsSection = () => {
 
         <div className="text-center">
           <button
-            onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
+            onClick={() => navigate("/cars")}
             className="mx-auto flex items-center gap-2 rounded-lg bg-[#C8102E] px-10 py-4 text-lg font-semibold text-white transition hover:bg-red-700"
           >
             {t("featuredcars.viewall")}

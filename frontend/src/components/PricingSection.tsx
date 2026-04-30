@@ -7,7 +7,7 @@ const PricingSection = () => {
   const [isYearly, setIsYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   const faqs = [
     {
@@ -42,7 +42,7 @@ const PricingSection = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-6" style={{ fontFamily: "Orbitron, sans-serif" }}>
+          <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-6" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
             {t("pricing.title")}
           </h2>
           <p className="text-xl text-gray-300 font-medium">
@@ -80,7 +80,7 @@ const PricingSection = () => {
               ))}
             </ul>
             <button 
-              onClick={() => navigate(language === 'en' ? "/en/become-partner" : "/become-partner")}
+              onClick={() => navigate("/become-partner")}
               className="w-full py-4 rounded-xl font-bold uppercase tracking-widest text-sm bg-white/10 hover:bg-white/20 transition-all"
             >
               {t("pricing.starter.btn")}
@@ -108,7 +108,7 @@ const PricingSection = () => {
               ))}
             </ul>
             <button 
-              onClick={() => navigate(language === 'en' ? "/en/become-partner" : "/become-partner")}
+              onClick={() => navigate("/become-partner")}
               className="w-full py-4 rounded-xl font-bold uppercase tracking-widest text-sm bg-[#C8102E] hover:bg-red-700 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg"
             >
               {t("pricing.growth.btn")}
@@ -131,7 +131,7 @@ const PricingSection = () => {
               ))}
             </ul>
             <button 
-              onClick={() => navigate(language === 'en' ? "/en/become-partner" : "/become-partner")}
+              onClick={() => navigate("/become-partner")}
               className="w-full py-4 rounded-xl font-bold uppercase tracking-widest text-sm bg-white/10 hover:bg-white/20 transition-all"
             >
               {t("pricing.enterprise.btn")}

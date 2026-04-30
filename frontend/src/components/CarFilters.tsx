@@ -48,14 +48,13 @@ const CarFilters: React.FC<CarFiltersProps> = ({
   return (
     <div className="mb-12">
       <h2
-        className="mb-6 text-4xl font-bold text-[#0A1633]"
-        style={{ fontFamily: "Orbitron, sans-serif" }}
+        className="mb-6 text-2xl sm:text-3xl font-bold text-[#0A1633]"
+        style={{ fontFamily: "Space Grotesk, sans-serif" }}
       >
-        AVAILABLE <span className="text-[#C8102E]">CARS</span>
+        Véhicules <span className="text-[#C8102E]">Disponibles</span>
       </h2>
 
       <div className="flex flex-col gap-6 rounded-2xl bg-white p-5 md:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 transition-all">
-        {/* Top Row: Search and Core Filters */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center">
           <div className="relative flex-[1.5]">
             <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -75,7 +74,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               value={selectedAgency}
               onChange={(e) => setSelectedAgency(e.target.value)}
             >
-              <option value="All">All {t("filters.agency")}s</option>
+              <option value="All">{t("filters.agency")}</option>
               {agencies.filter(a => a !== "All").map((agency) => (
                 <option key={agency} value={agency}>
                   {agency}
@@ -90,7 +89,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
             >
-              <option value="All">All {t("filters.brand")}s</option>
+              <option value="All">{t("filters.brand")}</option>
               {brands.filter(b => b !== "All").map((brand) => (
                 <option key={brand} value={brand}>
                   {brand}
@@ -105,7 +104,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              <option value="All">All {t("filters.category")}s</option>
+              <option value="All">{t("filters.category")}</option>
               {categories.filter(c => c !== "All").map((category) => (
                 <option key={category} value={category}>
                   {category}

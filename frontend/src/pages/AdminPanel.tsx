@@ -179,7 +179,7 @@ const AdminPanel: FC = () => {
         }
       } catch (err) {
         console.error(err);
-        setError("Failed to fetch data. Please try again later.");
+        setError("Échec de la récupération des données. Veuillez réessayer plus tard.");
       } finally {
         if (isInitialLog) setIsLoading(false);
       }
@@ -243,18 +243,18 @@ const AdminPanel: FC = () => {
       setVehicleImagePreview(null);
     } catch (err) {
       console.error(err);
-      setError("Failed to save vehicle.");
+      setError("Échec de l'enregistrement du véhicule.");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this vehicle?")) {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce véhicule ?")) {
       try {
         await adminService.deleteVehicle(id);
         setVehicles(vehicles.filter((v) => v._id !== id));
       } catch (err) {
         console.error(err);
-        setError("Failed to delete vehicle.");
+        setError("Échec de la suppression du véhicule.");
       }
     }
   };
@@ -279,11 +279,11 @@ const AdminPanel: FC = () => {
       });
       setAgencyImageFile(null);
       setAgencyImagePreview(null);
-      alert("Agency created successfully!");
+      alert("Agence créée avec succès !");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data || "Failed to create agency.");
+      setError(err.response?.data || "Échec de la création de l'agence.");
     }
   };
 
@@ -367,16 +367,16 @@ const AdminPanel: FC = () => {
 
   const handleDeletePrebooking = async (id: string) => {
     if (
-      !window.confirm("Are you sure you want to delete this booking request?")
+      !window.confirm("Êtes-vous sûr de vouloir supprimer cette demande de réservation ?")
     )
       return;
     try {
       await prebookingService.deletePrebooking(id);
       setPrebookings((prev) => prev.filter((b) => b._id !== id));
-      alert("Booking request deleted successfully.");
+      alert("Demande de réservation supprimée avec succès.");
     } catch (err) {
       console.error("Failed to delete prebooking", err);
-      setError("Failed to delete booking request.");
+      setError("Échec de la suppression de la demande de réservation.");
     }
   };
 
@@ -391,7 +391,7 @@ const AdminPanel: FC = () => {
       setPrebookings(fetchedPrebookings);
     } catch (err) {
       console.error(err);
-      setError("Failed to update booking status.");
+      setError("Échec de la mise à jour du statut de réservation.");
     }
   };
 
@@ -403,12 +403,12 @@ const AdminPanel: FC = () => {
       setPlatformConfig(newConfig);
     } catch (err) {
       console.error(err);
-      setError("Failed to update platform config.");
+      setError("Échec de la mise à jour de la configuration de la plateforme.");
     }
   };
 
   const handleExportData = () => {
-    alert("Data export started. Your download will begin shortly.");
+    alert("Export des données en cours. Votre téléchargement commencera sous peu.");
   };
 
   const handlePartnershipAction = async (
@@ -428,7 +428,7 @@ const AdminPanel: FC = () => {
       setPartnershipRequests(requests);
     } catch (err) {
       console.error(err);
-      setError(`Failed to ${action} partnership request.`);
+      setError(`Échec de ${action === "approve" ? "l'approbation" : "la réjection"} de la demande de partenariat.`);
     }
   };
 
@@ -453,11 +453,11 @@ const AdminPanel: FC = () => {
       setPartnershipRequests(requests);
       setAdminStats(stats);
 
-      alert("Partnership approved and agency created successfully!");
+      alert("Partenariat approuvé et agence créée avec succès !");
     } catch (err) {
       console.error(err);
       setError(
-        "Failed to approve partnership. Please check if the email already exists.",
+        "Échec de l'approbation du partenariat. Vérifiez si l'email existe déjà.",
       );
     }
   };
@@ -465,7 +465,7 @@ const AdminPanel: FC = () => {
   const handleDeleteAgency = async (id: string) => {
     if (
       window.confirm(
-        "Are you sure you want to delete this agency? This action cannot be undone.",
+        "Êtes-vous sûr de vouloir supprimer cette agence ? Cette action est irréversible.",
       )
     ) {
       try {
@@ -474,7 +474,7 @@ const AdminPanel: FC = () => {
         setAdminStats(stats);
       } catch (err) {
         console.error(err);
-        setError("Failed to delete agency.");
+        setError("Échec de la suppression de l'agence.");
       }
     }
   };
@@ -489,10 +489,10 @@ const AdminPanel: FC = () => {
       // Refresh data
       const stats = await adminService.getSuperAdminStats();
       setAdminStats(stats);
-      alert("Agency updated successfully!");
+      alert("Agence modifiée avec succès !");
     } catch (err) {
       console.error(err);
-      setError("Failed to update agency. Please try again.");
+      setError("Échec de la modification de l'agence. Veuillez réessayer.");
     }
   };
 
@@ -517,7 +517,7 @@ const AdminPanel: FC = () => {
         <div className="h-[calc(100vh-80px)] w-64 border-r border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-10">
             <h2 className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
-              Main Menu
+              Menu Principal
             </h2>
             <nav className="mt-4 space-y-2">
               <button
@@ -529,7 +529,7 @@ const AdminPanel: FC = () => {
                 }`}
               >
                 <LayoutDashboard size={20} />
-                <span className="font-medium">Dashboard</span>
+                <span className="font-medium">Tableau de Bord</span>
               </button>
 
               {user?.role === "agency" && (
@@ -543,7 +543,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <BarChart3 size={20} />
-                    <span className="font-medium">Analytics</span>
+                    <span className="font-medium">Analytiques</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("fleet")}
@@ -554,7 +554,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <Car size={20} />
-                    <span className="font-medium">My Fleet</span>
+                    <span className="font-medium">Ma Flotte</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("bookings")}
@@ -565,7 +565,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <Calendar size={20} />
-                    <span className="font-medium">Bookings</span>
+                    <span className="font-medium">Réservations</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("settings")}
@@ -576,7 +576,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <Settings size={20} />
-                    <span className="font-medium">Settings</span>
+                    <span className="font-medium">Paramètres</span>
                   </button>
                 </>
               )}
@@ -592,7 +592,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <Users size={20} />
-                    <span className="font-medium">Agencies</span>
+                    <span className="font-medium">Agences</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("applications")}
@@ -603,7 +603,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <FileText size={20} />
-                    <span className="font-medium">Applications</span>
+                    <span className="font-medium">Candidatures</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("audit_logs")}
@@ -614,7 +614,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <Activity size={20} />
-                    <span className="font-medium">Audit Logs</span>
+                    <span className="font-medium">Journaux d'Audit</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("platform_config")}
@@ -625,7 +625,7 @@ const AdminPanel: FC = () => {
                     }`}
                   >
                     <Shield size={20} />
-                    <span className="font-medium">Platform Settings</span>
+                    <span className="font-medium">Paramètres Plateforme</span>
                   </button>
                 </>
               )}
@@ -645,7 +645,7 @@ const AdminPanel: FC = () => {
                 className="transition-transform group-hover:-translate-x-1"
               />
 
-              <span className="font-medium">Logout</span>
+              <span className="font-medium">Déconnexion</span>
             </button>
           </div>
         </div>
@@ -656,24 +656,28 @@ const AdminPanel: FC = () => {
             <div>
               <h1 className="font-heading text-brand-navy text-3xl font-bold">
                 {activeTab === "dashboard"
-                  ? "Dashboard Overview"
+                  ? "Tableau de Bord"
                   : activeTab === "analytics"
-                    ? "Analytics Dashboard"
+                    ? "Tableau Analytique"
                     : activeTab === "fleet"
-                      ? "Fleet Management"
+                      ? "Gestion de la Flotte"
                       : activeTab === "bookings"
-                        ? "Booking Requests"
+                        ? "Demandes de Réservation"
                         : activeTab === "settings"
-                          ? "Agency Settings"
+                          ? "Paramètres de l'Agence"
                           : activeTab === "applications"
-                            ? "Partnership Applications"
-                            : "Network Agencies"}
+                            ? "Candidatures de Partenariat"
+                            : activeTab === "audit_logs"
+                              ? "Journaux d'Audit"
+                              : activeTab === "platform_config"
+                                ? "Paramètres Plateforme"
+                                : "Agences du Réseau"}
               </h1>
-              <p className="mt-1 text-gray-500">
-                {user?.role === "superadmin"
-                  ? "Master Control Panel"
-                  : `${user?.name}'s Agency Dashboard`}
-              </p>
+                <p className="mt-1 text-gray-500">
+                  {user?.role === "superadmin"
+                    ? "Panneau de Contrôle Principal"
+                    : `Tableau de Bord de l'Agence ${user?.name}`}
+                </p>
             </div>
 
             {activeTab === "fleet" && (
@@ -682,7 +686,7 @@ const AdminPanel: FC = () => {
                 className="bg-brand-red shadow-brand-red/20 hover:shadow-brand-red/40 flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all hover:bg-red-700"
               >
                 <Plus size={20} />
-                Add New Car
+                Ajouter Véhicule
               </button>
             )}
 
@@ -692,7 +696,7 @@ const AdminPanel: FC = () => {
                 className="bg-brand-red shadow-brand-red/20 hover:shadow-brand-red/40 flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all hover:bg-red-700"
               >
                 <Plus size={20} />
-                Add Agency
+                Ajouter Agence
               </button>
             )}
           </div>
@@ -711,25 +715,25 @@ const AdminPanel: FC = () => {
                 {user?.role === "superadmin" && adminStats ? (
                   <>
                     <StatCard
-                      title="Total Revenue"
+                      title="Revenu Total"
                       value={`DZD ${adminStats.overall.totalRevenue.toLocaleString()}`}
                       icon={<DollarSign className="text-green-600" />}
                       trend="+12.5%"
                     />
                     <StatCard
-                      title="Total Agencies"
+                      title="Total Agences"
                       value={adminStats.overall.agencyCount}
                       icon={<Briefcase className="text-blue-600" />}
-                      trend="+3 active"
+                      trend="+3 actives"
                     />
                     <StatCard
-                      title="Registered Cars"
+                      title="Véhicules Registrés"
                       value={adminStats.overall.vehicleCount}
                       icon={<Car className="text-purple-600" />}
-                      trend="+15 this month"
+                      trend="+15 ce mois"
                     />
                     <StatCard
-                      title="Total Bookings"
+                      title="Total Réservations"
                       value={adminStats.overall.bookingCount}
                       icon={<TrendingUp className="text-orange-600" />}
                       trend="+8%"
@@ -738,28 +742,28 @@ const AdminPanel: FC = () => {
                 ) : user?.role === "agency" && agencyStats ? (
                   <>
                     <StatCard
-                      title="Agency Profit"
+                      title="Profit Agence"
                       value={`DZD ${agencyStats.totalProfit.toLocaleString()}`}
                       icon={<DollarSign className="text-green-600" />}
                       trend="+5.2%"
                     />
                     <StatCard
-                      title="My Fleet"
+                      title="Ma Flotte"
                       value={agencyStats.vehicleCount}
                       icon={<Car className="text-blue-600" />}
-                      trend="All active"
+                      trend="Toutes actives"
                     />
                     <StatCard
-                      title="Total Rentals"
+                      title="Total Locations"
                       value={agencyStats.bookingCount}
                       icon={<TrendingUp className="text-orange-600" />}
                       trend="+12%"
                     />
                     <StatCard
-                      title="Active Listings"
+                      title="Annonces Actives"
                       value={vehicles.length}
                       icon={<LayoutDashboard className="text-purple-600" />}
-                      trend="Verified"
+                      trend="Vérifié"
                     />
                   </>
                 ) : null}
@@ -770,30 +774,30 @@ const AdminPanel: FC = () => {
                 <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
                   <h3 className="text-brand-navy mb-4 flex items-center gap-2 text-lg font-bold">
                     <Activity size={20} className="text-brand-red" />
-                    System Health
+                    Santé du Système
                   </h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div className="flex items-center justify-between rounded-2xl bg-green-50 p-4">
                       <span className="text-sm font-medium text-green-700">
-                        API Status
+                        Statut API
                       </span>
                       <span className="flex items-center gap-2 font-bold text-green-700">
                         <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
-                        Operational
+                        Opérationnel
                       </span>
                     </div>
                     <div className="flex items-center justify-between rounded-2xl bg-green-50 p-4">
                       <span className="text-sm font-medium text-green-700">
-                        Database
+                        Base de Données
                       </span>
                       <span className="flex items-center gap-2 font-bold text-green-700">
                         <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                        Connected
+                        Connecté
                       </span>
                     </div>
                     <div className="flex items-center justify-between rounded-2xl bg-blue-50 p-4">
                       <span className="text-sm font-medium text-blue-700">
-                        Memory Usage
+                        Utilisation Mémoire
                       </span>
                       <span className="font-bold text-blue-700">34%</span>
                     </div>
@@ -807,8 +811,8 @@ const AdminPanel: FC = () => {
                   <div className="mb-6 flex items-center justify-between">
                     <h3 className="font-heading text-brand-navy text-xl font-bold">
                       {user?.role === "superadmin"
-                        ? "Recent Agencies"
-                        : "Your Fleet"}
+                        ? "Agences Récentes"
+                        : "Votre Flotte"}
                     </h3>
                     <button
                       onClick={() =>
@@ -818,7 +822,7 @@ const AdminPanel: FC = () => {
                       }
                       className="text-brand-red text-sm font-semibold hover:text-red-700"
                     >
-                      View All
+                      Voir Tout
                     </button>
                   </div>
                   <div className="overflow-x-auto">
@@ -827,15 +831,15 @@ const AdminPanel: FC = () => {
                         <tr>
                           {user?.role === "superadmin" ? (
                             <>
-                              <th className="pb-3">Name</th>
+                              <th className="pb-3">Nom</th>
                               <th className="pb-3">Contact</th>
-                              <th className="pb-3 text-right">Revenue</th>
+                              <th className="pb-3 text-right">Revenu</th>
                             </>
                           ) : (
                             <>
-                              <th className="pb-3">Vehicle</th>
-                              <th className="pb-3">Status</th>
-                              <th className="pb-3 text-right">Year</th>
+                              <th className="pb-3">Véhicule</th>
+                              <th className="pb-3">Statut</th>
+                              <th className="pb-3 text-right">Année</th>
                             </>
                           )}
                         </tr>
@@ -883,7 +887,7 @@ const AdminPanel: FC = () => {
                               colSpan={3}
                               className="py-8 text-center text-gray-500 italic"
                             >
-                              No data available yet.
+                              Aucune donnée disponible.
                             </td>
                           </tr>
                         )}
@@ -894,13 +898,13 @@ const AdminPanel: FC = () => {
 
                 <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
                   <h3 className="font-heading text-brand-navy mb-6 text-xl font-bold">
-                    Quick Actions
+                    Actions Rapides
                   </h3>
                   <div className="space-y-4">
                     {user?.role === "agency" ? (
                       <>
                         <ActionItem
-                          title="Add New Vehicle"
+                          title="Ajouter Véhicule"
                           icon={<Plus size={18} />}
                           onClick={() => {
                             setActiveTab("fleet");
@@ -908,12 +912,12 @@ const AdminPanel: FC = () => {
                           }}
                         />
                         <ActionItem
-                          title="View All Bookings"
+                          title="Voir Réservations"
                           icon={<Calendar size={18} />}
                           onClick={() => setActiveTab("bookings")}
                         />
                         <ActionItem
-                          title="Agency Settings"
+                          title="Paramètres Agence"
                           icon={<Settings size={18} />}
                           color="bg-orange-50 text-orange-600"
                           onClick={() => setActiveTab("settings")}
@@ -922,7 +926,7 @@ const AdminPanel: FC = () => {
                     ) : (
                       <>
                         <ActionItem
-                          title="Add New Agency"
+                          title="Ajouter Agence"
                           icon={<Plus size={18} />}
                           onClick={() => {
                             setActiveTab("agencies");
@@ -930,11 +934,11 @@ const AdminPanel: FC = () => {
                           }}
                         />
                         <ActionItem
-                          title="System Revenue Report"
+                          title="Rapport Revenu Système"
                           icon={<TrendingUp size={18} />}
                         />
                         <ActionItem
-                          title="Platform Settings"
+                          title="Paramètres Plateforme"
                           icon={<Settings size={18} />}
                           color="bg-orange-50 text-orange-600"
                         />
@@ -953,10 +957,10 @@ const AdminPanel: FC = () => {
               <table className="w-full text-left">
                 <thead className="bg-gray-50 text-xs font-semibold tracking-wider text-gray-400 uppercase">
                   <tr>
-                    <th className="px-6 py-4">Vehicle</th>
-                    <th className="px-6 py-4">Brand & Model</th>
-                    <th className="px-6 py-4">Year</th>
-                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4">Véhicule</th>
+                    <th className="px-6 py-4">Marque & Modèle</th>
+                    <th className="px-6 py-4">Année</th>
+                    <th className="px-6 py-4">Statut</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -1022,7 +1026,7 @@ const AdminPanel: FC = () => {
                         colSpan={5}
                         className="py-20 text-center text-gray-500"
                       >
-                        No vehicles found in your fleet. Start by adding one.
+                        Aucune voiture trouvée dans votre flotte. Commencez par en ajouter une.
                       </td>
                     </tr>
                   )}
@@ -1041,7 +1045,7 @@ const AdminPanel: FC = () => {
                   />
                   <input
                     type="text"
-                    placeholder="Search by name, email, or phone..."
+                    placeholder="Rechercher par nom, email ou téléphone..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="focus:border-brand-navy focus:ring-brand-navy/5 w-full rounded-2xl border border-gray-100 bg-white py-3 pr-4 pl-12 shadow-sm focus:ring-4 focus:outline-none"
@@ -1054,9 +1058,9 @@ const AdminPanel: FC = () => {
                     onChange={(e) => setSortOrder(e.target.value)}
                     className="focus:border-brand-navy focus:ring-brand-navy/5 rounded-2xl border border-gray-100 bg-white py-3 pr-10 pl-4 shadow-sm focus:ring-4 focus:outline-none"
                   >
-                    <option value="date_desc">Newest First</option>
-                    <option value="date_asc">Oldest First</option>
-                    <option value="name_asc">Name (A-Z)</option>
+                    <option value="date_desc">Plus Récent</option>
+                    <option value="date_asc">Plus Ancien</option>
+                    <option value="name_asc">Nom (A-Z)</option>
                   </select>
                 </div>
               </div>
@@ -1065,11 +1069,11 @@ const AdminPanel: FC = () => {
                 <table className="w-full text-left">
                   <thead className="bg-gray-50 text-xs font-semibold tracking-wider text-gray-400 uppercase">
                     <tr>
-                      <th className="px-6 py-4">Customer</th>
+                      <th className="px-6 py-4">Client</th>
                       <th className="px-6 py-4">Contact</th>
                       <th className="px-6 py-4">Dates</th>
-                      <th className="px-6 py-4">Status</th>
-                      <th className="px-6 py-4 text-center">Payment</th>
+                      <th className="px-6 py-4">Statut</th>
+                      <th className="px-6 py-4 text-center">Paiement</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1084,7 +1088,7 @@ const AdminPanel: FC = () => {
                             {booking.customer_name}
                           </div>
                           <div className="text-xs text-gray-500">
-                            Born:{" "}
+                            Né(e) le:{" "}
                             {new Date(
                               booking.date_of_birth,
                             ).toLocaleDateString()}
@@ -1130,11 +1134,11 @@ const AdminPanel: FC = () => {
                                       : "bg-gray-100 text-gray-700"
                             }`}
                           >
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                            <option value="expired">Expired</option>
+                            <option value="pending">En Attente</option>
+                            <option value="confirmed">Confirmé</option>
+                            <option value="completed">Terminé</option>
+                            <option value="cancelled">Annulé</option>
+                            <option value="expired">Expiré</option>
                           </select>
                         </td>
                         <td className="px-6 py-4 text-center">
@@ -1161,14 +1165,14 @@ const AdminPanel: FC = () => {
                               ) : (
                                 <FileText size={16} />
                               )}
-                              PDF
+                              Contrat
                             </button>
                             <button
                               onClick={() =>
                                 handleDeletePrebooking(booking._id)
                               }
                               className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                              title="Delete Request"
+                              title="Supprimer Demande"
                             >
                               <Trash2 size={18} />
                             </button>
@@ -1186,14 +1190,14 @@ const AdminPanel: FC = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-brand-navy text-xl font-bold">
-                  System Audit Logs
+                  Journaux d'Audit du Système
                 </h3>
                 <button
                   onClick={handleExportData}
                   className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50"
                 >
                   <Download size={18} />
-                  Export Logs
+                  Exporter
                 </button>
               </div>
               <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
@@ -1201,9 +1205,9 @@ const AdminPanel: FC = () => {
                   <thead className="bg-gray-50 text-xs font-semibold tracking-wider text-gray-400 uppercase">
                     <tr>
                       <th className="px-6 py-4">Action</th>
-                      <th className="px-6 py-4">User</th>
-                      <th className="px-6 py-4">Details</th>
-                      <th className="px-6 py-4">Timestamp</th>
+                      <th className="px-6 py-4">Utilisateur</th>
+                      <th className="px-6 py-4">Détails</th>
+                      <th className="px-6 py-4">Horodatage</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -1248,16 +1252,16 @@ const AdminPanel: FC = () => {
             <div className="max-w-4xl space-y-8">
               <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
                 <h3 className="text-brand-navy mb-6 text-xl font-bold">
-                  Platform Settings
+                  Paramètres de la Plateforme
                 </h3>
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-bold text-gray-700">
-                        Maintenance Mode
+                        Mode Maintenance
                       </p>
                       <p className="text-sm text-gray-500">
-                        Temporarily disable public access to the site.
+                        Désactiver temporairement l'accès public au site.
                       </p>
                     </div>
                     <button
@@ -1277,11 +1281,10 @@ const AdminPanel: FC = () => {
                   <div className="flex items-center justify-between border-t pt-6">
                     <div>
                       <p className="font-bold text-gray-700">
-                        Allow New Agencies
+                        Autoriser Nouvelles Agences
                       </p>
                       <p className="text-sm text-gray-500">
-                        Enable or disable self-registration for new car rental
-                        agencies.
+                        Activer ou désactiver l'auto-registration pour les nouvelles agences de location.
                       </p>
                     </div>
                     <button
@@ -1300,7 +1303,7 @@ const AdminPanel: FC = () => {
                   </div>
                   <div className="space-y-4 border-t pt-6">
                     <label className="block font-bold text-gray-700">
-                      Default Commission Rate (%)
+                      Taux de Commission par Défaut (%)
                     </label>
                     <div className="flex items-center gap-4">
                       <input
@@ -1330,20 +1333,20 @@ const AdminPanel: FC = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-brand-navy text-xl font-bold">
-                  New Partnership Requests
+                  Demandes de Partenariat
                 </h3>
                 <div className="text-sm text-gray-500">
                   {
                     partnershipRequests.filter((r) => r.status === "pending")
                       .length
                   }{" "}
-                  pending applications
+                  candidatures en attente
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-6">
                 {partnershipRequests.length === 0 ? (
                   <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-12 text-center text-gray-500">
-                    No partnership applications found.
+                    Aucune candidature de partenariat trouvée.
                   </div>
                 ) : (
                   partnershipRequests.map((request) => (
@@ -1365,7 +1368,7 @@ const AdminPanel: FC = () => {
                                 {request.agencyName}
                               </h4>
                               <p className="text-xs text-gray-400">
-                                Received{" "}
+                                Reçu le{" "}
                                 {new Date(
                                   request.timestamp,
                                 ).toLocaleDateString()}
@@ -1412,7 +1415,7 @@ const AdminPanel: FC = () => {
                               }
                               className="flex items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3 font-bold text-white transition-all hover:bg-green-700"
                             >
-                              <Check size={18} /> Approve
+                              <Check size={18} /> Approuver
                             </button>
                             <button
                               onClick={() =>
@@ -1420,7 +1423,7 @@ const AdminPanel: FC = () => {
                               }
                               className="flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-6 py-3 font-bold text-red-600 transition-all hover:bg-red-100"
                             >
-                              <Ban size={18} /> Deny
+                              <Ban size={18} /> Refuser
                             </button>
                           </div>
                         )}
@@ -1435,12 +1438,12 @@ const AdminPanel: FC = () => {
             <div className="max-w-4xl space-y-8">
               <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
                 <h3 className="text-brand-navy mb-6 text-xl font-bold">
-                  Agency Information
+                  Informations de l'Agence
                 </h3>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-500">
-                      Agency Name
+                      Nom de l'Agence
                     </label>
                     <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-gray-700">
                       {user?.name || "N/A"}
@@ -1448,7 +1451,7 @@ const AdminPanel: FC = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-500">
-                      Primary Email
+                      Email Principal
                     </label>
                     <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-gray-700">
                       {user?.email || "N/A"}
@@ -1456,19 +1459,19 @@ const AdminPanel: FC = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-500">
-                      Account Status
+                      Statut du Compte
                     </label>
                     <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-green-600">
                       <div className="h-2 w-2 rounded-full bg-green-600"></div>
-                      Verified Agency
+                      Agence Vérifiée
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-500">
-                      Member Since
+                      Membre Depuis
                     </label>
                     <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 font-medium text-gray-700">
-                      January 2024
+                      Janvier 2024
                     </div>
                   </div>
                 </div>
@@ -1476,14 +1479,13 @@ const AdminPanel: FC = () => {
 
               <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
                 <h3 className="text-brand-navy mb-6 text-xl font-bold">
-                  Danger Zone
+                  Zone Critique
                 </h3>
                 <p className="mb-6 text-sm text-gray-500">
-                  Once you delete your agency account, there is no going back.
-                  Please be certain.
+                  Une fois que vous supprimez votre compte d'agence, il est impossible de revenir en arrière. Veuillez confirmer.
                 </p>
                 <button className="rounded-xl border border-red-200 px-6 py-3 font-semibold text-red-600 transition-colors hover:bg-red-50">
-                  Deactivate Agency Account
+                  Désactiver le Compte
                 </button>
               </div>
             </div>
@@ -1493,13 +1495,13 @@ const AdminPanel: FC = () => {
             <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
               <table className="w-full text-left">
                 <thead className="bg-gray-50 text-xs font-semibold tracking-wider text-gray-400 uppercase">
-                  <tr>
-                    <th className="px-6 py-4">Agency</th>
-                    <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4">Fleet</th>
-                    <th className="px-6 py-4">Revenue</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
-                  </tr>
+                    <tr>
+                      <th className="px-6 py-4">Agence</th>
+                      <th className="px-6 py-4">Statut</th>
+                      <th className="px-6 py-4">Flotte</th>
+                      <th className="px-6 py-4">Revenu</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {adminStats.agencies
@@ -1534,15 +1536,15 @@ const AdminPanel: FC = () => {
                             }`}
                           >
                             <Shield size={12} />
-                            {agency.vehicleCount > 5 ? "Verified" : "Regular"}
+                            {agency.vehicleCount > 5 ? "Vérifiée" : "Standard"}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-gray-600">
                           <div className="text-sm font-medium">
-                            {agency.vehicleCount} cars
+                            {agency.vehicleCount} voitures
                           </div>
                           <div className="text-xs text-gray-400">
-                            {agency.bookingCount} bookings
+                            {agency.bookingCount} réservations
                           </div>
                         </td>
                         <td className="text-brand-green px-6 py-4 font-bold">
@@ -1564,14 +1566,14 @@ const AdminPanel: FC = () => {
                                 setIsEditing(true);
                               }}
                               className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
-                              title="Edit Agency"
+                              title="Modifier Agence"
                             >
                               <Pencil size={18} />
                             </button>
                             <button
                               onClick={() => handleDeleteAgency(agency._id)}
                               className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50"
-                              title="Delete Agency"
+                              title="Supprimer Agence"
                             >
                               <Trash2 size={18} />
                             </button>
@@ -1592,7 +1594,7 @@ const AdminPanel: FC = () => {
           <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-heading text-brand-navy text-2xl font-bold">
-                {isEditing ? "Edit Vehicle" : "Add New Vehicle"}
+                {isEditing ? "Modifier Véhicule" : "Ajouter Véhicule"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -1606,7 +1608,7 @@ const AdminPanel: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Brand
+                    Marque
                   </label>
                   <input
                     type="text"
@@ -1616,12 +1618,12 @@ const AdminPanel: FC = () => {
                       setCurrentCar({ ...currentCar, brand: e.target.value })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="e.g. BMW"
+                    placeholder="ex: BMW"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Model
+                    Modèle
                   </label>
                   <input
                     type="text"
@@ -1631,7 +1633,7 @@ const AdminPanel: FC = () => {
                       setCurrentCar({ ...currentCar, model: e.target.value })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="e.g. M4"
+                    placeholder="ex: M4"
                   />
                 </div>
               </div>
@@ -1639,7 +1641,7 @@ const AdminPanel: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Category
+                    Catégorie
                   </label>
                   <select
                     value={currentCar.category || ""}
@@ -1648,7 +1650,7 @@ const AdminPanel: FC = () => {
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
                   >
-                    <option value="">Select Category</option>
+                    <option value="">Sélectionner Catégorie</option>
                     <option value="SUV">SUV</option>
                     <option value="Berline">Berline</option>
                     <option value="Cabriolet">Cabriolet</option>
@@ -1667,7 +1669,7 @@ const AdminPanel: FC = () => {
                       }
                       className="w-5 h-5 accent-[#C8102E] border-gray-300 rounded"
                     />
-                    <span className="text-sm font-medium text-gray-700">Luxury Vehicle</span>
+                    <span className="text-sm font-medium text-gray-700">Véhicule de Luxe</span>
                   </label>
                 </div>
               </div>
@@ -1675,7 +1677,7 @@ const AdminPanel: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Year
+                    Année
                   </label>
                   <input
                     type="text"
@@ -1690,7 +1692,7 @@ const AdminPanel: FC = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Price (DZD/day)
+                    Prix (DZD/jour)
                   </label>
                   <input
                     type="number"
@@ -1707,7 +1709,7 @@ const AdminPanel: FC = () => {
                       })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="e.g. 12000"
+                    placeholder="ex: 12000"
                   />
                 </div>
               </div>
@@ -1715,7 +1717,7 @@ const AdminPanel: FC = () => {
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Fuel
+                    Carburant
                   </label>
                   <input
                     type="text"
@@ -1732,7 +1734,7 @@ const AdminPanel: FC = () => {
                       })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="e.g. Petrol"
+                    placeholder="ex: Essence"
                   />
                 </div>
                 <div className="space-y-2">
@@ -1754,12 +1756,12 @@ const AdminPanel: FC = () => {
                       })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="e.g. Automatic"
+                    placeholder="ex: Automatique"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Seats
+                    Places
                   </label>
                   <input
                     type="number"
@@ -1780,7 +1782,7 @@ const AdminPanel: FC = () => {
                       })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="e.g. 5"
+                    placeholder="ex: 5"
                   />
                 </div>
               </div>
@@ -1788,7 +1790,7 @@ const AdminPanel: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Availability
+                    Disponibilité
                   </label>
                   <select
                     value={currentCar.availability}
@@ -1800,8 +1802,8 @@ const AdminPanel: FC = () => {
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
                   >
-                    <option value="available">Available</option>
-                    <option value="rented">Rented</option>
+                    <option value="available">Disponible</option>
+                    <option value="rented">Loué</option>
                     <option value="maintenance">Maintenance</option>
                   </select>
                 </div>
@@ -1809,7 +1811,7 @@ const AdminPanel: FC = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Vehicle Image
+                  Image du Véhicule
                 </label>
                 <input
                   type="file"
@@ -1841,7 +1843,7 @@ const AdminPanel: FC = () => {
                 type="submit"
                 className="bg-brand-navy hover:bg-navy-800 w-full rounded-xl py-4 font-bold text-white transition-all"
               >
-                {isEditing ? "Update Vehicle" : "Create Vehicle"}
+                {isEditing ? "Modifier Véhicule" : "Créer Véhicule"}
               </button>
             </form>
           </div>
@@ -1854,7 +1856,7 @@ const AdminPanel: FC = () => {
           <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-heading text-brand-navy text-2xl font-bold">
-                {isEditing ? "Edit Agency" : "Add New Agency"}
+                {isEditing ? "Modifier Agence" : "Ajouter Agence"}
               </h2>
               <button
                 onClick={() => {
@@ -1881,7 +1883,7 @@ const AdminPanel: FC = () => {
             >
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  User Email (Must exist)
+                  Email Utilisateur (Doit exister)
                 </label>
                 <input
                   type="email"
@@ -1894,13 +1896,13 @@ const AdminPanel: FC = () => {
                     })
                   }
                   className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                  placeholder="user@example.com"
+                  placeholder="utilisateur@exemple.com"
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Agency Name
+                  Nom de l'Agence
                 </label>
                 <input
                   type="text"
@@ -1910,14 +1912,14 @@ const AdminPanel: FC = () => {
                     setCurrentAgency({ ...currentAgency, name: e.target.value })
                   }
                   className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                  placeholder="Luxury Cars LLC"
+                  placeholder="Voitures de Luxe SARL"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Phone
+                    Téléphone
                   </label>
                   <input
                     type="tel"
@@ -1930,12 +1932,12 @@ const AdminPanel: FC = () => {
                       })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="+1 234 567 890"
+                    placeholder="+213 555 123 456"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Address
+                    Adresse
                   </label>
                   <input
                     type="text"
@@ -1948,14 +1950,14 @@ const AdminPanel: FC = () => {
                       })
                     }
                     className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                    placeholder="City, Country"
+                    placeholder="Ville, Algérie"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Agency Logo
+                  Logo de l'Agence
                 </label>
                 <input
                   type="file"
@@ -1978,7 +1980,7 @@ const AdminPanel: FC = () => {
                 type="submit"
                 className="bg-brand-navy hover:bg-navy-800 w-full rounded-xl py-4 font-bold text-white transition-all"
               >
-                Create Agency
+                Créer Agence
               </button>
             </form>
           </div>
@@ -1990,10 +1992,10 @@ const AdminPanel: FC = () => {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="font-heading text-brand-navy text-2xl font-bold">
-                  Approve Partnership
+                  Approuver Partenariat
                 </h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  Assign a temporary password for the new agency.
+                  Attribuer un mot de passe temporaire pour la nouvelle agence.
                 </p>
               </div>
               <button
@@ -2016,7 +2018,7 @@ const AdminPanel: FC = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Initial Password
+                  Mot de Passe Initial
                 </label>
                 <input
                   type="password"
@@ -2024,7 +2026,7 @@ const AdminPanel: FC = () => {
                   value={approvalPassword}
                   onChange={(e) => setApprovalPassword(e.target.value)}
                   className="focus:border-brand-red w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none"
-                  placeholder="Minimum 6 characters"
+                  placeholder="Minimum 6 caractères"
                 />
               </div>
 
@@ -2033,14 +2035,14 @@ const AdminPanel: FC = () => {
                   onClick={() => setIsApproveModalOpen(false)}
                   className="flex-1 rounded-xl border border-gray-200 py-3 font-semibold text-gray-600 transition-colors hover:bg-gray-50"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   onClick={handleConfirmApproval}
                   disabled={!approvalPassword || approvalPassword.length < 6}
                   className="bg-brand-navy hover:bg-navy-800 flex-1 rounded-xl py-3 font-semibold text-white transition-colors disabled:opacity-50"
                 >
-                  Confirm & Create
+                  Confirmer & Créer
                 </button>
               </div>
             </div>

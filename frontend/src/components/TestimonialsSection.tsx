@@ -36,7 +36,7 @@ const TestimonialsSection = () => {
             <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
               {t("testimonials.tag")}
             </h2>
-            <h3 className="text-4xl font-bold text-[#0A1633] sm:text-5xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
+            <h3 className="text-4xl font-bold text-[#0A1633] sm:text-5xl" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
               {t("testimonials.title")}
             </h3>
           </div>

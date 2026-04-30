@@ -4,7 +4,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const WhyChooseSection = () => {
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   const benefits = [
     {
@@ -43,7 +43,7 @@ const WhyChooseSection = () => {
             </h2>
             <h3
               className="mb-8 text-5xl font-bold text-white leading-tight"
-              style={{ fontFamily: "Orbitron, sans-serif" }}
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
               {t("whychoose.title1")}
               <br />
@@ -54,7 +54,7 @@ const WhyChooseSection = () => {
             </p>
 
             <button
-              onClick={() => navigate(language === 'en' ? "/en/become-partner" : "/become-partner")}
+              onClick={() => navigate("/become-partner")}
               className="group flex items-center gap-3 rounded-full bg-white px-8 py-4 text-sm font-bold tracking-widest text-[#0A1633] uppercase transition-all hover:scale-105 hover:bg-gray-100"
             >
               {t("whychoose.btn")}

@@ -19,10 +19,10 @@ const MovingLogosSection = () => {
     <div className="bg-white py-24 overflow-hidden border-b border-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16 text-center">
         <h2 className="text-sm font-bold tracking-[0.2em] text-[#C8102E] uppercase mb-4">
-          Trusted Network
+          Réseau de Confiance
         </h2>
-        <h3 className="text-3xl font-bold text-[#0A1633] sm:text-4xl" style={{ fontFamily: "Orbitron, sans-serif" }}>
-          Browse Cars from Leading Brands
+        <h3 className="text-3xl font-bold text-[#0A1633] sm:text-4xl" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+          Explorez les Voitures des Meilleures Marques
         </h3>
       </div>
 

@@ -6,7 +6,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const BrandSection = () => {
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +46,7 @@ const BrandSection = () => {
           </h2>
           <h3
             className="text-4xl font-bold text-[#0A1633] sm:text-5xl"
-            style={{ fontFamily: "Orbitron, sans-serif" }}
+            style={{ fontFamily: "Space Grotesk, sans-serif" }}
           >
             {t("brand.title")}
           </h3>
@@ -63,7 +63,7 @@ const BrandSection = () => {
                 <div
                   key={agency._id}
                   className="group relative flex flex-col items-center justify-center rounded-3xl bg-white p-8 transition-all hover:bg-[#0A1633] shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer border border-gray-100"
-                  onClick={() => navigate(language === 'en' ? "/en/cars" : "/cars")}
+                  onClick={() => navigate("/cars")}
                 >
                   <div className="relative mb-4 h-20 w-20 overflow-hidden rounded-2xl ring-4 ring-gray-50 transition-all group-hover:ring-[#C8102E]/20">
                     <img

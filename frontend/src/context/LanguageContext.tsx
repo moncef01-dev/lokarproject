@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 import type { ReactNode, FC } from "react";
 import { en } from "../translations/en";
 import { fr } from "../translations/fr";
@@ -24,29 +24,20 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 );
 
 export const LanguageProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>("fr");
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Initialize language from URL or fallback to 'fr'
-  useEffect(() => {
-    const isEnglishRoute = location.pathname.startsWith("/en");
-    const newLanguage = isEnglishRoute ? "en" : "fr";
-    setLanguageState(newLanguage);
-  }, []);
+  // Derive language directly from URL path
+  const language: Language = location.pathname.startsWith("/en") ? "en" : "fr";
 
   const setLanguage = (lang: Language) => {
     if (lang === language) return;
 
-    // Replace URL path keeping everything else intact
-    const currentPath = location.pathname;
-    let newPath = currentPath;
+    // 1. Strip existing /en prefix to get clean base path
+    const cleanPath = location.pathname.replace(/^\/en(\/|$)/, "/").replace(/\/\/+$/, "/").replace(/\/$/, "") || "/";
 
-    if (lang === "en") {
-      newPath = currentPath === "/" ? "/en" : `/en${currentPath}`;
-    } else {
-      newPath = currentPath.replace(/^\/en/, "") || "/";
-    }
+    // 2. Apply language prefix
+    const newPath = lang === "en" && cleanPath === "/" ? "/en" : lang === "en" ? `/en${cleanPath}` : cleanPath;
 
     navigate(newPath + location.search + location.hash, { replace: true });
   };
@@ -77,6 +68,7 @@ export const LanguageProvider: FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {

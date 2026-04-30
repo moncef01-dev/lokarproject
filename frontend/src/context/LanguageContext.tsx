@@ -1,4 +1,5 @@
-import { createContext, useContext, type ReactNode, type FC, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ReactNode, FC } from 'react';
 import { en } from '../translations/en';
 import { fr } from '../translations/fr';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -30,17 +31,17 @@ export const LanguageProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const setLanguage = (lang: Language) => {
     if (lang === language) return;
-    
+
     // Replace URL path keeping everything else intact
     const currentPath = location.pathname;
     let newPath = currentPath;
-    
+
     if (lang === 'en') {
       newPath = currentPath === '/' ? '/en' : `/en${currentPath}`;
     } else {
       newPath = currentPath.replace(/^\/en/, '') || '/';
     }
-    
+
     navigate(newPath + location.search + location.hash, { replace: true });
   };
 

@@ -8,6 +8,7 @@ export const en = {
   "nav.admin": "Admin Portal",
   "nav.signOut": "Sign Out",
   "nav.signIn": "Sign In",
+  "nav.signUp": "Sign Up",
 
   // Hero
   "hero.title1": "FIND AND BOOK",

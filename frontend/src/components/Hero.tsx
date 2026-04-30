@@ -1,35 +1,68 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Check } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
+const cyclingPhrases = [
+  "vos véhicules",
+  "rapidement",
+  "facilement",
+  "en quelques secondes",
+  "partout en Algérie",
+];
+
 const Hero = () => {
   const navigate = useNavigate();
-  const heroRef = useRef<HTMLDivElement>(null);
-  const requestRef = useRef<number>(null);
   const { t } = useLanguage();
+  const [displayText, setDisplayText] = useState("");
+  const [cursorVisible, setCursorVisible] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cursorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerWidth < 768) return;
-      
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
+    const currentPhrase = cyclingPhrases[phraseIndex];
+
+    if (isPaused) {
+      typingTimeoutRef.current = setTimeout(() => {
+        setIsPaused(false);
+        setIsDeleting(true);
+      }, 1500);
+      return;
+    }
+
+    if (isDeleting) {
+      if (displayText.length === 0) {
+        setIsDeleting(false);
+        setPhraseIndex((prev) => (prev + 1) % cyclingPhrases.length);
+        return;
       }
+      typingTimeoutRef.current = setTimeout(() => {
+        setDisplayText(currentPhrase.substring(0, displayText.length - 1));
+      }, 40);
+    } else {
+      if (displayText.length < currentPhrase.length) {
+        typingTimeoutRef.current = setTimeout(() => {
+          setDisplayText(currentPhrase.substring(0, displayText.length + 1));
+        }, 80);
+      } else {
+        setIsPaused(true);
+      }
+    }
 
-      requestRef.current = requestAnimationFrame(() => {
-        if (heroRef.current) {
-          heroRef.current.style.setProperty("--parallax-y", `${window.scrollY}`);
-        }
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
-      }
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, [displayText, phraseIndex, isDeleting, isPaused]);
+
+  useEffect(() => {
+    cursorIntervalRef.current = setInterval(() => {
+      setCursorVisible((prev) => !prev);
+    }, 530);
+    return () => {
+      if (cursorIntervalRef.current) clearInterval(cursorIntervalRef.current);
     };
   }, []);
 
@@ -38,17 +71,10 @@ const Hero = () => {
   };
 
   return (
-    <div 
-      ref={heroRef}
-      className="relative flex h-screen min-h-[700px] w-full items-center justify-center overflow-hidden bg-black text-white"
-      style={{ "--parallax-y": "0" } as React.CSSProperties}
-    >
+    <div className="relative flex h-screen min-h-[700px] w-full items-center justify-center overflow-hidden bg-black text-white">
       {/* Background Layer: Cinematic Image + Slow Zoom */}
       <div className="absolute inset-0 z-0">
-        <div 
-          className="h-full w-full animate-slow-zoom duration-[8s] infinite linear opacity-80"
-          style={{ transform: "translateY(calc(var(--parallax-y) * 0.05px)) scale(1.05)" }}
-        >
+        <div className="h-full w-full animate-slow-zoom duration-[8s] infinite linear opacity-80">
           <img
             src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=1600&q=80"
             alt="Luxury Automotive"
@@ -71,8 +97,14 @@ const Hero = () => {
               style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
               <span className="block mb-1 sm:mb-2">{t("hero.title1")}</span>
-              <span className="bg-gradient-to-r from-white via-white/80 to-gray-400 bg-clip-text text-transparent block text-balance mx-auto">
-                {t("hero.title2")}
+              <span className="block text-balance mx-auto mt-1 sm:mt-2 min-h-[1.2em]">
+                <span className="text-brand-red">
+                  {displayText}
+                </span>
+                <span
+                  className="inline-block w-[3px] h-[0.85em] bg-brand-red ml-1 align-middle rounded-full"
+                  style={{ opacity: cursorVisible ? 1 : 0, transition: "opacity 0.1s" }}
+                />
               </span>
             </h1>
 

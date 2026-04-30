@@ -8,7 +8,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const BecomePartner: FC = () => {
     const navigate = useNavigate();
-    const { t, language } = useLanguage();
+    const { t } = useLanguage();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({

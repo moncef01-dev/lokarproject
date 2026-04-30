@@ -4,7 +4,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const ExperienceSection = () => {
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <div className="relative py-32 overflow-hidden">

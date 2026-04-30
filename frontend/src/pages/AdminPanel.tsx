@@ -428,7 +428,7 @@ const AdminPanel: FC = () => {
       setPartnershipRequests(requests);
     } catch (err) {
       console.error(err);
-      setError(`Échec de ${action === "approve" ? "l'approbation" : "la réjection"} de la demande de partenariat.`);
+      setError(`Échec du refus de la demande de partenariat.`);
     }
   };
 

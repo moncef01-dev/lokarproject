@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -24,7 +24,6 @@ const Navbar = () => {
 
   useEffect(() => {
     if (mobileMenuOpen) {
-      const scrollY = window.scrollY;
       document.body.style.overflow = 'hidden';
 
       const handleTouchMove = (e: TouchEvent) => {

@@ -1,15 +1,15 @@
-import React from 'react';
+import { type FC, type ReactNode } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface MetricCardProps {
     title: string;
     value: string | number;
     trend?: number;
-    icon: React.ReactNode;
+    icon: ReactNode;
     iconBgColor?: string;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({
+const MetricCard: FC<MetricCardProps> = ({
     title,
     value,
     trend,

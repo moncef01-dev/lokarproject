@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo, type FC } from 'react';
 import {
     DollarSign,
     Calendar,
@@ -14,7 +14,7 @@ import { generateAnalyticsData } from '../../utils/mockAnalyticsData';
 
 type DateRange = '7' | '30' | '90';
 
-const AnalyticsDashboard: React.FC = () => {
+const AnalyticsDashboard: FC = () => {
     const [dateRange, setDateRange] = useState<DateRange>('30');
 
     // Generate analytics data based on selected date range

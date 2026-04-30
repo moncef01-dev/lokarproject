@@ -1,4 +1,4 @@
-import React from 'react';
+import { type FC } from 'react';
 import {
     BarChart,
     Bar,
@@ -15,7 +15,7 @@ interface VehiclePerformanceChartProps {
     data: VehiclePerformance[];
 }
 
-const VehiclePerformanceChart: React.FC<VehiclePerformanceChartProps> = ({
+const VehiclePerformanceChart: FC<VehiclePerformanceChartProps> = ({
     data,
 }) => {
     return (

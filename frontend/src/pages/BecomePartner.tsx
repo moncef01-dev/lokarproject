@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, type FC, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, ChevronRight, Building2, Mail, Phone, MapPin, MessageSquare, Loader2 } from "lucide-react";
 import { adminService } from "../services/admin.service";
@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useLanguage } from "../context/LanguageContext";
 
-const BecomePartner: React.FC = () => {
+const BecomePartner: FC = () => {
     const navigate = useNavigate();
     const { t, language } = useLanguage();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +19,7 @@ const BecomePartner: React.FC = () => {
         description: "",
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {

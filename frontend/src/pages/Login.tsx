@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState, useEffect, type FC, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { Lock, Mail, ArrowRight, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-const Login: React.FC = () => {
+const Login: FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, login: authLogin } = useAuth();
   const [email, setEmail] = useState("");
@@ -12,13 +12,13 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);

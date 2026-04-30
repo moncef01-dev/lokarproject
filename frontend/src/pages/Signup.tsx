@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState, type FC, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { User, Lock, Mail, AlertCircle, Award } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-const Signup: React.FC = () => {
+const Signup: FC = () => {
   const navigate = useNavigate();
   const { login: authLogin } = useAuth();
   const [name, setName] = useState("");
@@ -13,7 +13,7 @@ const Signup: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);

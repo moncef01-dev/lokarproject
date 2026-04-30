@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, useContext, type ReactNode, type FC, useEffect, useState } from 'react';
 import { en } from '../translations/en';
 import { fr } from '../translations/fr';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ const translations: Record<Language, Translations> = { en, fr };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const LanguageProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('fr');
   const location = useLocation();
   const navigate = useNavigate();

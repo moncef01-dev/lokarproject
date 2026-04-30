@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import { useState, useEffect, type FC, type FormEvent } from "react";
 import { X, Loader2, AlertCircle, FileText } from "lucide-react";
 
 interface ContractGenerationModalProps {
@@ -10,7 +10,7 @@ interface ContractGenerationModalProps {
     prebooking: any;
 }
 
-const ContractGenerationModal: React.FC<ContractGenerationModalProps> = ({
+const ContractGenerationModal: FC<ContractGenerationModalProps> = ({
     isOpen,
     onClose,
     onGenerate,
@@ -27,7 +27,7 @@ const ContractGenerationModal: React.FC<ContractGenerationModalProps> = ({
     });
 
     // Initialize total_price once when prebooking is available
-    React.useEffect(() => {
+    useEffect(() => {
         if (prebooking && overrides.total_price === 0) {
             // Rough calculation if needed, but better to pull from prebooking
             // Let's assume we want to pass it back as edited
@@ -37,7 +37,7 @@ const ContractGenerationModal: React.FC<ContractGenerationModalProps> = ({
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         onGenerate(overrides);
     };

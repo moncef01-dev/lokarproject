@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, type FC } from "react";
 import { Star, Fuel, Settings, Users, ArrowRight } from "lucide-react";
 import PrebookingModal from "./prebooking/PrebookingModal";
 import { getImageUrl } from "../utils/imageUtils";
@@ -27,7 +27,7 @@ interface CarProps {
   };
 }
 
-const CarCard: React.FC<CarProps> = ({ car }) => {
+const CarCard: FC<CarProps> = ({ car }) => {
   const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const image = getImageUrl(car.img_path || car.image);

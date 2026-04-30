@@ -1,4 +1,4 @@
-import React from 'react';
+import { type FC } from 'react';
 import {
     XAxis,
     YAxis,
@@ -14,7 +14,7 @@ interface RevenueChartProps {
     data: RevenueData[];
 }
 
-const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
+const RevenueChart: FC<RevenueChartProps> = ({ data }) => {
     return (
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="mb-6">

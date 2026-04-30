@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, type FC, type FormEvent, type ChangeEvent, type ReactNode } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Navigate } from "react-router-dom";
 import {
@@ -51,7 +51,7 @@ import type {
 import Navbar from "../components/Navbar";
 import AnalyticsDashboard from "../components/analytics/AnalyticsDashboard";
 
-const AdminPanel: React.FC = () => {
+const AdminPanel: FC = () => {
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
@@ -197,7 +197,7 @@ const AdminPanel: React.FC = () => {
     }
   }, [authLoading, user, debouncedSearchTerm, sortOrder]);
 
-  const handleCreateOrUpdate = async (e: React.FormEvent) => {
+  const handleCreateOrUpdate = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (isEditing && currentCar._id) {
@@ -259,7 +259,7 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  const handleCreateAgency = async (e: React.FormEvent) => {
+  const handleCreateAgency = async (e: FormEvent) => {
     e.preventDefault();
     try {
       // Use FormData for file upload
@@ -315,7 +315,7 @@ const AdminPanel: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleVehicleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVehicleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setVehicleImageFile(file);
@@ -327,7 +327,7 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  const handleAgencyImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAgencyImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setAgencyImageFile(file);
@@ -2061,11 +2061,11 @@ const AdminPanel: React.FC = () => {
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: React.ReactNode;
+  icon: ReactNode;
   trend: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, trend }) => (
+const StatCard: FC<StatCardProps> = ({ title, value, icon, trend }) => (
   <div className="group rounded-3xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-xl">
     <div className="mb-4 flex items-center justify-between">
       <div className="group-hover:bg-brand-red/10 rounded-2xl bg-gray-50 p-3 transition-colors">
@@ -2089,12 +2089,12 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, trend }) => (
 
 interface ActionItemProps {
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   color?: string;
   onClick?: () => void;
 }
 
-const ActionItem: React.FC<ActionItemProps> = ({
+const ActionItem: FC<ActionItemProps> = ({
   title,
   icon,
   color = "bg-blue-50 text-blue-600",

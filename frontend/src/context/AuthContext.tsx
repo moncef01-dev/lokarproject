@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, type FC, type ReactNode } from "react";
 import api from "../services/api";
 
 interface AuthContextType {
@@ -13,7 +13,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AuthProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
